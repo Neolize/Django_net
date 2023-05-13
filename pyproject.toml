@@ -1,0 +1,19 @@
+[tool.poetry]
+name = "django net"
+version = "0.1.0"
+description = "Social network"
+authors = ["Neolize"]
+readme = "README.md"
+
+[tool.poetry.dependencies]
+python = "^3.10"
+django = "^4.2.1"
+djangorestframework = "^3.14.0"
+pillow = "^9.5.0"
+psycopg2 = "^2.9.6"
+djoser = "^2.2.0"
+
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
