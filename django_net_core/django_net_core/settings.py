@@ -10,17 +10,27 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/4.2/ref/settings/
 """
 
+from os import environ
 from pathlib import Path
+
+import dotenv
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
+
+
+def load_env():
+    dotenv.load_dotenv(BASE_DIR / '.env')
+
+
+load_env()
 
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/4.2/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-!x_4&xh!-xnn*15)mx(1o1r4xc_%7bs(xczo%m--2l(an3)tks'
+SECRET_KEY = environ['SECRET_KEY']
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
@@ -37,6 +47,11 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+
+    'rest_framework',
+    'djoser',
+
+    'applications.user_profiles.apps.UserProfilesConfig',
 ]
 
 MIDDLEWARE = [
@@ -74,13 +89,13 @@ WSGI_APPLICATION = 'django_net_core.wsgi.application'
 # https://docs.djangoproject.com/en/4.2/ref/settings/#databases
 
 DATABASES = {
-    "default": {
-        "ENGINE": "django.db.backends.postgresql",
-        "NAME": "django_net",
-        "USER": "postgres",
-        "PASSWORD": "Coincidence",
-        "HOST": "127.0.0.1",
-        "PORT": "5432",
+    'default': {
+        'ENGINE': 'django.db.backends.postgresql',
+        'NAME': environ['NAME'],
+        'USER': environ['USER'],
+        'PASSWORD': environ['PASSWORD'],
+        'HOST': environ['HOST'],
+        'PORT': environ['PORT'],
     }
 }
 
@@ -125,3 +140,14 @@ STATIC_URL = 'static/'
 # https://docs.djangoproject.com/en/4.2/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+
+REST_FRAMEWORK = {
+    'DEFAULT_AUTHENTICATION_CLASSES': (
+        'rest_framework_simplejwt.authentication.JWTAuthentication',
+    ),
+}
+
+SIMPLE_JWT = {
+   # 'AUTH_HEADER_TYPES': ('JWT',),
+}
