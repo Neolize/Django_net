@@ -90,7 +90,7 @@ WSGI_APPLICATION = 'django_net_core.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.postgresql',
+        'ENGINE': environ["ENGINE"],
         'NAME': environ['NAME'],
         'USER': environ['USER'],
         'PASSWORD': environ['PASSWORD'],
@@ -151,3 +151,5 @@ REST_FRAMEWORK = {
 SIMPLE_JWT = {
    # 'AUTH_HEADER_TYPES': ('JWT',),
 }
+
+AUTH_USER_MODEL = 'user_profiles.CustomUser'
