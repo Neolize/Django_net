@@ -6,7 +6,7 @@ from applications.user_profiles import models
 
 
 class CustomUserAdmin(UserAdmin):
-    list_display = ('username', 'email', 'phone', 'first_name', 'last_name', 'is_staff')
+    list_display = ('username', 'email', 'first_name', 'last_name', 'is_staff')
     fieldsets = (
         (None, {'fields': ('username', 'password')}),
         (_('Personal info'), {'fields': ('first_name', 'last_name', 'middle_name', 'email')}),
@@ -23,7 +23,7 @@ class CustomUserAdmin(UserAdmin):
             },
         ),
         (_('Important dates'), {'fields': ('last_login', 'date_joined')}),
-        (_('More info'), {'fields': ('phone', 'gender', 'birthday', 'avatar')}),
+        (_('More info'), {'fields': ('gender', 'birthday', 'avatar')}),
     )
 
 
