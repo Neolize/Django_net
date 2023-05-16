@@ -18,6 +18,12 @@ class PrivateCustomUserAPIViewSet(ModelViewSet):
     permission_classes = (permissions.IsAuthenticated, )
 
 
+class UserPersonalDataAPIViewSet(ModelViewSet):
+    serializer_class = serializers.UserPersonalDataSerializer
+    queryset = read.get_all_users_personal_data()
+    permissions_class = (permissions.IsAuthenticated, )
+
+
 # class GetCustomUserAPIView(RetrieveAPIView):
 #     """Show user profile"""
 #     queryset = read.get_all_users()
