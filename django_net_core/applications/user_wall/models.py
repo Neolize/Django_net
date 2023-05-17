@@ -2,6 +2,8 @@ from django.db import models
 from django.conf import settings
 from django.utils.text import slugify as django_slugify
 
+from applications.abstract_activities.models import AbstractPost
+
 
 def slugify(str_for_slugify: str) -> str:
     alphabet = {
@@ -24,17 +26,16 @@ class Tag(models.Model):
     title = models.CharField(max_length=50, unique=True)
     slug = models.SlugField(max_length=50, blank=True, unique=True)
 
+    def __str__(self):
+        return f'{self.title}'
 
-class Post(models.Model):
+
+class Post(AbstractPost):
     """User's post model"""
-    title = models.CharField(max_length=150, db_index=True)
-    content = models.TextField()
-    publication_date = models.DateTimeField(auto_now_add=True)
-    last_edit = models.DateTimeField(auto_now=True)
-    view_counts = models.PositiveIntegerField()
-    slug = models.SlugField(max_length=175, blank=True, unique=True)
-    is_published = models.BooleanField(default=True)
     author = models.ForeignKey(
         settings.AUTH_USER_MODEL, on_delete=models.SET_NULL, null=True, related_name='user_posts'
     )
-    tags = models.ManyToManyField('Tag', blank=True, related_name="posts")
+    tags = models.ManyToManyField(Tag, blank=True, related_name='user_posts')
+
+    def __str__(self):
+        return f'{self.title} - {self.author}'
