@@ -28,3 +28,33 @@ class CustomUserAdmin(UserAdmin):
 
 
 admin.site.register(models.CustomUser, CustomUserAdmin)
+
+
+@admin.register(models.UserPersonalData)
+class UserPersonalDataAdmin(admin.ModelAdmin):
+    list_display = ('id', 'phone', 'birthday', 'user')
+    list_display_links = ('id', )
+
+
+@admin.register(models.Hobby)
+class HobbyAdmin(admin.ModelAdmin):
+    list_display = ('id', 'title')
+    list_display_links = ('id', 'title')
+#
+#
+# @admin.register(models.Group)
+# class GroupAdmin(admin.ModelAdmin):
+#     list_display = ('id', 'title', 'slug', 'creator')
+#     list_display_links = ('id', 'title')
+#
+#
+# @admin.register(models.Tag)
+# class TagAdmin(admin.ModelAdmin):
+#     list_display = ('id', 'title', 'slug')
+#     list_display_links = ('id', 'title')
+#
+#
+# @admin.register(models.Post)
+# class PostAdmin(admin.ModelAdmin):
+#     list_display = ('id', 'title', 'slug', 'is_published')
+#     list_display_links = ('id', 'title')

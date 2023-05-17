@@ -2,7 +2,6 @@ from rest_framework import permissions
 from rest_framework.viewsets import ModelViewSet, ReadOnlyModelViewSet
 # from rest_framework.generics import RetrieveAPIView, UpdateAPIView
 
-
 from applications.user_profiles import serializers
 from applications.user_profiles.services.crud import read
 

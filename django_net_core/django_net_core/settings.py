@@ -53,6 +53,8 @@ INSTALLED_APPS = [
     'djoser',
 
     'applications.user_profiles.apps.UserProfilesConfig',
+    'applications.groups.apps.GroupsConfig',
+    'applications.user_wall.apps.UserWallConfig',
 ]
 
 MIDDLEWARE = [
