@@ -22,7 +22,6 @@ class AbstractComment(models.Model):
     is_edited = models.BooleanField(default=False)
     is_published = models.BooleanField(default=True)
     is_deleted = models.BooleanField(default=False)
-    parent = models.ForeignKey('self', on_delete=models.SET_NULL, blank=True, null=True, related_name='children')
 
     class Meta:
         abstract = True

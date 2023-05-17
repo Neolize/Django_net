@@ -1,9 +1,18 @@
-from django.http.response import HttpResponse
+from rest_framework import permissions
+from rest_framework.viewsets import ModelViewSet
 
+from applications.user_profiles import serializers
 from applications.user_profiles.services.crud import read
 
 
-def index(request):
-    users = ''.join(user.username for user in read.get_all_users())
-    return HttpResponse(f'<h1>Users: {users}</h1>')
+class PublicCustomUserAPIViewSet(ModelViewSet):
+    serializer_class = serializers.PublicCustomUserSerializer
+    queryset = read.get_all_users()
+    permission_classes = (permissions.IsAuthenticated, )
+
+
+class PrivateCustomUserAPIViewSet(ModelViewSet):
+    serializer_class = serializers.PrivateCustomUserSerializer
+    queryset = read.get_all_users()
+    permission_classes = (permissions.IsAdminUser, )
 

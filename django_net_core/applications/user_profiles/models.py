@@ -15,9 +15,12 @@ class CustomUser(AbstractUser):
     avatar = models.ImageField(upload_to='user/avatar/%Y/%m/%d/', blank=True, null=True)
     gender = models.CharField(max_length=13, choices=GENDER, default='not specified')
 
+    class Meta:
+        db_table = 'custom_user'
+
     def __str__(self):
         name = self.username or self.first_name
-        return f'{name}'
+        return name
 
 
 class UserPersonalData(models.Model):
@@ -29,8 +32,13 @@ class UserPersonalData(models.Model):
     work = models.CharField(max_length=150, blank=True)
     user = models.OneToOneField(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name='personal_data')
 
+    class Meta:
+        verbose_name = 'Users\' personal data'
+        verbose_name_plural = 'Users\' personal data'
+        db_table = 'user_personal_data'
+
     def __str__(self):
-        return f'{self.user}'
+        return self.user
 
 
 class Hobby(models.Model):
@@ -38,11 +46,22 @@ class Hobby(models.Model):
     title = models.CharField(max_length=50, unique=True)
     users = models.ManyToManyField(settings.AUTH_USER_MODEL, related_name='hobbies')
 
+    class Meta:
+        verbose_name = 'Hobbies'
+        verbose_name_plural = 'Hobbies'
+        db_table = 'hobby'
+
     def __str__(self):
-        return f'{self.title}'
+        return self.title
 
 
 class Follower(models.Model):
     """User's follower model"""
     user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name='owner')
     follower = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name='followers')
+
+    class Meta:
+        db_table = 'follower'
+
+    def __str__(self):
+        return f'{self.user} - {self.follower}'

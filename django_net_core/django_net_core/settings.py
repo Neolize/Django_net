@@ -55,6 +55,7 @@ INSTALLED_APPS = [
     'applications.user_profiles.apps.UserProfilesConfig',
     'applications.groups.apps.GroupsConfig',
     'applications.user_wall.apps.UserWallConfig',
+    'applications.frontend.apps.FrontendConfig',
 ]
 
 MIDDLEWARE = [
