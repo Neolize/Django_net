@@ -4,6 +4,10 @@
 
 {% block content %}
     <div style="margin-top: 50px; text-align: center;">
-        <h3>{{ users }}</h3>
+        <ul style="list-style: none;">
+            {% for user in users %}
+                <li><h3>{{ user }}</h3></li>
+            {% endfor %}
+        </ul>
     </div>
 {% endblock content %}
