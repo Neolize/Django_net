@@ -29,17 +29,17 @@
       </ul>
       <form class="d-flex">
         {% if user.is_authenticated %}
-          <div class="signin-block">
+          <div class="signin-block btn btn-dark">
               <a href="{% url 'logout' %}" class="signin-block__link">Logout</a>
           </div>
 <!--          <input class="form-control me-2" type="search" placeholder="Search" aria-label="Search">-->
 <!--          <button class="btn btn-outline-primary" type="submit">Search</button>-->
         {% else %}
-          <div class="signin-block">
+          <div class="signin-block btn btn-dark">
             <a href="{% url 'login' %}" class="signin-block__link">Sign in</a>
           </div>
-          <div class="signup-block">
-            <a href="#" class="signup-block__link">Sign up</a>
+          <div class="signup-block btn btn-dark">
+            <a href="{% url 'signup' %}" class="signup-block__link">Sign up</a>
           </div>
         {% endif %}
       </form>

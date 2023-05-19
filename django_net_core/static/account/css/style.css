@@ -1,15 +1,99 @@
-/* .account-signin-block {
-    margin: auto;
-} */
-
-.account-signin-title {
-    text-align: center;
-}
-
-/* .account-logout-block {
-    margin: auto;
-} */
-
 .account-block {
     margin: auto;
+}
+
+.account-title {
+    text-align: center;
+    margin-bottom: 35px;
+    font-size: 36px;
+    font-weight: 700;
+    font-family: Georgia, 'Times New Roman', Times, serif;
+    color: rgba(74, 47, 47, 1);
+}
+
+.account-signup-form {
+    width: 750px;
+    height: 600px;
+    padding: 35px 50px;
+    background-color: rgba(130, 103, 103, 0.1);
+    border: 0.5px solid rgba(130, 103, 103, 0.3);
+    border-radius: 5%;
+}
+
+.account-signup-logo {
+    display: inline-block;
+    width: 32px;
+    height: 32px;
+    background-image: url('../images/logos/signup-logo.png');
+    background-repeat: no-repeat;
+    margin: 0 0 -45px 210px;
+}
+
+
+.account-login-form {
+    width: 500px;
+    height: 350px;
+    padding: 35px 50px;
+    background-color: rgba(130, 103, 103, 0.1);
+    border: 0.5px solid rgba(130, 103, 103, 0.3);
+    border-radius: 5%;
+}
+
+.account-login-logo {
+    display: inline-block;
+    width: 32px;
+    height: 32px;
+    background-image: url('../images/logos/login-logo.png');
+    background-repeat: no-repeat;
+    margin: -35px 0 -45px 90px;    
+}
+
+.account-signup-field {
+    margin-bottom: 15px;
+}
+
+.account-input {
+    width: 300px;
+    height: 60px;
+    padding: 15px;
+    font-size: 18px;
+    font-family:Georgia, 'Times New Roman', Times, serif;
+}
+
+.account-signup-phone {
+    position: relative;
+    left: 350px;
+    bottom: 300px;
+}
+
+.account-signup-town {
+    position: relative;
+    left: 350px;
+    bottom: 300px;
+}
+
+.account-signup-birthday {
+    position: relative;
+    left: 350px;
+    bottom: 300px;
+}
+
+.account-signup-gender {
+    position: relative;
+    left: 350px;
+    bottom: 300px;
+}
+
+.account-signup-button-block {
+    position: relative;
+    left: 190px;
+    bottom: 250px;
+    margin-bottom: -210px;
+}
+
+.account-signup-button {
+    width: 300px;
+    height: 70px;
+    font-size: 24px;
+    font-family: Georgia, 'Times New Roman', Times, serif;
 }

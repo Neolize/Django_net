@@ -1,21 +1,117 @@
-{% extends "account/base.html" %}
+{% extends "base.html" %}
 
+{% load static %}
 {% load i18n %}
 
-{% block head_title %}{% trans "Signup" %}{% endblock %}
+{% block title %}{% trans "Signup" %}{% endblock title %}
 
 {% block content %}
-<h1>{% trans "Sign Up" %}</h1>
+<div class="account-block">
+    <div class="account-signup-form" id="account-signup-form">
+        <span class="account-signup-logo"></span>
+        <h1 class="account-title">{% trans "Sign Up" %}</h1>
 
-<p>{% blocktrans %}Already have an account? Then please <a href="{{ login_url }}">sign in</a>.{% endblocktrans %}</p>
+        <form class="signup" id="signup_form" method="post" action="{% url 'signup' %}">
+            {% csrf_token %}
 
-<form class="signup" id="signup_form" method="post" action="{% url 'account_signup' %}">
-  {% csrf_token %}
-  {{ form.as_p }}
-  {% if redirect_field_value %}
-  <input type="hidden" name="{{ redirect_field_name }}" value="{{ redirect_field_value }}" />
-  {% endif %}
-  <button type="submit">{% trans "Sign Up" %} &raquo;</button>
-</form>
+            <div class="account-signup-field">
+                {{ form.username }}
+            </div>
 
-{% endblock %}
+            <div class="account-signup-field">
+                {{ form.email }}
+            </div>
+
+            <div class="account-signup-field">
+                {{ form.password1 }}
+            </div>
+
+            <div class="account-signup-field">
+                {{ form.password2 }}
+            </div>
+
+            <div class="account-signup-field">
+                {{ form.phone }}
+            </div>
+
+            <div class="account-signup-field">
+                {{ form.town }}
+            </div>
+
+            <div class="account-signup-field">
+                {{ form.birthday }}
+            </div>
+
+            <div class="account-signup-field">
+                {{ form.gender }}
+            </div>
+            
+            {% if redirect_field_value %}
+                <input type="hidden" name="{{ redirect_field_name }}" value="{{ redirect_field_value }}" />
+            {% endif %}
+            <div class="account-signup-button-block">
+                <button type="submit" class="btn btn-success account-signup-button">{% trans "Sign Up" %} &raquo;</button>
+            </div>
+
+            {% if form.non_field_errors %}
+                <div class="alert alert-danger" id="non_field_errors" data-identifier="field-errors" style="margin-bottom: 25px;">
+                    {{ form.non_field_errors }}
+                </div>
+            {% endif %}
+
+            {% if form.username.errors %}
+                <div class="alert alert-danger" data-identifier="field-errors">
+                    {{ form.username.errors }}
+                </div>
+            {% endif %}
+
+            {% if form.email.errors %}
+                <div class="alert alert-danger" data-identifier="field-errors">
+                    {{ form.email.errors }}
+                </div>
+            {% endif %}
+
+            {% if form.password1.errors %}
+                <div class="alert alert-danger" data-identifier="field-errors">
+                    {{ form.password1.errors }}
+                </div>
+            {% endif %}
+
+            {% if form.password2.errors %}
+                <div class="alert alert-danger" data-identifier="field-errors">
+                    {{ form.password2.errors }}
+                </div>
+            {% endif %}
+
+            {% if form.phone.errors %}
+                <div class="alert alert-danger" data-identifier="field-errors">
+                    {{ form.phone.errors }}
+                </div>
+            {% endif %}
+
+            {% if form.town.errors %}
+                <div class="alert alert-danger" data-identifier="field-errors">
+                    {{ form.town.errors }}
+                </div>
+            {% endif %}
+
+            {% if form.birthday.errors %}
+                <div class="alert alert-danger" data-identifier="field-errors">
+                    {{ form.birthday.errors }}
+                </div>
+            {% endif %}
+
+            {% if form.gender.errors %}
+                <div class="alert alert-danger" data-identifier="field-errors">
+                    {{ form.gender.errors }}
+                </div>
+            {% endif %}
+        </form>
+    </div>
+</div>
+{% endblock content %}
+
+
+{% block script %}
+<script src="{% static 'account/js/account.js' %}"></script>
+{% endblock script %}

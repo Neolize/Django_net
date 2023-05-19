@@ -8,7 +8,7 @@
 .navbar-logo {
     height: 32px;
     width: 32px;
-    background-image: url('../logos/small-icon-social-network.png');
+    background-image: url('../images/logos/small-icon-social-network.png');
     margin: 0px 15px 0px 15px;
 }
 
@@ -27,6 +27,7 @@
 .signin-block {
     margin-right: 15px;
     padding: 5px 15px;
+    border: 1px solid rgb(255, 255, 255);
 }
 
 .signin-block__link {
@@ -39,8 +40,8 @@
 }
 
 .signup-block {
-    margin-right: 75px;
     padding: 5px 15px;
+    border: 1px solid rgb(168, 131, 131);
 }
 
 .signup-block__link {
@@ -78,7 +79,7 @@
     display: block;
     width: 24px;
     height: 24px;
-    background-image: url('../logos/test-icon-social-network.png');
+    background-image: url('../images/logos/test-icon-social-network.png');
     position: relative;
     top: 20px;
     right: 35px;
