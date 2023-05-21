@@ -29,6 +29,9 @@
       </ul>
       <form class="d-flex">
         {% if user.is_authenticated %}
+          <div class="signup-block btn btn-dark" style="margin-right: 15px;">
+              <a href="{% url 'profile' %}" class="signin-block__link">Profile</a>
+          </div>
           <div class="signin-block btn btn-dark">
               <a href="{% url 'logout' %}" class="signin-block__link">Logout</a>
           </div>
