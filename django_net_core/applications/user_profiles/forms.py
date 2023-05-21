@@ -1,27 +1,22 @@
 from django import forms
-from django.contrib.auth.forms import AuthenticationForm
+from django.contrib.auth.forms import AuthenticationForm, UserCreationForm
 
-from allauth.account.forms import SignupForm
-
-from applications.user_profiles.models import GENDER_CHOICES
-from applications.user_profiles.services import utils
+from applications.user_profiles.models import CustomUser
 
 
 def define_login_field(
         label: str = 'Login',
-        maxlength: int = 150,
-        placeholder: str = 'Login',
-        autocomplete: str = 'username',
-        login_field_class: str = 'account-input account-signup-login',
+        max_length: int = 150,
+        placeholder: str = ' ',
+        login_field_class: str = '',
 ) -> forms.CharField:
     """Return a login(username) field for a signup form"""
     login_field = forms.CharField(
         label=label,
+        max_length=max_length,
         widget=forms.TextInput(
             attrs={
-                'maxlength': maxlength,
                 'placeholder': placeholder,
-                'autocomplete': autocomplete,
                 'class': login_field_class,
             }
         )
@@ -33,9 +28,8 @@ def define_email_field(
         label: str = 'E-mail (optional)',
         min_length: int = 4,
         max_length: int = 254,
-        placeholder: str = 'E-mail address',
-        autocomplete: str = 'email',
-        email_field_class: str = 'account-input account-signup-email',
+        placeholder: str = ' ',
+        email_field_class: str = '',
 ) -> forms.EmailField:
     """Return an email field for a signup form"""
     email_field = forms.EmailField(
@@ -45,7 +39,6 @@ def define_email_field(
         widget=forms.EmailInput(
             attrs={
                 'placeholder': placeholder,
-                'autocomplete': autocomplete,
                 'class': email_field_class,
             }
         )
@@ -55,11 +48,11 @@ def define_email_field(
 
 def define_password_field(
         label: str = 'Password',
-        min_length: int = 8,
+        min_length: int = 4,
         max_length: int = 128,
-        placeholder: str = 'Password',
-        autocomplete: str = 'password',
-        password_field_class: str = 'account-input account-signup-password',
+        placeholder: str = ' ',
+        password_field_class: str = '',
+        password_id: str = '',
 ) -> forms.CharField:
     """Return a password field for a signup form"""
     password_field = forms.CharField(
@@ -69,139 +62,40 @@ def define_password_field(
         widget=forms.PasswordInput(
             attrs={
                 'placeholder': placeholder,
-                'autocomplete': autocomplete,
                 'class': password_field_class,
+                'id': password_id,
             }
         )
     )
     return password_field
 
 
-def define_phone_field(
-        label: str = 'Phone (optional)',
-        required: bool = False,
-        placeholder: str = 'Phone number (optional)',
-        autocomplete: str = 'phone',
-        maxlength: int = 18,
-        phone_field_class: str = 'account-input account-signup-phone',
-) -> forms.CharField:
-    """Return a phone field for a signup form"""
-    phone_field = forms.CharField(
-        label=label,
-        required=required,
-        widget=forms.TextInput(
-            attrs={
-                'placeholder': placeholder,
-                'autocomplete': autocomplete,
-                'maxlength': maxlength,
-                'class': phone_field_class,
-            }
-        )
-    )
-    return phone_field
-
-
-def define_town_field(
-        label: str = 'Town (optional)',
-        required: bool = False,
-        placeholder: str = 'City (optional)',
-        autocomplete: str = 'town',
-        maxlength: int = 60,
-        town_field_class: str = 'account-input account-signup-town',
-) -> forms.CharField:
-    """Return a town field for a signup form"""
-    town_field = forms.CharField(
-        label=label,
-        required=required,
-        widget=forms.TextInput(
-            attrs={
-                'placeholder': placeholder,
-                'autocomplete': autocomplete,
-                'maxlength': maxlength,
-                'class': town_field_class,
-            }
-        )
-    )
-    return town_field
-
-
-def define_birthday_field(
-        label: str = 'Brith date',
-        required: bool = False,
-        birthday_field_class: str = 'account-input account-signup-birthday',
-) -> forms.DateField:
-    """Return a birthday field for a signup form"""
-    birthday_field = forms.DateField(
-        label=label,
-        required=required,
-        initial=utils.get_current_date(),
-        widget=forms.SelectDateWidget(
-            attrs={
-                'class': birthday_field_class,
-            },
-            years=utils.get_range_of_years(),
-        )
-    )
-    return birthday_field
-
-
-def define_gender_field(
-        label: str = 'Gender (optional)',
-        required: bool = False,
-        gender_field_class: str = 'account-input account-signup-gender',
-) -> forms.ChoiceField:
-    """Return a gender field for a signup form"""
-    gender_field = forms.ChoiceField(
-        label=label,
-        required=required,
-        widget=forms.Select(
-            attrs={
-                'class': gender_field_class,
-            }
-        ),
-        choices=GENDER_CHOICES,
-        initial='not specified',
-    )
-    return gender_field
-
-
-class SignupUserForm(SignupForm):
-    username = define_login_field()
-    email = define_email_field()
-
+class SignupUserForm(UserCreationForm):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        self.fields['password1'] = define_password_field()
+        self.fields['username'] = define_login_field(login_field_class='form-signup__input')
+        self.fields['email'] = define_email_field(email_field_class='form-signup__input')
+        self.fields['password1'] = define_password_field(
+            password_field_class='form-signup__input',
+            password_id='signup-password-input',
+        )
         self.fields['password2'] = define_password_field(
             label='Password (again)',
-            placeholder='Password',
+            password_field_class='form-signup__input')
+
+    class Meta:
+        model = CustomUser
+        fields = (
+            'username',
+            'email',
+            'password1',
+            'password2',
         )
-        self.fields['phone'] = define_phone_field()
-        self.fields['town'] = define_town_field()
-        self.fields['birthday'] = define_birthday_field()
-        self.fields['gender'] = define_gender_field()
 
 
 class LoginUserForm(AuthenticationForm):
-    username = forms.CharField(
-        label='Login',
-        max_length=150,
-        widget=forms.TextInput(
-            attrs={
-                'placeholder': ' ',
-                'class': 'form-login__input',
-            }
-        )
-    )
-    password = forms.CharField(
-        label='Password',
-        min_length=4,
-        max_length=128,
-        widget=forms.PasswordInput(
-            attrs={
-                'placeholder': ' ',
-                'class': 'form-login__input',
-                'id': 'login-password-input',
-            }
-        )
+    username = define_login_field(login_field_class='form-login__input')
+    password = define_password_field(
+        password_field_class='form-login__input',
+        password_id='login-password-input',
     )

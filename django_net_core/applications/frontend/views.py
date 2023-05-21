@@ -1,11 +1,11 @@
-from django.shortcuts import render, redirect
+from django.shortcuts import render
 from django.urls import reverse_lazy
-from django.views.generic import ListView
-from django.core.handlers.wsgi import WSGIRequest
+from django.views.generic import ListView, View, CreateView
 from django.contrib.auth.views import LoginView
+from django.core.handlers.wsgi import WSGIRequest
 
-from allauth.account.views import SignupView, LogoutView, LoginView as AllAuthLoginView
-from allauth.account.forms import LoginForm, SignupForm
+from allauth.account.views import SignupView, LogoutView
+from allauth.account.forms import SignupForm
 
 from applications.user_profiles import forms
 from applications.user_profiles.services.crud import read, update
@@ -36,43 +36,38 @@ class LoginUserView(LoginView):
         return reverse_lazy('home')
 
 
-class LoginUserViewTest(AllAuthLoginView):
-    # template_name = 'account/login.html'
-    # form_class = LoginForm
-    # form_class = forms.LoginUserForm
-
-    def form_valid(self, form: LoginForm):
-        print('Form valid')
-        # print(form.user)
-        # print(form.user.email)
-        # print(form.user.first_login)
-        print(form.cleaned_data)
-        # update.update_first_login_record(user=form.user)
-        # return super().form_valid(form)
-        # return super().form_valid(form)
-        return redirect(to='login')
-
-    def get_success_url(self):
-        return reverse_lazy('home')
-
-
-class SignupUserView(SignupView):
+class SignupUserView(CreateView):
+    template_name = 'account/signup.html'
     form_class = forms.SignupUserForm
 
-    def form_valid(self, form: SignupForm):
-        print(dir(form))
-        print(form.cleaned_data)
-        form.add_error(None, 'This is non fields error')
-        return render(self.request, self.template_name, context={'form': form})
-        # return redirect(to='signup')
-
-    # def get_authenticated_redirect_url(self):
-    #     return reverse_lazy('home')
-
     def get_success_url(self):
         return reverse_lazy('home')
+
+    # def get(self, request: WSGIRequest):
+    #     context = {
+    #         'form': self.form_class()
+    #     }
+    #     print(self.form_class().fields)
+    #     return render(request, self.template_name, context=context)
+
+
+# class SignupUserViewTest(SignupView):
+#     form_class = forms.SignupUserFormTest
+#
+#     def form_valid(self, form: SignupForm):
+#         print(dir(form))
+#         print(form.cleaned_data)
+#         form.add_error(None, 'This is non fields error')
+#         return render(self.request, self.template_name, context={'form': form})
+#         # return redirect(to='signup')
+#
+#     # def get_authenticated_redirect_url(self):
+#     #     return reverse_lazy('home')
+#
+#     def get_success_url(self):
+#         return reverse_lazy('home')
 
 
 class LogoutUserView(LogoutView):
     def get_redirect_url(self):
-        return reverse_lazy('home')
+        return reverse_lazy('login')

@@ -1,145 +1,69 @@
 {% extends "base.html" %}
 
 {% load static %}
-{% load i18n %}
 
-{% block title %}{% trans "Signup" %}{% endblock title %}
+{% block title %} Signup {% endblock title %}
 
 {% block content %}
-<div class="account-block">
-    <div class="account-signup-form" id="account-signup-form">
-        <span class="account-signup-logo"></span>
-        <h1 class="account-title">{% trans "Sign Up" %}</h1>
+<div class="account-signup-block">
+    <div class="account-signup-form">
 
-        <form class="signup" id="signup_form" method="post" action="{% url 'signup' %}">
+        <form class="form-signup" method="post" action="{% url 'signup' %}">
             {% csrf_token %}
-
-<!--            <div class="account-signup-field">-->
-<!--                {{ form.username }}-->
-<!--            </div>-->
-
-            <div class="account-signup-field">
-                <label for="{{ form.username.id_for_label }}" class="signup-label signup-label-username">{{ form.username.label }} * </label>
-                <div class="signup-field-input">
-                    {{ form.username }}
-                </div>
-            </div>
-
-            <div class="account-signup-field">
-                <label for="{{ form.email.id_for_label }}" class="signup-label signup-label-email">{{ form.email.label }} * </label>
-                <div class="signup-field-input">
-                    {{ form.email }}
-                </div>
-            </div>
-
-            <div class="account-signup-field">
-                <label for="{{ form.password1.id_for_label }}" class="signup-label signup-label-password1">{{ form.password1.label }} * </label>
-                <div class="signup-field-input">
-                    {{ form.password1 }}
-                 </div>
-            </div>
-
-            <div class="account-signup-field">
-                <label for="{{ form.password2.id_for_label }}" class="signup-label signup-label-password2">{{ form.password2.label }} * </label>
-                <div class="signup-field-input">
-                    {{ form.password2 }}
-                 </div>
-            </div>
-
-            <div class="account-signup-field">
-                <label for="{{ form.phone.id_for_label }}" class="signup-label signup-label-phone">{{ form.phone.label }} * </label>
-                <div class="signup-field-input">
-                    {{ form.phone }}
-                 </div>
-            </div>
-
-            <div class="account-signup-field">
-                <label for="{{ form.town.id_for_label }}" class="signup-label signup-label-town">{{ form.town.label }} * </label>
-                <div class="signup-field-input">
-                    {{ form.town }}
-                 </div>
-            </div>
-
-            <div class="account-signup-field">
-                <label for="{{ form.birthday.id_for_label }}" class="signup-label signup-label-birthday">{{ form.birthday.label }} * </label>
-                <div class="signup-field-input">
-                    {{ form.birthday }}
-                 </div>
-            </div>
-
-            <div class="account-signup-field">
-                <label for="{{ form.gender.id_for_label }}" class="signup-label signup-label-gender">{{ form.gender.label }} * </label>
-                <div class="signup-field-input">
-                    {{ form.gender }}
-                 </div>
-            </div>
-            
-            {% if redirect_field_value %}
-                <input type="hidden" name="{{ redirect_field_name }}" value="{{ redirect_field_value }}" />
-            {% endif %}
-            <div class="account-signup-button-block">
-                <button type="submit" class="btn btn-success account-signup-button">{% trans "Sign Up" %} &raquo;</button>
-            </div>
+            <h1 class="form-signup__title">Sign up</h1>
+            <span class="form-signup__logo"></span>
 
             {% if form.non_field_errors %}
-                <div class="alert alert-danger" id="non_field_errors" data-identifier="field-errors" style="margin-bottom: 25px;">
-                    {{ form.non_field_errors }}
-                </div>
+                <div class="alert alert-danger">{{ form.non_field_errors }}</div>
             {% endif %}
+
+
+            <div class="form-signup__group">
+                {{ form.username }}
+                <label class="form-signup__label signup-label__login" for="{{ form.username.id_for_username }}">Login</label>
+            </div>
 
             {% if form.username.errors %}
-                <div class="alert alert-danger" data-identifier="field-errors">
-                    {{ form.username.errors }}
-                </div>
+                <div class="alert alert-danger">{{ form.username.errors }}</div>
             {% endif %}
+
+
+            <div class="form-signup__group">
+                {{ form.email }}
+                <label class="form-signup__label signup-label__email" for="{{ form.email.id_for_email }}">E-mail (optional)</label>
+            </div>
 
             {% if form.email.errors %}
-                <div class="alert alert-danger" data-identifier="field-errors">
-                    {{ form.email.errors }}
-                </div>
+                <div class="alert alert-danger">{{ form.email.errors }}</div>
             {% endif %}
+
+
+            <div class="form-signup__group">
+                {{ form.password1 }}
+                <label class="form-signup__label signup-label__password1" for="{{ form.password1.id_for_label }}">Password</label>
+                <span class="signup-password-icon signup-password-icon__hide" id="signup-password-icon"></span>
+            </div>
 
             {% if form.password1.errors %}
-                <div class="alert alert-danger" data-identifier="field-errors">
-                    {{ form.password1.errors }}
-                </div>
+                <div class="alert alert-danger">{{ form.password1.errors }}</div>
             {% endif %}
+
+
+            <div class="form-signup__group">
+                {{ form.password2 }}
+                <label class="form-signup__label signup-label__password2" for="{{ form.password2.id_for_label }}">Password (again)</label>
+            </div>
 
             {% if form.password2.errors %}
-                <div class="alert alert-danger" data-identifier="field-errors">
-                    {{ form.password2.errors }}
-                </div>
+                <div class="alert alert-danger">{{ form.password2.errors }}</div>
             {% endif %}
 
-            {% if form.phone.errors %}
-                <div class="alert alert-danger" data-identifier="field-errors">
-                    {{ form.phone.errors }}
-                </div>
-            {% endif %}
-
-            {% if form.town.errors %}
-                <div class="alert alert-danger" data-identifier="field-errors">
-                    {{ form.town.errors }}
-                </div>
-            {% endif %}
-
-            {% if form.birthday.errors %}
-                <div class="alert alert-danger" data-identifier="field-errors">
-                    {{ form.birthday.errors }}
-                </div>
-            {% endif %}
-
-            {% if form.gender.errors %}
-                <div class="alert alert-danger" data-identifier="field-errors">
-                    {{ form.gender.errors }}
-                </div>
-            {% endif %}
+            <button class="form-signup__button" type="submit">Sign up</button>
         </form>
     </div>
 </div>
 {% endblock content %}
 
-
 {% block script %}
-<script src="{% static 'account/js/account.js' %}"></script>
+<script src="{% static 'account/js/signup.js' %}"></script>
 {% endblock script %}

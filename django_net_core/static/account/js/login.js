@@ -1,11 +1,6 @@
 "use strict";
 
 
-function main() {
-    initiatePasswordIcon();
-}
-
-
 function initiatePasswordIcon() {
     let passwordIcon = document.getElementById('login-password-icon');
     passwordIcon.addEventListener('click', handlePasswordIcon);
@@ -33,6 +28,11 @@ function hidePassword(passwordIcon) {
     passwordField.type = 'password';
     passwordIcon.classList.remove('login-password-icon__show');
     passwordIcon.classList.add('login-password-icon__hide');
+}
+
+
+function main() {
+    initiatePasswordIcon();
 }
 
 

@@ -2,7 +2,7 @@ from datetime import date
 
 
 def get_range_of_years():
-    """Return range of years for birthday field in signup form"""
+    """Return range of years for birthday field"""
     current_year = date.today().year
     initial_year = current_year - 130
     return [year for year in range(initial_year, current_year + 1)]

@@ -11,24 +11,31 @@
         <form class="form-login" method="post" action="{% url 'login' %}">
             {% csrf_token %}
             <h1 class="form-login__title">Sign In</h1>
+            <span class="form-login__logo"></span>
+
+            {% if form.non_field_errors %}
+                <div class="alert alert-danger">{{ form.non_field_errors }}</div>
+            {% endif %}
+
 
             <div class="form-login__group">
                 {{ form.username }}
-                <label class="form-login__label input-label__login">Login</label>
+                <label class="form-login__label login-label__login" for="{{ form.username.id_for_label }}">Login</label>
             </div>
 
             {% if form.username.errors %}
-                <div class="alert alert-danger mb-5">{{ form.username.errors }}</div>
+                <div class="alert alert-danger">{{ form.username.errors }}</div>
             {% endif %}
+
 
             <div class="form-login__group">
                 {{ form.password }}
-                <label class="form-login__label input-label__password">Password</label>
+                <label class="form-login__label login-label__password" for="{{ form.password.id_for_label }}">Password</label>
                 <span class="login-password-icon login-password-icon__hide" id="login-password-icon"></span>
             </div>
 
             {% if form.password.errors %}
-                <div class="alert alert-danger mb-5">{{ form.password.errors }}</div>
+                <div class="alert alert-danger">{{ form.password.errors }}</div>
             {% endif %}
 
             <button class="form-login__button" type="submit">Sign In</button>
