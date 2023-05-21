@@ -12,8 +12,8 @@
 }
 
 .account-signup-form {
-    width: 750px;
-    height: 600px;
+    width: 850px;
+    height: 700px;
     padding: 35px 50px;
     background-color: rgba(130, 103, 103, 0.1);
     border: 0.5px solid rgba(130, 103, 103, 0.3);
@@ -26,17 +26,7 @@
     height: 32px;
     background-image: url('../images/logos/signup-logo.png');
     background-repeat: no-repeat;
-    margin: 0 0 -45px 210px;
-}
-
-
-.account-login-form {
-    width: 500px;
-    height: 350px;
-    padding: 35px 50px;
-    background-color: rgba(130, 103, 103, 0.1);
-    border: 0.5px solid rgba(130, 103, 103, 0.3);
-    border-radius: 5%;
+    margin: 0 0 -45px 250px;
 }
 
 .account-login-logo {
@@ -53,7 +43,7 @@
 }
 
 .account-input {
-    width: 300px;
+    width: 355px;
     height: 60px;
     padding: 15px;
     font-size: 18px;
@@ -62,33 +52,68 @@
 
 .account-signup-phone {
     position: relative;
-    left: 350px;
-    bottom: 300px;
+    left: 400px;
+    bottom: 417px;
 }
 
 .account-signup-town {
     position: relative;
-    left: 350px;
-    bottom: 300px;
+    left: 400px;
+    bottom: 417px;
 }
 
 .account-signup-birthday {
     position: relative;
-    left: 350px;
-    bottom: 300px;
+    left: 400px;
+    bottom: 417px;
+    width: 115px;
+    height: 60px;
+    padding: 15px 5px 15px 5px;
+    margin-right: 5px;
 }
 
 .account-signup-gender {
     position: relative;
-    left: 350px;
-    bottom: 300px;
+    left: 400px;
+    bottom: 417px;
+    font-size: 24px;
+    color: rgba(61, 47, 47, 1);
+    text-align: center;
+}
+
+.signup-label {
+    margin: 0 0 5px 5px;
+}
+
+.signup-label-phone {
+    position: relative;
+    left: 400px;
+    bottom: 417px;
+}
+
+.signup-label-town {
+    position: relative;
+    left: 400px;
+    bottom: 417px;
+}
+
+.signup-label-birthday {
+    position: relative;
+    left: 400px;
+    bottom: 417px;
+}
+
+.signup-label-gender {
+    position: relative;
+    left: 400px;
+    bottom: 417px;
 }
 
 .account-signup-button-block {
     position: relative;
     left: 190px;
-    bottom: 250px;
-    margin-bottom: -210px;
+    bottom: 370px;
+    margin-bottom: -325px;
 }
 
 .account-signup-button {
@@ -96,4 +121,117 @@
     height: 70px;
     font-size: 24px;
     font-family: Georgia, 'Times New Roman', Times, serif;
+}
+
+.account-login-form {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 500px;
+    width: 500px;
+    margin: auto;
+    margin-top: 100px;
+}
+
+.form-login {
+    width: 350px;
+    /* width: 400px; */
+    padding: 32px;
+    border-radius: 10px;
+    box-shadow: 0 4px 16px #ccc;    
+    font-family: sans-serif;
+    letter-spacing: 1px;
+}
+
+.form-login__input,
+.form-login__button {
+    font-family: sans-serif;
+    letter-spacing: 1px;
+    font-size: 16px;
+}
+
+.form-login__title {
+    text-align: center;
+    margin-bottom: 32px;
+    font-weight: normal;
+}
+
+.form-login__group {
+    position: relative;
+    margin-bottom: 32px;
+}
+
+.form-login__input {
+    width: 100%;
+    padding-bottom: 10px;
+    border: none;
+    border-bottom: 1px solid #e0e0e0;
+    background-color: transparent;
+    outline: none;
+    transition: 0.3s; 
+}
+
+.form-login__input:focus {
+    border-bottom: 1px solid #1a73a8;
+}
+
+.form-login__label {
+    z-index: -1;
+    color: #9e9e9e;
+    transition: 0.3s;
+}
+
+.input-label__login {
+    position: absolute;
+    top: 0;
+    right: 235px;
+}
+
+.input-label__password {
+    position: absolute;
+    top: 0;
+    right: 200px;
+}
+
+.form-login__button {
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    color: #fff;
+    background-color: #0071f0;
+    outline: none;
+    cursor: pointer;
+    transition: 0.3s;
+}
+
+.form-login__button:focus,
+.form-login__button:hover {
+    background-color: rgba(0, 113, 240, 0.7);
+}
+
+.form-login__input:focus ~ .form-login__label,
+.form-login__input:not(:placeholder-shown) ~ .form-login__label {
+    top: -18px;
+    font-size: 12px;
+    color: #e0e0e0;
+}
+
+.login-password-icon {
+    display: inline-block;
+    width: 24px;
+    height: 24px;
+    background-repeat: no-repeat;
+    background-size: 24px 24px;
+    position: absolute;
+    left: 255px;
+    top: 3px;
+    cursor: pointer;
+}
+
+.login-password-icon__hide {
+    background-image: url('../images/icons/view.png');
+}
+
+.login-password-icon__show {
+    background-image: url('../images/icons/hide.png');
 }

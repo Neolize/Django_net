@@ -3,7 +3,7 @@
 
 function main() {
     let signupInstance = new AccountSignup();
-    signupInstance.initiate_search();
+    signupInstance.initiateSearch();
 }
 
 
@@ -37,7 +37,7 @@ class AccountSignup {
         this.form.style.height = `${this.form.offsetHeight + increaseDegree}px`;
     }
 
-    initiate_search() {
+    initiateSearch() {
         setInterval(this.searchNonFieldErrorsBlock, 100, this);
     }
 }

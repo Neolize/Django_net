@@ -1,8 +1,10 @@
 from django.shortcuts import render, redirect
 from django.urls import reverse_lazy
 from django.views.generic import ListView
+from django.core.handlers.wsgi import WSGIRequest
+from django.contrib.auth.views import LoginView
 
-from allauth.account.views import LoginView, SignupView, LogoutView
+from allauth.account.views import SignupView, LogoutView, LoginView as AllAuthLoginView
 from allauth.account.forms import LoginForm, SignupForm
 
 from applications.user_profiles import forms
@@ -23,14 +25,30 @@ class UsersView(ListView):
 
 
 class LoginUserView(LoginView):
+    template_name = 'account/login.html'
+    form_class = forms.LoginUserForm
+
+    def form_valid(self, form: forms.LoginUserForm):
+        update.update_first_login_record(user=form.get_user())
+        return super().form_valid(form)
+
+    def get_success_url(self):
+        return reverse_lazy('home')
+
+
+class LoginUserViewTest(AllAuthLoginView):
     # template_name = 'account/login.html'
     # form_class = LoginForm
+    # form_class = forms.LoginUserForm
+
     def form_valid(self, form: LoginForm):
-        print(form.user)
-        print(form.user.email)
-        print(form.user.first_login)
+        print('Form valid')
+        # print(form.user)
+        # print(form.user.email)
+        # print(form.user.first_login)
         print(form.cleaned_data)
-        update.update_first_login_record(user=form.user)
+        # update.update_first_login_record(user=form.user)
+        # return super().form_valid(form)
         # return super().form_valid(form)
         return redirect(to='login')
 

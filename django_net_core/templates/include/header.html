@@ -35,10 +35,10 @@
 <!--          <input class="form-control me-2" type="search" placeholder="Search" aria-label="Search">-->
 <!--          <button class="btn btn-outline-primary" type="submit">Search</button>-->
         {% else %}
-          <div class="signin-block btn btn-dark">
+          <div class="signin-block btn btn-dark" id="signin-header-button">
             <a href="{% url 'login' %}" class="signin-block__link">Sign in</a>
           </div>
-          <div class="signup-block btn btn-dark">
+          <div class="signup-block btn btn-dark" id="signup-header-button">
             <a href="{% url 'signup' %}" class="signup-block__link">Sign up</a>
           </div>
         {% endif %}
