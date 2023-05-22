@@ -20,7 +20,7 @@
             <li><a class="dropdown-item" href="#">News</a></li>
             <li><a class="dropdown-item" href="#">Interests</a></li>
             <li><hr class="dropdown-divider"></li>
-            <li><a class="dropdown-item" href="{% url 'users' %}">Users</a></li>
+            <li><a class="dropdown-item" href="{% url 'user_wall' %}">Wall</a></li>
           </ul>
         </li>
         <li class="nav-item">
@@ -30,7 +30,7 @@
       <form class="d-flex">
         {% if user.is_authenticated %}
           <div class="signin-block btn btn-dark" id="signin-header-button" style="margin-right: 15px;">
-              <a href="{% url 'profile' %}" class="signin-block__link">Profile</a>
+              <a href="{% url 'user_profile' %}" class="signin-block__link">Profile</a>
           </div>
           <div class="signup-block btn btn-dark" id="signup-header-button">
               <a href="{% url 'logout' %}" class="signin-block__link">Sign Out</a>

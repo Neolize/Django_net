@@ -8,13 +8,6 @@ from applications.user_profiles import forms
 from applications.user_profiles.services.crud import read, update
 
 
-def index(request):
-    template = 'user_profiles/list/users.html'
-    users = read.get_all_users()
-    context = {'title': 'Main page', 'users': users}
-    return render(request, template_name=template, context=context)
-
-
 class UsersView(ListView):
     template_name = 'user_profiles/list/users.html'
     queryset = read.get_all_users()
@@ -60,17 +53,24 @@ class LogoutUserView(LogoutView):
 
 
 class UserProfileView(View):
-    template = 'user_profiles/detail/profile.html'
+    template_name = 'user_profiles/detail/profile.html'
 
     def get(self, request: WSGIRequest):
         context = {
             'profile_content': 'User profile',
         }
-        return render(request, self.template, context=context)
+        return render(request, self.template_name, context=context)
 
 
 class EditUserProfileView(View):
-    template = 'user_profiles/detail/edit.html'
+    template_name = 'user_profiles/detail/edit.html'
 
     def get(self, request: WSGIRequest):
-        return render(request, self.template)
+        return render(request, self.template_name)
+
+
+class UserWallView(View):
+    template_name = 'user_wall/wall.html'
+
+    def get(self, request: WSGIRequest):
+        return render(request, self.template_name)
