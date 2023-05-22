@@ -133,7 +133,7 @@
     display: inline-block;
     width: 32px;
     height: 32px;
-    background-image: url('../images/logos/signup-logo.png');
+    background-image: url('../images/icons/signup-logo.png');
     background-repeat: no-repeat;
     margin-bottom: -30px;
 }
@@ -258,7 +258,66 @@
     display: inline-block;
     width: 32px;
     height: 32px;
-    background-image: url('../images/logos/login-logo.png');
+    background-image: url('../images/icons/login-logo.png');
     background-repeat: no-repeat;
     margin-bottom: -50px;
+}
+
+
+.account-logout-form {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 500px;
+    width: 500px;
+    margin: auto;
+    margin-top: 100px;
+}
+
+.form-logout {
+    width: 350px;
+    padding: 32px;
+    border-radius: 10px;
+    box-shadow: 0 4px 16px #ccc;    
+    font-family: sans-serif;
+    letter-spacing: 1px;
+}
+
+.form-logout__title {
+    text-align: center;
+    margin-bottom: 32px;
+    font-weight: normal;
+}
+
+.form-logout__text {
+    margin-top: -20px;
+}
+
+.form-logout__button {
+    margin-left: 90px;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    color: #fff;
+    background-color: #0071f0;
+    outline: none;
+    cursor: pointer;
+    transition: 0.3s;
+}
+
+.form-logout__button:focus,
+.form-logout__button:hover {
+    background-color: rgba(0, 113, 240, 0.7);
+}
+
+.form-logout__logo {
+    position: relative;
+    bottom: 85px;
+    left: 10px;
+    display: inline-block;
+    width: 32px;
+    height: 32px;
+    background-image: url('../images/icons/log-out.png');
+    background-repeat: no-repeat;
+    margin-bottom: -30px;
 }

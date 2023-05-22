@@ -1,10 +1,8 @@
 from django.shortcuts import render
 from django.urls import reverse_lazy
 from django.views.generic import ListView, CreateView, View
-from django.contrib.auth.views import LoginView
+from django.contrib.auth.views import LoginView, LogoutView
 from django.core.handlers.wsgi import WSGIRequest
-
-from allauth.account.views import LogoutView
 
 from applications.user_profiles import forms
 from applications.user_profiles.services.crud import read, update
@@ -52,6 +50,11 @@ class LoginUserView(LoginView):
 
 
 class LogoutUserView(LogoutView):
+    template_name = 'account/logout.html'
+
+    def get(self, *args, **kwargs):
+        return render(self.request, self.template_name)
+
     def get_redirect_url(self):
         return reverse_lazy('login')
 
