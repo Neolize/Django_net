@@ -1,4 +1,6 @@
-from django.shortcuts import render
+from datetime import date
+
+from django.shortcuts import render, redirect
 from django.urls import reverse_lazy
 from django.views.generic import ListView, CreateView, View
 from django.contrib.auth.views import LoginView, LogoutView
@@ -12,6 +14,11 @@ class UsersView(ListView):
     template_name = 'user_profiles/list/users.html'
     queryset = read.get_all_users()
     context_object_name = 'users'
+
+    def get_context_data(self, *, object_list=None, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['title'] = 'Home'
+        return context
 
 
 class SignupUserView(CreateView):
@@ -57,20 +64,53 @@ class UserProfileView(View):
 
     def get(self, request: WSGIRequest):
         context = {
-            'profile_content': 'User profile',
+            'birthday': date.today(),
         }
         return render(request, self.template_name, context=context)
 
 
 class EditUserProfileView(View):
     template_name = 'user_profiles/detail/edit.html'
+    form_class = forms.EditUserProfileForm
+
+    def get(self, request: WSGIRequest):
+        context = {
+            'birthday': date.today(),
+        }
+        return render(request, self.template_name, context=context)
+
+    def post(self, request: WSGIRequest):
+        # print('Method post')
+        # print(request.POST)
+        form = self.form_class(request.POST)
+        print(request.POST)
+        # print(form.fields)
+        # print(dir(form))
+        if form.is_valid():
+            print('Form valid')
+            print(form.cleaned_data)
+        else:
+            print('Form invalid')
+            print(form.errors)
+
+        # print(dir(form))
+        # form = forms.EditUserProfileForm(request.POST)
+        return redirect(to='edit_user_profile')
+        # context = {
+        #     'birthday': date.today(),
+        # }
+        # return render(request, self.template_name, context=context)
+
+
+class UserWallView(View):
+    template_name = 'user_wall/wall.html'
 
     def get(self, request: WSGIRequest):
         return render(request, self.template_name)
 
 
-class UserWallView(View):
-    template_name = 'user_wall/wall.html'
+class UserFriendsView(View):
+    template_name = 'user_profiles/list/friends.html'
 
     def get(self, request: WSGIRequest):
         return render(request, self.template_name)

@@ -99,3 +99,32 @@ class LoginUserForm(AuthenticationForm):
         password_field_class='form-login__input',
         password_id='login-password-input',
     )
+
+
+# class EditUserProfileForm(forms.Form):
+#     pass
+
+class EditUserProfileForm(forms.ModelForm):
+    phone = forms.CharField(max_length=18, required=False)
+    birthday = forms.DateField(required=False)
+    gender = forms.CharField(max_length=13, required=False)
+    address = forms.CharField(max_length=150, required=False)
+    work = forms.CharField(max_length=150, required=False)
+    hobby = forms.CharField(max_length=50, required=False)
+    info_about_user = forms.Textarea()
+
+    class Meta:
+        model = CustomUser
+        fields = (
+            'first_name',
+            'middle_name',
+            'last_name',
+            'email',
+            'phone',
+            'birthday',
+            'gender',
+            'address',
+            'work',
+            'hobby',
+        )
+        # fields = ('username', 'email')
