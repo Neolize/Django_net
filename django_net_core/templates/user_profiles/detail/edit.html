@@ -8,7 +8,7 @@
 {% block breadcrumbs %}
     <li class="breadcrumb-item"><a href="{% url 'home' %}">Home</a></li>
     <li class="breadcrumb-item"><a href="{% url 'user_wall' %}">User</a></li>
-    <li class="breadcrumb-item"><a href="{% url 'user_profile' %}">User Profile</a></li>
+    <li class="breadcrumb-item"><a href="{{ user.get_absolute_url }}">User Profile</a></li>
     <li class="breadcrumb-item active" aria-current="page">Edit profile</li>
 {% endblock breadcrumbs %}
 
@@ -18,7 +18,7 @@
         <div class="card card-edit">
             <div class="card-body">
 
-                <form action="{% url 'edit_user_profile' %}" method="post">
+                <form action="{{ user.get_absolute_url_for_editing }}"  method="post">
                     {% csrf_token %}
 
 <!--                    <div class="row mb-3">-->
@@ -35,7 +35,7 @@
                             <h6 class="mb-0">First name</h6>
                         </div>
                         <div class="col-sm-9 text-secondary">
-                            <input type="text" class="form-control" name="first_name" value="Walt">
+                            <input type="text" class="form-control" name="first_name" value="Walt {{ user.email }}">
                         </div>
                     </div>
 

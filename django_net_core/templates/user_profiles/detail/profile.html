@@ -61,7 +61,7 @@
                 <hr>
                 <div class="row">
                     <div class="col-sm-12">
-                        <a class="btn btn-info profile-edit__button" href="{% url 'edit_user_profile' %}">Edit</a>
+                        <a class="btn btn-info profile-edit__button" href="{{ user.get_absolute_url_for_editing }}">Edit</a>
                     </div>
                 </div>
             </div>

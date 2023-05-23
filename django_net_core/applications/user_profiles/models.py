@@ -1,5 +1,6 @@
 from django.db import models
 from django.conf import settings
+from django.urls import reverse_lazy
 from django.contrib.auth.models import AbstractUser
 
 GENDER_CHOICES = (
@@ -23,6 +24,12 @@ class CustomUser(AbstractUser):
     def __str__(self):
         name = self.username or self.first_name
         return name
+
+    def get_absolute_url(self):
+        return reverse_lazy('user_profile', kwargs={'pk': self.pk})
+
+    def get_absolute_url_for_editing(self):
+        return reverse_lazy('edit_user_profile', kwargs={'pk': self.pk})
 
 
 class UserPersonalData(models.Model):

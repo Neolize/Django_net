@@ -62,7 +62,8 @@ class LogoutUserView(LogoutView):
 class UserProfileView(View):
     template_name = 'user_profiles/detail/profile.html'
 
-    def get(self, request: WSGIRequest):
+    def get(self, request: WSGIRequest, pk: int):
+        # django-debug-toolbar
         context = {
             'birthday': date.today(),
         }
@@ -73,15 +74,15 @@ class EditUserProfileView(View):
     template_name = 'user_profiles/detail/edit.html'
     form_class = forms.EditUserProfileForm
 
-    def get(self, request: WSGIRequest):
+    def get(self, request: WSGIRequest, pk: int):
+        print(f'Edit user profile with pk: {pk}')
         context = {
             'birthday': date.today(),
         }
         return render(request, self.template_name, context=context)
 
-    def post(self, request: WSGIRequest):
-        # print('Method post')
-        # print(request.POST)
+    def post(self, request: WSGIRequest, pk: int):
+        print(f'Post edit user profile with pk: {pk}')
         form = self.form_class(request.POST)
         print(request.POST)
         # print(form.fields)
@@ -95,7 +96,7 @@ class EditUserProfileView(View):
 
         # print(dir(form))
         # form = forms.EditUserProfileForm(request.POST)
-        return redirect(to='edit_user_profile')
+        return redirect(to='edit_user_profile', pk=pk)
         # context = {
         #     'birthday': date.today(),
         # }

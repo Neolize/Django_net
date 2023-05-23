@@ -54,6 +54,7 @@ INSTALLED_APPS = [
     'djoser',
     'allauth',
     'allauth.account',
+    'debug_toolbar',
 
     'applications.user_profiles.apps.UserProfilesConfig',
     'applications.groups.apps.GroupsConfig',
@@ -69,6 +70,8 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+
+    'debug_toolbar.middleware.DebugToolbarMiddleware',
 ]
 
 ROOT_URLCONF = 'django_net_core.urls'
@@ -159,6 +162,10 @@ AUTH_USER_MODEL = 'user_profiles.CustomUser'
 
 
 SITE_ID = 1
+
+INTERNAL_IPS = [
+    "127.0.0.1",
+]
 
 
 AUTHENTICATION_BACKENDS = [

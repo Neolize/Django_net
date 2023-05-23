@@ -7,8 +7,8 @@ urlpatterns = [
     path('', views.UsersView.as_view(), name='home'),
 
     path('user/', views.UserWallView.as_view(), name='user_wall'),
-    path('user/profile/', views.UserProfileView.as_view(), name='user_profile'),
-    path('user/profile/edit_profile/', views.EditUserProfileView.as_view(), name='edit_user_profile'),
+    path('user/profile/<int:pk>/', views.UserProfileView.as_view(), name='user_profile'),
+    path('user/profile/edit_profile/<int:pk>/', views.EditUserProfileView.as_view(), name='edit_user_profile'),
     path('user/friends/', views.UserFriendsView.as_view(), name='user_friends'),
 
     path('login/', views.LoginUserView.as_view(), name='login'),
