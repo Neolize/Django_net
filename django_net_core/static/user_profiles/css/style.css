@@ -82,3 +82,13 @@ body {
 .list_websites__item {
     margin-right: 10px;
 }
+
+.profile-form__disabled-birthday {
+    width: 130px;
+}
+
+.profile-form__birthday {
+    max-width: 465px;
+    margin-left: 135px;
+    margin-top: -37px;
+}

@@ -1,7 +1,8 @@
 from django import forms
 from django.contrib.auth.forms import AuthenticationForm, UserCreationForm
 
-from applications.user_profiles.models import CustomUser
+from applications.user_profiles.models import CustomUser, GENDER_CHOICES
+from applications.user_profiles.services.utils import common_utils
 
 
 def define_login_field(
@@ -101,17 +102,115 @@ class LoginUserForm(AuthenticationForm):
     )
 
 
-# class EditUserProfileForm(forms.Form):
-#     pass
-
 class EditUserProfileForm(forms.ModelForm):
-    phone = forms.CharField(max_length=18, required=False)
-    birthday = forms.DateField(required=False)
-    gender = forms.CharField(max_length=13, required=False)
-    address = forms.CharField(max_length=150, required=False)
-    work = forms.CharField(max_length=150, required=False)
-    hobby = forms.CharField(max_length=50, required=False)
-    info_about_user = forms.Textarea()
+    first_name = forms.CharField(
+        max_length=150,
+        required=False,
+        widget=forms.TextInput(
+            attrs={
+                'class': 'form-control'
+            }
+        )
+    )
+    middle_name = forms.CharField(
+        max_length=50,
+        required=False,
+        widget=forms.TextInput(
+            attrs={
+                'class': 'form-control'
+            }
+        )
+    )
+    last_name = forms.CharField(
+        max_length=150,
+        required=False,
+        widget=forms.TextInput(
+            attrs={
+                'class': 'form-control'
+            }
+        )
+    )
+    email = forms.EmailField(
+        max_length=254,
+        required=False,
+        widget=forms.EmailInput(
+            attrs={
+                'class': 'form-control'
+            }
+        )
+    )
+    phone = forms.CharField(
+        max_length=18,
+        required=False,
+        widget=forms.TextInput(
+            attrs={
+                'type': 'tel',
+                'class': 'form-control',
+                'id': 'form-edit__phone',
+                'data-validate-field': 'tel',
+                'placeholder': '+7 (999) 999-99-99',
+            }
+        )
+    )
+    birthday = forms.DateField(
+        required=False,
+        widget=forms.DateInput(
+            attrs={
+                'type': 'date',
+                'class': 'form-control',
+                'min': common_utils.get_min_birthdate(),
+                'max': common_utils.get_max_birthdate(),
+            }
+        )
+    )
+    gender = forms.CharField(
+        max_length=13,
+        required=False,
+        widget=forms.Select(
+            choices=GENDER_CHOICES,
+            attrs={
+                'class': 'form-control',
+                'id': 'form-select__gender',
+            }
+        )
+    )
+    address = forms.CharField(
+        max_length=150,
+        required=False,
+        widget=forms.TextInput(
+            attrs={
+                'class': 'form-control',
+            }
+        )
+    )
+    work = forms.CharField(
+        max_length=150,
+        required=False,
+        widget=forms.TextInput(
+            attrs={
+                'class': 'form-control',
+            }
+        )
+    )
+    hobby = forms.CharField(
+        max_length=50,
+        required=False,
+        widget=forms.TextInput(
+            attrs={
+                'class': 'form-control',
+            }
+        )
+    )
+    info_about_user = forms.CharField(
+        max_length=1000,
+        required=False,
+        widget=forms.Textarea(
+            attrs={
+                'class': 'form-control',
+                'rows': '5',
+            }
+        )
+    )
 
     class Meta:
         model = CustomUser
@@ -126,5 +225,5 @@ class EditUserProfileForm(forms.ModelForm):
             'address',
             'work',
             'hobby',
+            'info_about_user',
         )
-        # fields = ('username', 'email')

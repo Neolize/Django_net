@@ -35,7 +35,9 @@
                             <h6 class="mb-0">First name</h6>
                         </div>
                         <div class="col-sm-9 text-secondary">
-                            <input type="text" class="form-control" name="first_name" value="Walt">
+<!--                            <input type="text" class="form-control" name="first_name" value="{{ obj.first_name }}">-->
+<!--                            <input type="text" class="form-control" name="first_name" value="{{ user_obj.first_name }}">-->
+                            {{ form.first_name }}
                         </div>
                     </div>
 
@@ -44,7 +46,9 @@
                             <h6 class="mb-0">Middle name</h6>
                         </div>
                         <div class="col-sm-9 text-secondary">
-                            <input type="text" class="form-control" name="middle_name" value="White">
+<!--                            <input type="text" class="form-control" name="middle_name" value="{{ obj.middle_name }}">-->
+<!--                            <input type="text" class="form-control" name="middle_name" value="{{ user_obj.middle_name }}">-->
+                            {{ form.middle_name }}
                         </div>
                     </div>
 
@@ -53,16 +57,23 @@
                             <h6 class="mb-0">Last name</h6>
                         </div>
                         <div class="col-sm-9 text-secondary">
-                            <input type="text" class="form-control" name="last_name" value="Jr.">
+<!--                            <input type="text" class="form-control" name="last_name" value="{{ obj.last_name }}">-->
+<!--                            <input type="text" class="form-control" name="last_name" value="{{ user_obj.last_name }}">-->
+                            {{ form.last_name }}
                         </div>
                     </div>
 
                     <div class="row mb-3">
                         <div class="col-sm-3" style="margin-top: 10px;">
-                            <h6 class="mb-0">Email (change)</h6>
+                            <h6 class="mb-0">Email</h6>
                         </div>
                         <div class="col-sm-9 text-secondary">
-                            <input type="text" class="form-control" name="email" value="john@example.com">
+<!--                            <input type="email" class="form-control" name="email" value="{{ obj.email }}">-->
+<!--                            <input type="email" class="form-control" name="email" value="{{ user_obj.email }}">-->
+                            {{ form.email }}
+                            {% if form.email.errors %}
+                                <div class="alert alert-danger mt-3">{{ form.email.errors }}</div>
+                            {% endif %}
                         </div>
                     </div>
 
@@ -71,8 +82,10 @@
                             <h6 class="mb-0">Phone</h6>
                         </div>
                         <div class="col-sm-9 text-secondary">
-<!--                            <input type="text" class="form-control" value="(239) 816-9029 (add JS)">-->
-                            <input type="tel" class="form-control" name="phone" id="form-edit__phone" data-validate-field="tel" placeholder="+7 (999) 999-99-99" />
+<!--                            <input type="tel" class="form-control" name="phone" id="form-edit__phone"-->
+<!--                                   value="{{ obj.personal_data__phone }}" data-validate-field="tel"-->
+<!--                                   placeholder="+7 (999) 999-99-99" />-->
+                            {{ form.phone }}
                         </div>
                     </div>
 
@@ -81,8 +94,17 @@
                             <h6 class="mb-0">Birthday</h6>
                         </div>
                         <div class="col-sm-9 text-secondary">
-<!--                            <input type="text" class="form-control" value="{{ birthday }} (change)">-->
-                            <input type="date" class="form-control" value="{{ birthday }}" min="2022-05-20" max="2023-06-01">
+                            {% if user_obj.birthday %}
+<!--                                <input type="text" class="form-control profile-form__disabled-birthday" value="{{ obj.birthday }}" disabled />-->
+                                <input type="text" class="form-control profile-form__disabled-birthday" value="{{ user_obj.birthday }}" disabled />
+<!--                                <input type="date" class="form-control profile-form__birthday" name="birthday"-->
+<!--                                   min="{{ min_birthdate }}" max="{{ max_birthdate }}" /> -->
+                                {{ form.birthday }}
+                            {% else %}
+<!--                                <input type="date" class="form-control" name="birthday"-->
+<!--                                   min="{{ min_birthdate }}" max="{{ max_birthdate }}" />-->
+                                {{ form.birthday }}
+                            {% endif %}
                         </div>
                     </div>
 
@@ -91,23 +113,14 @@
                             <h6 class="mb-0">Gender</h6>
                         </div>
                         <div class="col-sm-9 text-secondary">
-<!--                            <input type="text" class="form-control" value="Male (change)">-->
-<!--                            <p><input type="radio" name="gender" value="male"> Male</p>-->
-<!--                            <p><input type="radio" name="gender" value="female"> Female</p>-->
-<!--                            <p><input type="radio" name="gender" value="others"> Others</p>-->
-
-<!--                            <select name="" id="">-->
-<!--                                <option value="">Male</option>-->
-<!--                                <option value="">Female</option>-->
-<!--                                <option value="">Others</option>-->
+<!--                            <select class="form-control" id="form-select__gender" data-gender="{{ obj.gender }}" name="gender">-->
+<!--                            <select class="form-control" id="form-select__gender" data-gender="{{ user_obj.gender }}" name="gender">-->
+<!--                              <option value="male">Male</option>-->
+<!--                              <option value="female">Female</option>-->
+<!--                              <option value="others">Others</option>-->
+<!--                              <option value="not specified">Not specified</option>-->
 <!--                            </select>-->
-                            <select class="form-control" name="gender">
-<!--                              <option>Not specified</option>-->
-                              <option value="male">Male</option>
-                              <option value="female">Female</option>
-                              <option value="others">Others</option>
-                              <option selected value="not specified">Not specified</option>
-                            </select>
+                            {{ form.gender }}
                         </div>
                     </div>
 
@@ -116,7 +129,9 @@
                             <h6 class="mb-0">Address</h6>
                         </div>
                         <div class="col-sm-9 text-secondary">
-                            <input type="text" class="form-control" value="Bay Area, San Francisco, CA">
+<!--                            <input type="text" class="form-control" name="address" value="{{ obj.personal_data__address }}">-->
+<!--                            <input type="text" class="form-control" name="address" value="{{ user_obj.personal_data__address }}">-->
+                            {{ form.address }}
                         </div>
                     </div>
 
@@ -125,7 +140,9 @@
                             <h6 class="mb-0">Work</h6>
                         </div>
                         <div class="col-sm-9 text-secondary">
-                            <input type="text" class="form-control" value="{{ obj.personal_data__work }}">
+<!--                            <input type="text" class="form-control" name="work" value="{{ obj.personal_data__work }}">-->
+<!--                            <input type="text" class="form-control" name="work" value="{{ user_obj.personal_data__work }}">-->
+                            {{ form.work }}
                         </div>
                     </div>
 
@@ -134,7 +151,9 @@
                             <h6 class="mb-0">Hobby</h6>
                         </div>
                         <div class="col-sm-9 text-secondary">
-                            <input type="text" class="form-control" value="{{ obj.hobbies__title }}">
+<!--                            <input type="text" class="form-control" name="hobby" value="{{ obj.hobbies__title }}">-->
+<!--                            <input type="text" class="form-control" name="hobby" value="{{ user_obj.hobbies__title }}">-->
+                            {{ form.hobby }}
                         </div>
                     </div>
 
@@ -143,7 +162,8 @@
                             <h6 class="mb-0">About me</h6>
                         </div>
                         <div class="col-sm-9 text-secondary">
-                            <textarea class="form-control" rows="5">I like dancing</textarea>
+<!--                            <textarea class="form-control" name="info_about_user" rows="5">I like dancing</textarea>-->
+                            {{ form.info_about_user }}
                         </div>
                     </div>
 

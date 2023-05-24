@@ -16,6 +16,13 @@ def is_user_with_given_pk(user_pk: int) -> bool:
 
 
 def get_user_data(user_pk: int, profile: bool = True) -> dict:
+    base_values = (
+        'first_name',
+        'middle_name',
+        'last_name',
+        'email',
+        'gender'
+    )
     values_dict = {
         'profile': (
             'personal_data__phone',
@@ -32,9 +39,9 @@ def get_user_data(user_pk: int, profile: bool = True) -> dict:
         )
     }
     if profile:
-        values = values_dict['profile']
+        values = base_values + values_dict['profile']
     else:
-        values = values_dict['edit']
+        values = base_values + values_dict['edit']
 
     return models.CustomUser.objects.filter(pk=user_pk).values(*values)[0]
 

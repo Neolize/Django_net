@@ -1,5 +1,3 @@
-from datetime import date
-
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.auth.views import LoginView, LogoutView
 from django.core.handlers.wsgi import WSGIRequest
@@ -8,8 +6,9 @@ from django.shortcuts import render, redirect
 from django.urls import reverse_lazy
 from django.views.generic import ListView, CreateView, View
 
-from applications.user_profiles import models, forms
+from applications.user_profiles import forms
 from applications.user_profiles.permissions import UserProfilePermissionMixin
+from applications.user_profiles.services.utils import common_utils, form_utils
 from applications.user_profiles.services.crud import read, update
 
 
@@ -81,19 +80,27 @@ class EditUserProfileView(LoginRequiredMixin, UserProfilePermissionMixin, View):
     login_url = reverse_lazy('login')
 
     def get(self, request: WSGIRequest, pk: int):
-        user_personal_data = models.CustomUser.objects.filter(pk=pk).values(
-            'personal_data__phone',
-            'personal_data__birthday',
-            'personal_data__info_about_user',
-            'personal_data__address',
-            'personal_data__work',
-            'hobbies__title',
-        )[0]
+        # user_personal_data = read.get_user_data(user_pk=pk, profile=False)
+        context = self.get_context(user_pk=pk)
+
+        form_utils.fill_edit_user_profile_form(
+            form=context.get('form'),
+            user_data=context.get('user_obj')
+        )
+        # form = context.get('form')
+        # user_data = context.get('user_obj')
+        # print(user_data)
+        # email = form.fields.get('email')
+        # print(email.widget.attrs)
+        # email.widget.attrs.update({'value': user_data.get('email')})
+        # print(email.widget.attrs)
+
         # print(user_personal_data)
-        context = {
-            'birthday': date.today(),
-            'obj': user_personal_data,
-        }
+        # context = {
+        #     'obj': user_personal_data,
+        #     'min_birthdate': utils.get_min_birthdate(),
+        #     'max_birthdate': utils.get_max_birthdate(),
+        # }
         return render(request, self.template_name, context=context)
 
     def post(self, request: WSGIRequest, pk: int):
@@ -102,11 +109,26 @@ class EditUserProfileView(LoginRequiredMixin, UserProfilePermissionMixin, View):
         if form.is_valid():
             print('Form valid')
             print(form.cleaned_data)
+            return redirect(to='edit_user_profile', pk=pk)
         else:
             print('Form invalid')
-            print(form.errors)
+            # address_error = form.errors.get('address', 'no errors')
+            # print(address_error)
+            # errors = form.errors.get('email').data
+            # for error in errors:
+            #     print(error.message)
 
-        return redirect(to='edit_user_profile', pk=pk)
+            context = self.get_context(user_pk=pk)
+            context['form'] = form
+            return render(request, self.template_name, context=context)
+
+    def get_context(self, user_pk: int) -> dict:
+        return {
+            'form': self.form_class(),
+            'user_obj': read.get_user_data(user_pk=user_pk, profile=False),
+            'min_birthdate': common_utils.get_min_birthdate(),
+            'max_birthdate': common_utils.get_max_birthdate(),
+        }
 
 
 class UserWallView(View):

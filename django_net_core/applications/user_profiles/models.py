@@ -3,11 +3,12 @@ from django.conf import settings
 from django.urls import reverse_lazy
 from django.contrib.auth.models import AbstractUser
 
+
 GENDER_CHOICES = (
-    ('male', 'male'),
-    ('female', 'female'),
-    ('others', 'others'),
-    ('not specified', 'not specified')
+    ('male', 'Male'),
+    ('female', 'Female'),
+    ('others', 'Others'),
+    ('not specified', 'Not specified')
 )
 
 
