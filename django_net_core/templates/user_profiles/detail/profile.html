@@ -19,7 +19,7 @@
                         <h6 class="mb-0">Full Name</h6>
                     </div>
                     <div class="col-sm-9 text-secondary">
-                        Kenneth Valdez
+                        {{ user.username }}
                     </div>
                 </div>
                 <hr>
@@ -37,7 +37,7 @@
                         <h6 class="mb-0">Phone</h6>
                     </div>
                     <div class="col-sm-9 text-secondary">
-                        (239) 816-9029
+                        {{ obj.personal_data__phone }}
                     </div>
                 </div>
                 <hr>
@@ -46,7 +46,9 @@
                         <h6 class="mb-0">Birthday</h6>
                     </div>
                     <div class="col-sm-9 text-secondary">
-                        {{ birthday }}
+                        {% if obj.personal_data__birthday %}
+                            {{ obj.personal_data__birthday }}
+                        {% endif %}
                     </div>
                 </div>
                 <hr>
@@ -55,7 +57,7 @@
                         <h6 class="mb-0">Address</h6>
                     </div>
                     <div class="col-sm-9 text-secondary">
-                        Bay Area, San Francisco, CA
+                        {{ obj.personal_data__address }}
                     </div>
                 </div>
                 <hr>

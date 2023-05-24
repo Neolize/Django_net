@@ -48,7 +48,7 @@ class UserPersonalData(models.Model):
         db_table = 'user_personal_data'
 
     def __str__(self):
-        return self.user
+        return f'{self.user}'
 
 
 class Hobby(models.Model):

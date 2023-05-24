@@ -35,7 +35,7 @@
                             <h6 class="mb-0">First name</h6>
                         </div>
                         <div class="col-sm-9 text-secondary">
-                            <input type="text" class="form-control" name="first_name" value="Walt {{ user.email }}">
+                            <input type="text" class="form-control" name="first_name" value="Walt">
                         </div>
                     </div>
 
@@ -125,7 +125,7 @@
                             <h6 class="mb-0">Work</h6>
                         </div>
                         <div class="col-sm-9 text-secondary">
-                            <input type="text" class="form-control" value="Backend developer">
+                            <input type="text" class="form-control" value="{{ obj.personal_data__work }}">
                         </div>
                     </div>
 
@@ -134,7 +134,7 @@
                             <h6 class="mb-0">Hobby</h6>
                         </div>
                         <div class="col-sm-9 text-secondary">
-                            <input type="text" class="form-control" value="Play football">
+                            <input type="text" class="form-control" value="{{ obj.hobbies__title }}">
                         </div>
                     </div>
 
