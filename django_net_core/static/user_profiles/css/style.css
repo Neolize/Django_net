@@ -84,11 +84,11 @@ body {
 }
 
 .profile-form__disabled-birthday {
-    width: 130px;
+    width: 21%;
 }
 
 .profile-form__birthday {
-    max-width: 465px;
+    width: 77.5%;
     margin-left: 135px;
     margin-top: -37px;
 }

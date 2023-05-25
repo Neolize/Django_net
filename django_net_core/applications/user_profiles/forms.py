@@ -158,6 +158,7 @@ class EditUserProfileForm(forms.ModelForm):
             attrs={
                 'type': 'date',
                 'class': 'form-control',
+                'id': 'form-edit__birthday',
                 'min': common_utils.get_min_birthdate(),
                 'max': common_utils.get_max_birthdate(),
             }
@@ -170,7 +171,16 @@ class EditUserProfileForm(forms.ModelForm):
             choices=GENDER_CHOICES,
             attrs={
                 'class': 'form-control',
-                'id': 'form-select__gender',
+                'id': 'form-edit__gender',
+            }
+        )
+    )
+    town = forms.CharField(
+        max_length=60,
+        required=False,
+        widget=forms.TextInput(
+            attrs={
+                'class': 'form-control',
             }
         )
     )
@@ -222,6 +232,7 @@ class EditUserProfileForm(forms.ModelForm):
             'phone',
             'birthday',
             'gender',
+            'town',
             'address',
             'work',
             'hobby',

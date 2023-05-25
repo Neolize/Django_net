@@ -6,6 +6,8 @@ function main() {
     initiateInputMask();
 
     selectGender();
+
+    changeBirthdayFieldClass();
 }
 
 
@@ -17,7 +19,7 @@ function initiateInputMask() {
 
 
 function selectGender() {
-    let tagSelect = document.getElementById('form-select__gender');
+    let tagSelect = document.getElementById('form-edit__gender');
     let options = tagSelect.querySelectorAll('option');
     let gender = tagSelect.dataset.gender;
 
@@ -25,6 +27,14 @@ function selectGender() {
         if (option.value === gender) {
             option.selected = true;
         }
+    }
+}
+
+
+function changeBirthdayFieldClass() {
+    if (document.getElementById('form-edit__disabled-birthday')) {
+        let birthdayField = document.getElementById('form-edit__birthday');
+        birthdayField.classList.add('profile-form__birthday');
     }
 }
 

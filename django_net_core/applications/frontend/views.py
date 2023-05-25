@@ -80,55 +80,31 @@ class EditUserProfileView(LoginRequiredMixin, UserProfilePermissionMixin, View):
     login_url = reverse_lazy('login')
 
     def get(self, request: WSGIRequest, pk: int):
-        # user_personal_data = read.get_user_data(user_pk=pk, profile=False)
-        context = self.get_context(user_pk=pk)
+        form = self.form_class()
+        user_obj = read.get_user_data_for_edit_profile_view(user_pk=pk)
 
         form_utils.fill_edit_user_profile_form(
-            form=context.get('form'),
-            user_data=context.get('user_obj')
+            form=form,
+            user_data=user_obj,
         )
-        # form = context.get('form')
-        # user_data = context.get('user_obj')
-        # print(user_data)
-        # email = form.fields.get('email')
-        # print(email.widget.attrs)
-        # email.widget.attrs.update({'value': user_data.get('email')})
-        # print(email.widget.attrs)
-
-        # print(user_personal_data)
-        # context = {
-        #     'obj': user_personal_data,
-        #     'min_birthdate': utils.get_min_birthdate(),
-        #     'max_birthdate': utils.get_max_birthdate(),
-        # }
+        context = {
+            'form': form,
+            'user_obj': user_obj
+        }
         return render(request, self.template_name, context=context)
 
     def post(self, request: WSGIRequest, pk: int):
         form = self.form_class(request.POST)
-        print(request.POST)
+
         if form.is_valid():
-            print('Form valid')
-            print(form.cleaned_data)
-            return redirect(to='edit_user_profile', pk=pk)
-        else:
-            print('Form invalid')
-            # address_error = form.errors.get('address', 'no errors')
-            # print(address_error)
-            # errors = form.errors.get('email').data
-            # for error in errors:
-            #     print(error.message)
+            if update.update_user_profile_data(form=form, user=request.user):
+                return redirect(to='edit_user_profile', pk=pk)
 
-            context = self.get_context(user_pk=pk)
-            context['form'] = form
-            return render(request, self.template_name, context=context)
-
-    def get_context(self, user_pk: int) -> dict:
-        return {
-            'form': self.form_class(),
-            'user_obj': read.get_user_data(user_pk=user_pk, profile=False),
-            'min_birthdate': common_utils.get_min_birthdate(),
-            'max_birthdate': common_utils.get_max_birthdate(),
+        context = {
+            'form': form,
+            'user_obj': read.get_user_data_for_edit_profile_view(user_pk=pk)
         }
+        return render(request, self.template_name, context=context)
 
 
 class UserWallView(View):
