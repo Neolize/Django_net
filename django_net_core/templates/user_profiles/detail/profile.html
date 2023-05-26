@@ -19,7 +19,7 @@
                         <h6 class="mb-0">Full Name</h6>
                     </div>
                     <div class="col-sm-9 text-secondary">
-                        {{ obj.username }}
+                        {{ user_obj.full_name }}
                     </div>
                 </div>
                 <hr>
@@ -28,7 +28,7 @@
                         <h6 class="mb-0">Email</h6>
                     </div>
                     <div class="col-sm-9 text-secondary">
-                        {{ obj.email }}
+                        {{ user_obj.email }}
                     </div>
                 </div>
                 <hr>
@@ -37,7 +37,7 @@
                         <h6 class="mb-0">Phone</h6>
                     </div>
                     <div class="col-sm-9 text-secondary">
-                        {{ obj.personal_data__phone }}
+                        {{ user_obj.phone }}
                     </div>
                 </div>
                 <hr>
@@ -46,9 +46,7 @@
                         <h6 class="mb-0">Birthday</h6>
                     </div>
                     <div class="col-sm-9 text-secondary">
-                        {% if obj.personal_data__birthday %}
-                            {{ obj.personal_data__birthday }}
-                        {% endif %}
+                        {{ user_obj.birthday }}
                     </div>
                 </div>
                 <hr>
@@ -57,7 +55,7 @@
                         <h6 class="mb-0">Address</h6>
                     </div>
                     <div class="col-sm-9 text-secondary">
-                        {{ obj.personal_data__address }}
+                        {{ user_obj.address }}
                     </div>
                 </div>
                 <hr>

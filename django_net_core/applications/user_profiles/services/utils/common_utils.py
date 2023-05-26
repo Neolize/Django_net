@@ -10,3 +10,12 @@ def get_min_birthdate() -> str:
 def get_max_birthdate() -> str:
     """Return max possible birthdate for user's birthday field"""
     return str(date.today())
+
+
+def form_user_data_for_profile_view(user_data: dict) -> dict:
+    full_name = f'{user_data.pop("first_name")} {user_data.pop("middle_name")} {user_data.pop("last_name")}'
+    birthday = user_data.get('birthday') or ''
+
+    user_data['full_name'] = full_name
+    user_data['birthday'] = birthday
+    return user_data

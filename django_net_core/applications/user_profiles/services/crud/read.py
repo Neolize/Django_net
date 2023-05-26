@@ -55,60 +55,20 @@ def fill_hobbies_str(user_data: QuerySet[dict]) -> str:
     return hobbies.capitalize()
 
 
-def get_user_data(user_pk: int, profile: bool = True) -> dict:
-    base_values = (
+def get_user_data_for_profile_view(user_pk: int) -> dict:
+    values = (
         'first_name',
         'middle_name',
         'last_name',
         'email',
-        'gender'
+        'phone',
+        'birthday',
+        'address',
     )
-    values_dict = {
-        'profile': (
-            'personal_data__phone',
-            'personal_data__birthday',
-            'personal_data__address',
-        ),
-        'edit': (
-            'personal_data__phone',
-            'personal_data__birthday',
-            'personal_data__info_about_user',
-            'personal_data__town',
-            'personal_data__address',
-            'personal_data__work',
-            'hobbies__title',
-        )
-    }
-    if profile:
-        values = base_values + values_dict['profile']
-    else:
-        values = base_values + values_dict['edit']
+    user_data = models.CustomUser.objects.filter(pk=user_pk).annotate(
+        phone=F('personal_data__phone'),
+        birthday=F('personal_data__birthday'),
+        address=F('personal_data__address'),
+    ).values(*values)
 
-    return models.CustomUser.objects.filter(pk=user_pk).values(*values)[0]
-
-
-# def get_user_data_for_profile(user_pk: int) -> dict:
-#     user_data = models.CustomUser.objects.filter(pk=user_pk)
-#
-#
-# def get_user_data_for_editing(user_pk: int) -> dict:
-#     user_data = models.CustomUser.objects.filter(pk=user_pk).values(
-#         'personal_data__phone',
-#         'personal_data__birthday',
-#         'personal_data__info_about_user',
-#         'personal_data__address',
-#         'personal_data__work',
-#         'hobbies__title',
-#     )
-#     if user_data:
-#         return user_data[0]
-
-
-# def get_user_by_pk(user_pk: int) -> models.CustomUser | None:
-#     try:
-#         user = models.CustomUser.objects.get(pk=user_pk)
-#     except ObjectDoesNotExist as exc:
-#         user = None
-#         print(exc)
-#
-#     return user
+    return user_data[0]

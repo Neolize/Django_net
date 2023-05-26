@@ -8,7 +8,7 @@ from django.views.generic import ListView, CreateView, View
 
 from applications.user_profiles import forms
 from applications.user_profiles.permissions import UserProfilePermissionMixin
-from applications.user_profiles.services.utils import form_utils
+from applications.user_profiles.services.utils import form_utils, common_utils
 from applications.user_profiles.services.crud import read, update, create
 
 
@@ -34,6 +34,7 @@ class SignupUserView(CreateView):
         return render(self.request, self.template_name, context={'form': self.form_class(self.request.POST)})
         # return redirect(to='signup')
         # return super().form_valid(form)
+    # Implemented saving changes in edit user profile form with showing all mistakes that occurred
 
     def get_success_url(self):
         return reverse_lazy('home')
@@ -69,7 +70,9 @@ class UserProfileView(View):
             raise Http404
 
         context = {
-            'obj': read.get_user_data(user_pk=pk),
+            'user_obj': common_utils.form_user_data_for_profile_view(
+                read.get_user_data_for_profile_view(user_pk=pk)
+            ),
         }
         return render(request, self.template_name, context=context)
 
