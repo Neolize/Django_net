@@ -57,6 +57,7 @@ def fill_hobbies_str(user_data: QuerySet[dict]) -> str:
 
 def get_user_data_for_profile_view(user_pk: int) -> dict:
     values = (
+        'username',
         'first_name',
         'middle_name',
         'last_name',

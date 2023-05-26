@@ -30,3 +30,18 @@ def create_new_hobby(new_hobby_title: str) -> bool:
         result = False
 
     return result
+
+
+def create_new_user(
+        username: str,
+        email: str,
+        password: str,
+) -> models.CustomUser | bool:
+
+    try:
+        result = models.CustomUser.objects.create_user(username=username, email=email, password=password)
+    except Exception as exc:
+        print(exc)
+        result = False
+
+    return result

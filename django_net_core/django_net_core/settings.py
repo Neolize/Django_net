@@ -52,8 +52,6 @@ INSTALLED_APPS = [
 
     'rest_framework',
     'djoser',
-    'allauth',
-    'allauth.account',
     'debug_toolbar',
 
     'applications.user_profiles.apps.UserProfilesConfig',
@@ -170,7 +168,6 @@ INTERNAL_IPS = [
 
 AUTHENTICATION_BACKENDS = [
     'django.contrib.auth.backends.ModelBackend',
-    'allauth.account.auth_backends.AuthenticationBackend',
 ]
 
 

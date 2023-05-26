@@ -27,6 +27,7 @@ def define_login_field(
 
 def define_email_field(
         label: str = 'E-mail (optional)',
+        required: bool = False,
         min_length: int = 4,
         max_length: int = 254,
         placeholder: str = ' ',
@@ -35,6 +36,7 @@ def define_email_field(
     """Return an email field for a signup form"""
     email_field = forms.EmailField(
         label=label,
+        required=required,
         min_length=min_length,
         max_length=max_length,
         widget=forms.EmailInput(

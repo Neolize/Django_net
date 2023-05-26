@@ -13,9 +13,11 @@ def get_max_birthdate() -> str:
 
 
 def form_user_data_for_profile_view(user_data: dict) -> dict:
+    """Return dict with formatted user's data"""
     full_name = f'{user_data.pop("first_name")} {user_data.pop("middle_name")} {user_data.pop("last_name")}'
-    birthday = user_data.get('birthday') or ''
 
-    user_data['full_name'] = full_name
-    user_data['birthday'] = birthday
+    user_data['full_name'] = full_name.strip() or user_data.get('username')
+    user_data['birthday'] = user_data.get('birthday') or ''
+    user_data['phone'] = user_data.get('phone') or ''
+    user_data['address'] = user_data.get('address') or ''
     return user_data

@@ -1,3 +1,4 @@
+from django.contrib.auth import login
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.auth.views import LoginView, LogoutView
 from django.core.handlers.wsgi import WSGIRequest
@@ -8,8 +9,8 @@ from django.views.generic import ListView, CreateView, View
 
 from applications.user_profiles import forms
 from applications.user_profiles.permissions import UserProfilePermissionMixin
-from applications.user_profiles.services.utils import form_utils, common_utils
 from applications.user_profiles.services.crud import read, update, create
+from applications.user_profiles.services.utils import form_utils, common_utils
 
 
 class UsersView(ListView):
@@ -28,16 +29,17 @@ class SignupUserView(CreateView):
     form_class = forms.SignupUserForm
 
     def form_valid(self, form: forms.SignupUserForm):
-        print("Form valid")
-        print(dir(form))
-        print(form.cleaned_data)
-        return render(self.request, self.template_name, context={'form': self.form_class(self.request.POST)})
-        # return redirect(to='signup')
-        # return super().form_valid(form)
-    # Implemented saving changes in edit user profile form with showing all mistakes that occurred
+        new_user = create.create_new_user(
+            username=form.cleaned_data['username'],
+            email=form.cleaned_data['email'],
+            password=form.cleaned_data['password1'],
+        )
+        if new_user:
+            login(self.request, user=new_user)
+            return redirect(to=new_user)
 
-    def get_success_url(self):
-        return reverse_lazy('home')
+        form.add_error(None, 'Failed to create a new user')
+        return self.form_invalid(form=form)
 
 
 class LoginUserView(LoginView):
