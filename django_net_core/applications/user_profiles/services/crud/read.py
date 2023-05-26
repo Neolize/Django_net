@@ -52,7 +52,7 @@ def fill_hobbies_str(user_data: QuerySet[dict]) -> str:
         else:
             hobbies += value.get('hobby')
 
-    return hobbies
+    return hobbies.capitalize()
 
 
 def get_user_data(user_pk: int, profile: bool = True) -> dict:

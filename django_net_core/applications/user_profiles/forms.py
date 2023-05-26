@@ -203,7 +203,7 @@ class EditUserProfileForm(forms.ModelForm):
         )
     )
     hobby = forms.CharField(
-        max_length=50,
+        max_length=250,
         required=False,
         widget=forms.TextInput(
             attrs={

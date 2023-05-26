@@ -8,8 +8,8 @@ from django.views.generic import ListView, CreateView, View
 
 from applications.user_profiles import forms
 from applications.user_profiles.permissions import UserProfilePermissionMixin
-from applications.user_profiles.services.utils import common_utils, form_utils
-from applications.user_profiles.services.crud import read, update
+from applications.user_profiles.services.utils import form_utils
+from applications.user_profiles.services.crud import read, update, create
 
 
 class UsersView(ListView):
@@ -44,7 +44,7 @@ class LoginUserView(LoginView):
     form_class = forms.LoginUserForm
 
     def form_valid(self, form: forms.LoginUserForm):
-        update.update_first_login_record(user=form.get_user())
+        create.update_first_login_record(user=form.get_user())
         return super().form_valid(form)
 
     def get_success_url(self):
