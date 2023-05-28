@@ -92,3 +92,7 @@ body {
     margin-left: 135px;
     margin-top: -37px;
 }
+
+.profile-form__textarea_danger{
+    border:2px solid red !important;
+}

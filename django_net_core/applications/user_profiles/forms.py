@@ -220,6 +220,8 @@ class EditUserProfileForm(forms.ModelForm):
             attrs={
                 'class': 'form-control',
                 'rows': '5',
+                'id': 'form-edit__info_about_user',
+                'placeholder': 'Type here...'
             }
         )
     )

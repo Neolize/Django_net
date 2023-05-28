@@ -8,7 +8,7 @@ from django.urls import reverse_lazy
 from django.views.generic import ListView, CreateView, View
 
 from applications.user_profiles import forms
-from applications.user_profiles.permissions import UserProfilePermissionMixin
+from applications.user_profiles.permissions import UserPermissionMixin
 from applications.user_profiles.services.crud import read, update, create
 from applications.user_profiles.services.utils import form_utils, common_utils
 
@@ -38,7 +38,7 @@ class SignupUserView(CreateView):
             login(self.request, user=new_user)
             return redirect(to=new_user)
 
-        form.add_error(None, 'Failed to create a new user')
+        form.add_error(None, 'Failed to create a new user. Try one more time.')
         return self.form_invalid(form=form)
 
 
@@ -79,7 +79,7 @@ class UserProfileView(View):
         return render(request, self.template_name, context=context)
 
 
-class EditUserProfileView(LoginRequiredMixin, UserProfilePermissionMixin, View):
+class EditUserProfileView(LoginRequiredMixin, UserPermissionMixin, View):
     template_name = 'user_profiles/detail/edit.html'
     form_class = forms.EditUserProfileForm
     login_url = reverse_lazy('login')
@@ -94,7 +94,7 @@ class EditUserProfileView(LoginRequiredMixin, UserProfilePermissionMixin, View):
         )
         context = {
             'form': form,
-            'user_obj': user_obj
+            'user_obj': common_utils.form_user_data_for_edit_profile_view(user_obj)
         }
         return render(request, self.template_name, context=context)
 
@@ -112,15 +112,30 @@ class EditUserProfileView(LoginRequiredMixin, UserProfilePermissionMixin, View):
         return render(request, self.template_name, context=context)
 
 
-class UserWallView(View):
+class UserWallView(LoginRequiredMixin, View):
     template_name = 'user_wall/wall.html'
 
     def get(self, request: WSGIRequest):
         return render(request, self.template_name)
 
 
-class UserFriendsView(View):
+class UserFriendsView(LoginRequiredMixin, View):
     template_name = 'user_profiles/list/friends.html'
 
     def get(self, request: WSGIRequest):
+        return render(request, self.template_name)
+
+
+class UserChatView(LoginRequiredMixin, View):
+    template_name = 'user_profiles/detail/chat.html'
+
+    def get(self, request, pk):
+        print(f'Current pk: {pk}')
+        return render(request, self.template_name)
+
+
+class UserChatListView(LoginRequiredMixin, View):
+    template_name = 'user_profiles/list/chat_list_second.html'
+
+    def get(self, request):
         return render(request, self.template_name)

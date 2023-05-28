@@ -76,3 +76,13 @@ class Follower(models.Model):
 
     def __str__(self):
         return f'{self.user} - {self.follower}'
+
+
+# class Contact(models.Model):
+#     """User's contact links"""
+#     website = models.URLField()
+#     github = models.URLField()
+#     twitter = models.URLField()
+#     instagram = models.URLField()
+#     facebook = models.URLField()
+

@@ -182,6 +182,9 @@
                         </div>
                         <div class="col-sm-9 text-secondary">
                             {{ form.info_about_user }}
+                            <div class="d-flex justify-content-end">
+                                <span id="words_count" class="d-none">Words count - <span id="text_count"></span></span>
+                            </div>
                             {% if form.info_about_user.errors %}
                                 <div class="alert alert-danger mt-3">{{ form.info_about_user.errors }}</div>
                             {% endif %}

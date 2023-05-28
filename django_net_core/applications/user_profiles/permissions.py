@@ -1,7 +1,7 @@
 from django.http import HttpResponseForbidden
 
 
-class UserProfilePermissionMixin:
+class UserPermissionMixin:
     def has_permission(self):
         return self.request.user.pk == self.kwargs.get('pk')
 

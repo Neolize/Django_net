@@ -1,13 +1,13 @@
-body{
+/* body{
     background: #eee;
 }
 
 .container {
    margin-top: 20px;
    padding: 15px;
-}
+} */
 
-.profile-header {
+/* .profile-header {
     position: relative;
     overflow: hidden
 }
@@ -68,7 +68,7 @@ body{
 .profile-header .profile-header-content,
 .profile-header .profile-header-tab {
     position: relative
-}
+} */
 
 .b-minus-1,
 .b-minus-10,
@@ -188,6 +188,7 @@ body{
 }
 
 .profile-content {
+    margin-left: -130px;
     padding: 25px;
     border-radius: 4px
 }
