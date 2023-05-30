@@ -2,6 +2,7 @@ import re
 from datetime import date
 
 from django.db.models import QuerySet
+from django.core.files.uploadedfile import InMemoryUploadedFile
 
 from applications.user_profiles import models, forms
 from applications.user_profiles.services.crud import delete, create
@@ -12,7 +13,7 @@ def update_user_profile_data(form: forms.EditUserProfileForm, user: models.Custo
 
     update_custom_user = (
             form_data.get('first_name') or form_data.get('middle_name') or form_data.get('last_name') or
-            form_data.get('email') or form_data.get('gender')
+            form_data.get('email') or form_data.get('gender') or form_data.get('avatar')
     )
     update_user_personal_data = (
         form_data.get('phone') or form_data.get('birthday') or form_data.get('town') or
@@ -31,6 +32,7 @@ def update_user_profile_data(form: forms.EditUserProfileForm, user: models.Custo
             last_name=form_data.get('last_name'),
             email=form_data.get('email'),
             gender=form_data.get('gender'),
+            avatar=form_data.get('avatar'),
         )
     if update_user_personal_data:
         user_personal_data_updated = update_user_personal_data_model(
@@ -60,6 +62,7 @@ def update_custom_user_model(
         last_name: str,
         email: str,
         gender: str,
+        avatar: InMemoryUploadedFile,
 ) -> bool:
 
     user.first_name = first_name
@@ -67,6 +70,7 @@ def update_custom_user_model(
     user.last_name = last_name
     user.email = email
     user.gender = gender
+    user.avatar = avatar
 
     try:
         user.save()

@@ -225,6 +225,14 @@ class EditUserProfileForm(forms.ModelForm):
             }
         )
     )
+    avatar = forms.ImageField(
+        required=False,
+        widget=forms.ClearableFileInput(
+            attrs={
+                'class': 'form-control'
+            }
+        )
+    )
 
     class Meta:
         model = CustomUser
@@ -241,4 +249,5 @@ class EditUserProfileForm(forms.ModelForm):
             'work',
             'hobby',
             'info_about_user',
+            'avatar',
         )

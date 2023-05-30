@@ -75,6 +75,7 @@ class UserProfileView(View):
             'user_obj': common_utils.form_user_data_for_profile_view(
                 read.get_user_data_for_profile_view(user_pk=pk)
             ),
+            'user_avatar': read.get_user_avatar(user_pk=pk),
         }
         return render(request, self.template_name, context=context)
 
@@ -94,12 +95,13 @@ class EditUserProfileView(LoginRequiredMixin, UserPermissionMixin, View):
         )
         context = {
             'form': form,
-            'user_obj': common_utils.form_user_data_for_edit_profile_view(user_obj)
+            'user_obj': common_utils.form_user_data_for_edit_profile_view(user_obj),
+            'user_avatar': read.get_user_avatar(user_pk=pk),
         }
         return render(request, self.template_name, context=context)
 
     def post(self, request: WSGIRequest, pk: int):
-        form = self.form_class(request.POST)
+        form = self.form_class(request.POST, request.FILES)
 
         if form.is_valid():
             if update.update_user_profile_data(form=form, user=request.user):
@@ -107,7 +109,8 @@ class EditUserProfileView(LoginRequiredMixin, UserPermissionMixin, View):
 
         context = {
             'form': form,
-            'user_obj': read.get_user_data_for_edit_profile_view(user_pk=pk)
+            'user_obj': read.get_user_data_for_edit_profile_view(user_pk=pk),
+            'user_avatar': read.get_user_avatar(user_pk=pk),
         }
         return render(request, self.template_name, context=context)
 

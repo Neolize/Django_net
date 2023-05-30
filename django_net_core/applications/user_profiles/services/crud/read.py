@@ -46,6 +46,11 @@ def get_user_data_for_edit_profile_view(user_pk: int) -> dict:
     return user_data[0]
 
 
+def get_user_avatar(user_pk: int) -> str:
+    user = models.CustomUser.objects.get(pk=user_pk)
+    return user.avatar
+
+
 def fill_hobbies_str(user_data: QuerySet[dict]) -> str:
     hobbies = ''
     for index, value in enumerate(user_data):

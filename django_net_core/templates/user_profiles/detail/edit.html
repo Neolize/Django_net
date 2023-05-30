@@ -18,7 +18,7 @@
         <div class="card card-edit">
             <div class="card-body">
 
-                <form action="{{ user.get_absolute_url_for_editing }}"  method="post">
+                <form action="{{ user.get_absolute_url_for_editing }}" method="post" enctype="multipart/form-data">
                     {% csrf_token %}
 
                     {% if form.non_field_errors %}
@@ -191,7 +191,20 @@
                         </div>
                     </div>
 
-                    <div class="row">
+                    <div class="row mb-3">
+                        <div class="col-sm-3" style="margin-top: 10px;">
+                            <h6 class="mb-0">Avatar</h6>
+                        </div>
+                        <div class="col-sm-9 text-secondary">
+                            {{ form.avatar }}
+
+                            {% if form.avatar.errors %}
+                                <div class="alert alert-danger mt-3">{{ form.avatar.errors }}</div>
+                            {% endif %}
+                        </div>
+                    </div>
+
+                    <div class="row mt-5">
                         <div class="col-sm-3"></div>
                         <div class="col-sm-9 text-secondary">
                             <button class="btn btn-primary px-4">Save Changes</button>
