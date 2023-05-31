@@ -23,7 +23,7 @@ class CustomUser(AbstractUser):
         db_table = 'custom_user'
 
     def __str__(self):
-        name = self.username or self.first_name
+        name = self.username or self.first_name or self.middle_name or self.last_name
         return name
 
     def get_absolute_url(self):
@@ -78,11 +78,17 @@ class Follower(models.Model):
         return f'{self.user} - {self.follower}'
 
 
-# class Contact(models.Model):
-#     """User's contact links"""
-#     website = models.URLField()
-#     github = models.URLField()
-#     twitter = models.URLField()
-#     instagram = models.URLField()
-#     facebook = models.URLField()
+class Contact(models.Model):
+    """User's contact links"""
+    website = models.URLField(max_length=200, blank=True)
+    github = models.URLField(max_length=200, blank=True)
+    twitter = models.URLField(max_length=200, blank=True)
+    instagram = models.URLField(max_length=200, blank=True)
+    facebook = models.URLField(max_length=200, blank=True)
+    user = models.OneToOneField(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name='contacts')
 
+    class Meta:
+        db_table = 'contact'
+
+    def __str__(self):
+        return f'{self.user} contact'

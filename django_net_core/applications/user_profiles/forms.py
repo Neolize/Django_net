@@ -1,7 +1,7 @@
 from django import forms
 from django.contrib.auth.forms import AuthenticationForm, UserCreationForm
 
-from applications.user_profiles.models import CustomUser, GENDER_CHOICES
+from applications.user_profiles import models
 from applications.user_profiles.services.utils import common_utils
 
 
@@ -87,7 +87,7 @@ class SignupUserForm(UserCreationForm):
             password_field_class='form-signup__input')
 
     class Meta:
-        model = CustomUser
+        model = models.CustomUser
         fields = (
             'username',
             'email',
@@ -104,7 +104,7 @@ class LoginUserForm(AuthenticationForm):
     )
 
 
-class EditUserProfileForm(forms.ModelForm):
+class EditUserProfileForm(forms.Form):
     first_name = forms.CharField(
         max_length=150,
         required=False,
@@ -170,7 +170,7 @@ class EditUserProfileForm(forms.ModelForm):
         max_length=13,
         required=False,
         widget=forms.Select(
-            choices=GENDER_CHOICES,
+            choices=models.GENDER_CHOICES,
             attrs={
                 'class': 'form-control',
                 'id': 'form-edit__gender',
@@ -221,7 +221,8 @@ class EditUserProfileForm(forms.ModelForm):
                 'class': 'form-control',
                 'rows': '5',
                 'id': 'form-edit__info_about_user',
-                'placeholder': 'Type here...'
+                'placeholder': 'Type here...',
+                'data-max-length': 500,
             }
         )
     )
@@ -234,20 +235,48 @@ class EditUserProfileForm(forms.ModelForm):
         )
     )
 
-    class Meta:
-        model = CustomUser
-        fields = (
-            'first_name',
-            'middle_name',
-            'last_name',
-            'email',
-            'phone',
-            'birthday',
-            'gender',
-            'town',
-            'address',
-            'work',
-            'hobby',
-            'info_about_user',
-            'avatar',
+    website = forms.URLField(
+        max_length=200,
+        required=False,
+        widget=forms.URLInput(
+            attrs={
+                'class': 'form-control',
+            }
         )
+    )
+    github = forms.URLField(
+        max_length=200,
+        required=False,
+        widget=forms.URLInput(
+            attrs={
+                'class': 'form-control',
+            }
+        )
+    )
+    twitter = forms.URLField(
+        max_length=200,
+        required=False,
+        widget=forms.URLInput(
+            attrs={
+                'class': 'form-control',
+            }
+        )
+    )
+    instagram = forms.URLField(
+        max_length=200,
+        required=False,
+        widget=forms.URLInput(
+            attrs={
+                'class': 'form-control',
+            }
+        )
+    )
+    facebook = forms.URLField(
+        max_length=200,
+        required=False,
+        widget=forms.URLInput(
+            attrs={
+                'class': 'form-control',
+            }
+        )
+    )

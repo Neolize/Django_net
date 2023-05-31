@@ -14,5 +14,5 @@ def fill_edit_user_profile_form(form: forms.EditUserProfileForm, user_data: dict
     form.fields.get('gender').widget.attrs.update({'data-gender': user_data.get('gender')})
 
     # filling info_about_user field for editing form
-    info_about_user = user_data.get('personal_data__info_about_user') or ''
+    info_about_user = user_data.get('info_about_user') or ''
     form.fields.get('info_about_user').initial = info_about_user

@@ -1,76 +1,67 @@
 import re
-from datetime import date
 
 from django.db.models import QuerySet
-from django.core.files.uploadedfile import InMemoryUploadedFile
 
 from applications.user_profiles import models, forms
 from applications.user_profiles.services.crud import delete, create
 
 
 def update_user_profile_data(form: forms.EditUserProfileForm, user: models.CustomUser) -> bool:
-    form_data = form.cleaned_data
 
     update_custom_user = (
-            form_data.get('first_name') or form_data.get('middle_name') or form_data.get('last_name') or
-            form_data.get('email') or form_data.get('gender') or form_data.get('avatar')
+            form.cleaned_data.get('first_name') or form.cleaned_data.get('middle_name') or
+            form.cleaned_data.get('last_name') or form.cleaned_data.get('email') or
+            form.cleaned_data.get('gender') or form.cleaned_data.get('avatar')
     )
     update_user_personal_data = (
-        form_data.get('phone') or form_data.get('birthday') or form_data.get('town') or
-        form_data.get('address') or form_data.get('work') or form_data.get('info_about_user')
+        form.cleaned_data.get('phone') or form.cleaned_data.get('birthday') or form.cleaned_data.get('town') or
+        form.cleaned_data.get('address') or form.cleaned_data.get('work') or form.cleaned_data.get('info_about_user')
     )
-    update_hobby = form_data.get('hobby')
+    update_hobby = form.cleaned_data.get('hobby')
 
-    custom_user_updated, user_personal_data_updated, hobby_updated = (True, True, True)
+    update_contact = (
+        form.cleaned_data.get('website') or form.cleaned_data.get('github') or form.cleaned_data.get('twitter') or
+        form.cleaned_data.get('instagram') or form.cleaned_data.get('facebook')
+    )
+
+    custom_user_updated, user_personal_data_updated, hobby_updated, contact_updated = (True, True, True, True)
 
     if update_custom_user:
         custom_user_updated = update_custom_user_model(
             form=form,
             user=user,
-            first_name=form_data.get('first_name'),
-            middle_name=form_data.get('middle_name'),
-            last_name=form_data.get('last_name'),
-            email=form_data.get('email'),
-            gender=form_data.get('gender'),
-            avatar=form_data.get('avatar'),
         )
     if update_user_personal_data:
         user_personal_data_updated = update_user_personal_data_model(
             form=form,
             user=user,
-            phone=form_data.get('phone'),
-            birthday=form_data.get('birthday'),
-            town=form_data.get('town'),
-            address=form_data.get('address'),
-            work=form_data.get('work'),
-            info_about_user=form_data.get('info_about_user'),
         )
     if update_hobby:
         hobby_updated = update_hobby_model(
             form=form,
             user=user,
-            hobby=form_data.get('hobby'),
         )
-    return custom_user_updated and user_personal_data_updated and hobby_updated
+    if update_contact:
+        contact_updated = update_contact_model(
+            form=form,
+            user=user,
+        )
+    return custom_user_updated and user_personal_data_updated and hobby_updated and contact_updated
 
 
 def update_custom_user_model(
         form: forms.EditUserProfileForm,
         user: models.CustomUser,
-        first_name: str,
-        middle_name: str,
-        last_name: str,
-        email: str,
-        gender: str,
-        avatar: InMemoryUploadedFile,
 ) -> bool:
 
-    user.first_name = first_name
-    user.middle_name = middle_name
-    user.last_name = last_name
-    user.email = email
-    user.gender = gender
-    user.avatar = avatar
+    user.first_name = form.cleaned_data.get('first_name')
+    user.middle_name = form.cleaned_data.get('middle_name')
+    user.last_name = form.cleaned_data.get('last_name')
+    user.email = form.cleaned_data.get('email')
+    user.gender = form.cleaned_data.get('gender')
+    
+    if form.cleaned_data.get('avatar'):
+        user.avatar = form.cleaned_data.get('avatar')
 
     try:
         user.save()
@@ -86,23 +77,17 @@ def update_custom_user_model(
 def update_user_personal_data_model(
         form: forms.EditUserProfileForm,
         user: models.CustomUser,
-        phone: str,
-        birthday: date,
-        town: str,
-        address: str,
-        work: str,
-        info_about_user: str,
 ) -> bool:
 
-    if instance_queryset := models.UserPersonalData.objects.filter(user=user):
-        instance = instance_queryset[0]
+    if queryset := models.UserPersonalData.objects.filter(user=user):
+        instance = queryset[0]
 
-        instance.phone = phone
-        instance.birthday = birthday
-        instance.town = town
-        instance.address = address
-        instance.work = work
-        instance.info_about_user = info_about_user
+        instance.phone = form.cleaned_data.get('phone')
+        instance.birthday = form.cleaned_data.get('birthday')
+        instance.town = form.cleaned_data.get('town')
+        instance.address = form.cleaned_data.get('address')
+        instance.work = form.cleaned_data.get('work')
+        instance.info_about_user = form.cleaned_data.get('info_about_user')
 
         try:
             instance.save()
@@ -113,21 +98,20 @@ def update_user_personal_data_model(
             result = False
 
     else:
-        try:
-            models.UserPersonalData.objects.create(
-                phone=phone,
-                birthday=birthday,
-                town=town,
-                address=address,
-                work=work,
-                info_about_user=info_about_user,
-                user_id=user.pk,
-            )
-            result = True
-        except Exception as exc:
-            form.add_error(None, exc)
-            print(exc)
+        creation_result = create.create_user_personal_data_record(
+            user_pk=user.pk,
+            phone=form.cleaned_data.get('phone'),
+            birthday=form.cleaned_data.get('birthday'),
+            town=form.cleaned_data.get('town'),
+            address=form.cleaned_data.get('address'),
+            work=form.cleaned_data.get('work'),
+            info_about_user=form.cleaned_data.get('info_about_user'),
+        )
+        if not creation_result[0]:
+            form.add_error(None, creation_result[1])
             result = False
+        else:
+            result = True
 
     return result
 
@@ -135,9 +119,8 @@ def update_user_personal_data_model(
 def update_hobby_model(
         form: forms.EditUserProfileForm,
         user: models.CustomUser,
-        hobby: str,
 ) -> bool:
-    hobby_list = re.split(', |; ', hobby.lower())
+    hobby_list = re.split(', |; ', form.cleaned_data.get('hobby').lower())
     current_hobby_set = models.Hobby.objects.filter(users__in=[user])
 
     if new_hobbies := return_new_hobby_list(hobby_list):
@@ -187,3 +170,43 @@ def return_added_hobbies(
             added_hobbies.append(hobby)
 
     return models.Hobby.objects.filter(title__in=added_hobbies)
+
+
+def update_contact_model(
+        form: forms.EditUserProfileForm,
+        user: models.CustomUser,
+) -> bool:
+
+    if queryset := models.Contact.objects.filter(user_id=user.pk):
+        instance = queryset[0]
+
+        instance.website = form.cleaned_data.get('website')
+        instance.github = form.cleaned_data.get('github')
+        instance.twitter = form.cleaned_data.get('twitter')
+        instance.instagram = form.cleaned_data.get('instagram')
+        instance.facebook = form.cleaned_data.get('facebook')
+
+        try:
+            instance.save()
+            result = True
+        except Exception as exc:
+            form.add_error(None, exc)
+            print(exc)
+            result = False
+
+    else:
+        creation_result = create.create_contact_record(
+            user_pk=user.pk,
+            website=form.cleaned_data.get('website'),
+            github=form.cleaned_data.get('github'),
+            twitter=form.cleaned_data.get('twitter'),
+            instagram=form.cleaned_data.get('instagram'),
+            facebook=form.cleaned_data.get('facebook'),
+        )
+        if not creation_result[0]:
+            form.add_error(None, creation_result[1])
+            result = False
+        else:
+            result = True
+
+    return result

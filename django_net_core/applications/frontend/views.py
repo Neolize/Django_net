@@ -103,9 +103,8 @@ class EditUserProfileView(LoginRequiredMixin, UserPermissionMixin, View):
     def post(self, request: WSGIRequest, pk: int):
         form = self.form_class(request.POST, request.FILES)
 
-        if form.is_valid():
-            if update.update_user_profile_data(form=form, user=request.user):
-                return redirect(to='edit_user_profile', pk=pk)
+        if form.is_valid() and update.update_user_profile_data(form=form, user=request.user):
+            return redirect(to='edit_user_profile', pk=pk)
 
         context = {
             'form': form,

@@ -48,12 +48,13 @@ function addEventToTextarea() {
 
 function validateTextarea(event) {
     const textarea = event.target;
+    const maxLength = textarea.dataset.maxLength;
     const textLength = textarea.value.length;
     const textCount = document.getElementById('text_count');
     const wordCount = document.getElementById('words_count');
     textCount.innerHTML = textLength;
     
-    if(textLength > 50){
+    if(textLength > maxLength){
         textCount.classList.add("text-danger");
         textarea.classList.add("profile-form__textarea_danger");
     }else{

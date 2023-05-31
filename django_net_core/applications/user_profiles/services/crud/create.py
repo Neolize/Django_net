@@ -1,4 +1,4 @@
-from datetime import datetime
+from datetime import datetime, date
 
 from django.db.models import QuerySet
 from django.db.utils import DataError
@@ -43,5 +43,57 @@ def create_new_user(
     except Exception as exc:
         print(exc)
         result = False
+
+    return result
+
+
+def create_user_personal_data_record(
+        user_pk: int,
+        phone: str,
+        birthday: date,
+        town: str,
+        address: str,
+        work: str,
+        info_about_user: str,
+) -> tuple[bool, Exception | None]:
+    try:
+        models.UserPersonalData.objects.create(
+            phone=phone,
+            birthday=birthday,
+            town=town,
+            address=address,
+            work=work,
+            info_about_user=info_about_user,
+            user_id=user_pk,
+        )
+        result = (True, None)
+    except Exception as exc:
+        print(exc)
+        result = (False, exc)
+
+    return result
+
+
+def create_contact_record(
+        user_pk: int,
+        website: str,
+        github: str,
+        twitter: str,
+        instagram: str,
+        facebook: str,
+) -> tuple[bool, Exception | None]:
+    try:
+        models.Contact.objects.create(
+            website=website,
+            github=github,
+            twitter=twitter,
+            instagram=instagram,
+            facebook=facebook,
+            user_id=user_pk,
+        )
+        result = (True, None)
+    except Exception as exc:
+        print(exc)
+        result = (False, exc)
 
     return result

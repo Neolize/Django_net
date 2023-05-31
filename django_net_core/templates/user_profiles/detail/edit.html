@@ -203,6 +203,71 @@
                             {% endif %}
                         </div>
                     </div>
+<!--            HERE NEW         -->
+                    <div class="row mb-3">
+                        <div class="col-sm-3" style="margin-top: 10px;">
+                            <h6 class="mb-0">Website</h6>
+                        </div>
+                        <div class="col-sm-9 text-secondary">
+                            {{ form.website }}
+
+                            {% if form.website.errors %}
+                                <div class="alert alert-danger mt-3">{{ form.website.errors }}</div>
+                            {% endif %}
+                        </div>
+                    </div>
+
+                    <div class="row mb-3">
+                        <div class="col-sm-3" style="margin-top: 10px;">
+                            <h6 class="mb-0">Github</h6>
+                        </div>
+                        <div class="col-sm-9 text-secondary">
+                            {{ form.github }}
+
+                            {% if form.github.errors %}
+                                <div class="alert alert-danger mt-3">{{ form.github.errors }}</div>
+                            {% endif %}
+                        </div>
+                    </div>
+
+                    <div class="row mb-3">
+                        <div class="col-sm-3" style="margin-top: 10px;">
+                            <h6 class="mb-0">Twitter</h6>
+                        </div>
+                        <div class="col-sm-9 text-secondary">
+                            {{ form.twitter }}
+
+                            {% if form.twitter.errors %}
+                                <div class="alert alert-danger mt-3">{{ form.twitter.errors }}</div>
+                            {% endif %}
+                        </div>
+                    </div>
+
+                    <div class="row mb-3">
+                        <div class="col-sm-3" style="margin-top: 10px;">
+                            <h6 class="mb-0">Instagram</h6>
+                        </div>
+                        <div class="col-sm-9 text-secondary">
+                            {{ form.instagram }}
+
+                            {% if form.instagram.errors %}
+                                <div class="alert alert-danger mt-3">{{ form.instagram.errors }}</div>
+                            {% endif %}
+                        </div>
+                    </div>
+
+                    <div class="row mb-3">
+                        <div class="col-sm-3" style="margin-top: 10px;">
+                            <h6 class="mb-0">Facebook</h6>
+                        </div>
+                        <div class="col-sm-9 text-secondary">
+                            {{ form.facebook }}
+
+                            {% if form.facebook.errors %}
+                                <div class="alert alert-danger mt-3">{{ form.facebook.errors }}</div>
+                            {% endif %}
+                        </div>
+                    </div>
 
                     <div class="row mt-5">
                         <div class="col-sm-3"></div>
