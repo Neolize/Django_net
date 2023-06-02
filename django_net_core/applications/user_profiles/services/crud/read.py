@@ -90,3 +90,19 @@ def get_user_data_for_profile_view(user_pk: int) -> dict:
     ).values(*values)
 
     return user_data[0]
+
+
+def get_user_data_for_post_creating_view(user_pk: int) -> dict:
+    values = (
+        'pk',
+        'username',
+        'first_name',
+        'middle_name',
+        'last_name',
+        'work',
+    )
+    user_data = models.CustomUser.objects.filter(pk=user_pk).annotate(
+        work=F('personal_data__work'),
+    ).values(*values)
+
+    return user_data[0]

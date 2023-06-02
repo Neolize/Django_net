@@ -32,3 +32,11 @@ def form_user_data_for_edit_profile_view(user_data: dict) -> dict:
     user_data['address'] = user_data.get('address') or ''
     user_data['work'] = user_data.get('work') or ''
     return user_data
+
+
+def form_user_data_for_post_creating_view(user_data: dict) -> dict:
+    full_name = f'{user_data.pop("first_name")} {user_data.pop("middle_name")} {user_data.pop("last_name")}'
+
+    user_data['full_name'] = full_name.strip() or user_data.pop('username')
+    user_data['work'] = user_data.get('work') or ''
+    return user_data

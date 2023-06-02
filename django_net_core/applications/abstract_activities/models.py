@@ -6,8 +6,8 @@ class AbstractPost(models.Model):
     title = models.CharField(max_length=150, db_index=True)
     content = models.TextField()
     publication_date = models.DateTimeField(auto_now_add=True)
-    last_edit = models.DateTimeField(auto_now=True)
-    view_counts = models.PositiveIntegerField()
+    last_edit = models.DateTimeField(blank=True, null=True)
+    view_counts = models.PositiveIntegerField(default=0)
     slug = models.SlugField(max_length=175, blank=True, unique=True)
     is_published = models.BooleanField(default=True)
 

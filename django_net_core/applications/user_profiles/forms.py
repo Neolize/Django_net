@@ -280,3 +280,25 @@ class EditUserProfileForm(forms.Form):
             }
         )
     )
+
+
+class PostCreationForm(forms.Form):
+    title = forms.CharField(
+        max_length=150,
+        required=True,
+        widget=forms.TextInput(
+            attrs={
+                'class': 'form-control',
+            }
+        )
+    )
+    content = forms.CharField(
+        required=True,
+        widget=forms.Textarea(
+            attrs={
+                'class': 'form-control',
+                'id': 'form-edit__info_about_user',
+                'rows': '10',
+            }
+        )
+    )

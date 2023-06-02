@@ -55,7 +55,7 @@ def create_user_personal_data_record(
         address: str,
         work: str,
         info_about_user: str,
-) -> tuple[bool, Exception | None]:
+) -> bool:
     try:
         models.UserPersonalData.objects.create(
             phone=phone,
@@ -66,10 +66,10 @@ def create_user_personal_data_record(
             info_about_user=info_about_user,
             user_id=user_pk,
         )
-        result = (True, None)
+        result = True
     except Exception as exc:
         print(exc)
-        result = (False, exc)
+        result = False
 
     return result
 
@@ -81,7 +81,7 @@ def create_contact_record(
         twitter: str,
         instagram: str,
         facebook: str,
-) -> tuple[bool, Exception | None]:
+) -> bool:
     try:
         models.Contact.objects.create(
             website=website,
@@ -91,9 +91,9 @@ def create_contact_record(
             facebook=facebook,
             user_id=user_pk,
         )
-        result = (True, None)
+        result = True
     except Exception as exc:
         print(exc)
-        result = (False, exc)
+        result = False
 
     return result

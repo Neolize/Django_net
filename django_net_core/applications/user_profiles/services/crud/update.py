@@ -6,6 +6,10 @@ from applications.user_profiles import models, forms
 from applications.user_profiles.services.crud import delete, create
 
 
+def return_error_message() -> str:
+    return 'Failed to save changes. Try one more time.'
+
+
 def update_user_profile_data(form: forms.EditUserProfileForm, user: models.CustomUser) -> bool:
 
     update_custom_user = (
@@ -107,8 +111,8 @@ def update_user_personal_data_model(
             work=form.cleaned_data.get('work'),
             info_about_user=form.cleaned_data.get('info_about_user'),
         )
-        if not creation_result[0]:
-            form.add_error(None, creation_result[1])
+        if not creation_result:
+            form.add_error(None, return_error_message())
             result = False
         else:
             result = True
@@ -203,8 +207,8 @@ def update_contact_model(
             instagram=form.cleaned_data.get('instagram'),
             facebook=form.cleaned_data.get('facebook'),
         )
-        if not creation_result[0]:
-            form.add_error(None, creation_result[1])
+        if not creation_result:
+            form.add_error(None, return_error_message())
             result = False
         else:
             result = True

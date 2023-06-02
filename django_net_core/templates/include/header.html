@@ -27,25 +27,34 @@
           <a class="nav-link disabled header-list__link" href="#" tabindex="-1" aria-disabled="true">Disabled</a>
         </li>
       </ul>
-      <form class="d-flex">
-        {% if user.is_authenticated %}
-          <div class="signin-block btn btn-dark" id="signin-header-button" style="margin-right: 15px;">
-              <a href="{{ user.get_absolute_url }}" class="signin-block__link">Profile</a>
+
+      {% if user.is_authenticated %}
+        <div class="dropdown show">
+          <a class="signin-block btn btn-dark dropdown-toggle" href="#" role="button" id="dropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+            Profile
+          </a>
+
+          <div class="dropdown-menu" aria-labelledby="dropdownMenuLink">
+            <a class="dropdown-item" href="{{ user.get_absolute_url }}">Your profile</a>
+            <a class="dropdown-item" href="{% url 'create_user_post' %}">Create post</a>
+            <a class="dropdown-item" href="{% url 'user_friends' %}">Friends</a>
           </div>
-          <div class="signup-block btn btn-dark" id="signup-header-button">
-              <a href="{% url 'logout' %}" class="signin-block__link">Sign Out</a>
-          </div>
-<!--          <input class="form-control me-2" type="search" placeholder="Search" aria-label="Search">-->
-<!--          <button class="btn btn-outline-primary" type="submit">Search</button>-->
-        {% else %}
-          <div class="signin-block btn btn-dark" id="signin-header-button">
+        </div>
+        <div class="signup-block btn btn-dark" id="signup-header-button">
+          <a href="{% url 'logout' %}" class="signin-block__link">Sign Out</a>
+        </div>
+      {% else %}
+        <div class="signin-block btn btn-dark" id="signin-header-button">
             <a href="{% url 'login' %}" class="signin-block__link">Sign In</a>
           </div>
           <div class="signup-block btn btn-dark" id="signup-header-button">
             <a href="{% url 'signup' %}" class="signup-block__link">Sign Up</a>
           </div>
-        {% endif %}
-      </form>
+      {% endif %}
+
+<!--          <input class="form-control me-2" type="search" placeholder="Search" aria-label="Search">-->
+<!--          <button class="btn btn-outline-primary" type="submit">Search</button>-->
+
     </div>
   </div>
 </nav>

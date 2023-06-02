@@ -141,3 +141,35 @@ class UserChatListView(LoginRequiredMixin, View):
 
     def get(self, request):
         return render(request, self.template_name)
+
+
+class CreateUserPostView(LoginRequiredMixin, View):
+    template_name = 'user_profiles/detail/create_post.html'
+    form_class = forms.PostCreationForm
+    login_url = reverse_lazy('login')
+
+    def get(self, request: WSGIRequest):
+        return render(request, self.template_name, context=self.get_context_data(pk=request.user.pk))
+
+    def post(self, request: WSGIRequest):
+        form = self.form_class(request.POST)
+        print(request.POST)
+
+        if form.is_valid():
+            print('Form is valid')
+            print(form.cleaned_data)
+            return redirect(to='create_user_post')
+
+        print('Form is invalid')
+        context = self.get_context_data(pk=request.user.pk)
+        context['form'] = self.form_class(request.POST)
+        return render(request, self.template_name, context=context)
+
+    def get_context_data(self, pk: int):
+        return {
+            'form': self.form_class(),
+            'user_obj': common_utils.form_user_data_for_post_creating_view(
+                read.get_user_data_for_post_creating_view(user_pk=pk)
+            ),
+            'user_avatar': read.get_user_avatar(user_pk=pk),
+        }

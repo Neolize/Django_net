@@ -10,11 +10,14 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/4.2/ref/settings/
 """
 
-from os import environ
+from os import environ, path
 from pathlib import Path
 from datetime import timedelta
 
 import dotenv
+
+from applications.logging.logging_formatters import CustomJsonFormatter
+
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -71,6 +74,40 @@ MIDDLEWARE = [
 
     'debug_toolbar.middleware.DebugToolbarMiddleware',
 ]
+
+LOGGING = {
+    'version': 1,
+    'disable_existing_loggers': False,
+
+    'formatters': {
+        'console_formatter': {
+            'format': '{levelname} - {asctime} - {filename} - {lineno} - {message}',
+            'style': '{',
+        },
+        'json_formatter': {
+            '()': CustomJsonFormatter,
+        },
+    },
+    'handlers': {
+        'console_handler': {
+            'class': 'logging.StreamHandler',
+            'formatter': 'console_formatter',
+        },
+        'json_handler': {
+            'class': 'logging.FileHandler',
+            'formatter': 'json_formatter',
+            'filename': path.join('applications', 'logging', 'json_files', 'logging_file.log'),
+        },
+    },
+    'loggers': {
+        'main_logger': {
+            'handlers': ['console_handler', 'json_handler'],
+            'level': environ['LOG_LEVEL'],
+            'propagate': True,
+        }
+    },
+}
+
 
 ROOT_URLCONF = 'django_net_core.urls'
 
