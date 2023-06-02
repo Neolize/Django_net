@@ -1,9 +1,13 @@
 import re
+import logging
 
 from django.db.models import QuerySet
 
 from applications.user_profiles import models, forms
 from applications.user_profiles.services.crud import delete, create
+
+
+LOGGER = logging.getLogger('main_logger')
 
 
 def return_error_message() -> str:
@@ -71,8 +75,8 @@ def update_custom_user_model(
         user.save()
         result = True
     except Exception as exc:
-        form.add_error(None, exc)
-        print(exc)
+        form.add_error(None, return_error_message())
+        LOGGER.error(exc)
         result = False
 
     return result
@@ -97,8 +101,8 @@ def update_user_personal_data_model(
             instance.save()
             result = True
         except Exception as exc:
-            form.add_error(None, exc)
-            print(exc)
+            form.add_error(None, return_error_message())
+            LOGGER.error(exc)
             result = False
 
     else:
@@ -194,8 +198,8 @@ def update_contact_model(
             instance.save()
             result = True
         except Exception as exc:
-            form.add_error(None, exc)
-            print(exc)
+            form.add_error(None, return_error_message())
+            LOGGER.error(exc)
             result = False
 
     else:

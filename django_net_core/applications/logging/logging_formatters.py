@@ -15,6 +15,7 @@ class CustomJsonFormatter(jsonlogger.JsonFormatter):
             log_record['levelname'] = record.levelname
 
         log_record['asctime'] = record.asctime
-        log_record['filename'] = record.filename
-        log_record['lineno'] = record.lineno
         log_record['message'] = record.message
+        log_record['pathname'] = record.pathname
+        log_record['funcName'] = record.funcName
+        log_record['lineno'] = record.lineno

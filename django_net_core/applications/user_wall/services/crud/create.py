@@ -1,5 +1,10 @@
+import logging
+
 from applications.user_wall import models
 from applications.user_wall.services.crud import crud_utils
+
+
+LOGGER = logging.getLogger('main_logger')
 
 
 def create_user_post_record(title: str, content: str) -> None:
@@ -14,7 +19,7 @@ def create_user_post_record(title: str, content: str) -> None:
             slug=slug,
         )
     except Exception as exc:
-        print(exc)
+        LOGGER.error(exc)
 
 # def create_contact_record(
 #         user_pk: int,

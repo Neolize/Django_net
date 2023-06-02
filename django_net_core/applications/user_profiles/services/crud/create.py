@@ -1,9 +1,13 @@
+import logging
 from datetime import datetime, date
 
 from django.db.models import QuerySet
 from django.db.utils import DataError
 
 from applications.user_profiles import models
+
+
+LOGGER = logging.getLogger('main_logger')
 
 
 def update_first_login_record(user: models.CustomUser) -> None:
@@ -26,7 +30,7 @@ def create_new_hobby(new_hobby_title: str) -> bool:
         models.Hobby.objects.create(title=new_hobby_title.lower())
         result = True
     except DataError as exc:
-        print(exc)
+        LOGGER.error(exc)
         result = False
 
     return result
@@ -41,7 +45,7 @@ def create_new_user(
     try:
         result = models.CustomUser.objects.create_user(username=username, email=email, password=password)
     except Exception as exc:
-        print(exc)
+        LOGGER.error(exc)
         result = False
 
     return result
@@ -68,7 +72,7 @@ def create_user_personal_data_record(
         )
         result = True
     except Exception as exc:
-        print(exc)
+        LOGGER.error(exc)
         result = False
 
     return result
@@ -93,7 +97,7 @@ def create_contact_record(
         )
         result = True
     except Exception as exc:
-        print(exc)
+        LOGGER.error(exc)
         result = False
 
     return result
