@@ -2,6 +2,10 @@
 
 {% load static %}
 
+{% block additional_link %}
+    <link rel="stylesheet" href="{% static 'user_wall/css/create_post.css' %}" type="text/css" />
+{% endblock additional_link %}
+
 {% block title %} Creating a new post {% endblock title %}
 
 
@@ -40,6 +44,19 @@
 
                     <div class="row mb-3">
                         <div class="col-sm-3" style="margin-top: 10px;">
+                            <h6 class="mb-0">Tags</h6>
+                        </div>
+                        <div class="col-sm-9 text-secondary">
+                            {{ form.tags }}
+
+                            {% if form.tags.errors %}
+                                <div class="alert alert-danger mt-3">{{ form.tags.errors }}</div>
+                            {% endif %}
+                        </div>
+                    </div>
+
+                    <div class="row mb-3">
+                        <div class="col-sm-3" style="margin-top: 10px;">
                             <h6 class="mb-0">Content</h6>
                         </div>
                         <div class="col-sm-9 text-secondary">
@@ -50,6 +67,19 @@
 
                             {% if form.content.errors %}
                                 <div class="alert alert-danger mt-3">{{ form.content.errors }}</div>
+                            {% endif %}
+                        </div>
+                    </div>
+
+                    <div class="row mb-3">
+                        <div class="col-sm-3" style="margin-top: 10px;">
+                            <h6 class="mb-0">Draft</h6>
+                        </div>
+                        <div class="col-sm-9 text-secondary">
+                            {{ form.draft }}
+
+                            {% if form.draft.errors %}
+                                <div class="alert alert-danger mt-3">{{ form.draft.errors }}</div>
                             {% endif %}
                         </div>
                     </div>

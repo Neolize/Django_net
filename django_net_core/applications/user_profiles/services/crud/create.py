@@ -16,24 +16,20 @@ def update_first_login_record(user: models.CustomUser) -> None:
         user.save()
 
 
-def add_user_hobby(
-        added_hobbies: QuerySet[models.Hobby],
-        user: models.CustomUser,
-) -> None:
-
-    for hobby in added_hobbies:
+def add_user_hobby(new_hobbies: QuerySet[models.Hobby], user: models.CustomUser) -> None:
+    for hobby in new_hobbies:
         user.hobbies.add(hobby)
 
 
 def create_new_hobby(new_hobby_title: str) -> bool:
     try:
         models.Hobby.objects.create(title=new_hobby_title.lower())
-        result = True
+        is_created = True
     except DataError as exc:
         LOGGER.error(exc)
-        result = False
+        is_created = False
 
-    return result
+    return is_created
 
 
 def create_new_user(
@@ -43,12 +39,16 @@ def create_new_user(
 ) -> models.CustomUser | bool:
 
     try:
-        result = models.CustomUser.objects.create_user(username=username, email=email, password=password)
+        is_created = models.CustomUser.objects.create_user(
+            username=username,
+            email=email,
+            password=password,
+        )
     except Exception as exc:
         LOGGER.error(exc)
-        result = False
+        is_created = False
 
-    return result
+    return is_created
 
 
 def create_user_personal_data_record(
@@ -70,12 +70,12 @@ def create_user_personal_data_record(
             info_about_user=info_about_user,
             user_id=user_pk,
         )
-        result = True
+        is_created = True
     except Exception as exc:
         LOGGER.error(exc)
-        result = False
+        is_created = False
 
-    return result
+    return is_created
 
 
 def create_contact_record(
@@ -95,9 +95,9 @@ def create_contact_record(
             facebook=facebook,
             user_id=user_pk,
         )
-        result = True
+        is_created = True
     except Exception as exc:
         LOGGER.error(exc)
-        result = False
+        is_created = False
 
-    return result
+    return is_created

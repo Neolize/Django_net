@@ -73,13 +73,13 @@ def update_custom_user_model(
 
     try:
         user.save()
-        result = True
+        is_updated = True
     except Exception as exc:
         form.add_error(None, return_error_message())
         LOGGER.error(exc)
-        result = False
+        is_updated = False
 
-    return result
+    return is_updated
 
 
 def update_user_personal_data_model(
@@ -99,14 +99,14 @@ def update_user_personal_data_model(
 
         try:
             instance.save()
-            result = True
+            is_updated = True
         except Exception as exc:
             form.add_error(None, return_error_message())
             LOGGER.error(exc)
-            result = False
+            is_updated = False
 
     else:
-        creation_result = create.create_user_personal_data_record(
+        is_created = create.create_user_personal_data_record(
             user_pk=user.pk,
             phone=form.cleaned_data.get('phone'),
             birthday=form.cleaned_data.get('birthday'),
@@ -115,13 +115,13 @@ def update_user_personal_data_model(
             work=form.cleaned_data.get('work'),
             info_about_user=form.cleaned_data.get('info_about_user'),
         )
-        if not creation_result:
+        if not is_created:
             form.add_error(None, return_error_message())
-            result = False
+            is_updated = False
         else:
-            result = True
+            is_updated = True
 
-    return result
+    return is_updated
 
 
 def update_hobby_model(
@@ -196,14 +196,14 @@ def update_contact_model(
 
         try:
             instance.save()
-            result = True
+            is_updated = True
         except Exception as exc:
             form.add_error(None, return_error_message())
             LOGGER.error(exc)
-            result = False
+            is_updated = False
 
     else:
-        creation_result = create.create_contact_record(
+        is_created = create.create_contact_record(
             user_pk=user.pk,
             website=form.cleaned_data.get('website'),
             github=form.cleaned_data.get('github'),
@@ -211,10 +211,10 @@ def update_contact_model(
             instagram=form.cleaned_data.get('instagram'),
             facebook=form.cleaned_data.get('facebook'),
         )
-        if not creation_result:
+        if not is_created:
             form.add_error(None, return_error_message())
-            result = False
+            is_updated = False
         else:
-            result = True
+            is_updated = True
 
-    return result
+    return is_updated

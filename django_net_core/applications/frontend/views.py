@@ -7,10 +7,13 @@ from django.shortcuts import render, redirect
 from django.urls import reverse_lazy
 from django.views.generic import ListView, CreateView, View
 
-from applications.user_profiles import forms
+from applications.user_profiles import forms as up_forms
 from applications.user_profiles.permissions import UserPermissionMixin
-from applications.user_profiles.services.crud import read, update, create
+from applications.user_profiles.services.crud import read, update, create as up_create
 from applications.user_profiles.services.utils import form_utils, common_utils
+
+from applications.user_wall import forms as uw_forms
+from applications.user_wall.services.crud import create as uw_create
 
 
 class UsersView(ListView):
@@ -26,10 +29,10 @@ class UsersView(ListView):
 
 class SignupUserView(CreateView):
     template_name = 'account/signup.html'
-    form_class = forms.SignupUserForm
+    form_class = up_forms.SignupUserForm
 
-    def form_valid(self, form: forms.SignupUserForm):
-        new_user = create.create_new_user(
+    def form_valid(self, form: up_forms.SignupUserForm):
+        new_user = up_create.create_new_user(
             username=form.cleaned_data['username'],
             email=form.cleaned_data['email'],
             password=form.cleaned_data['password1'],
@@ -44,10 +47,10 @@ class SignupUserView(CreateView):
 
 class LoginUserView(LoginView):
     template_name = 'account/login.html'
-    form_class = forms.LoginUserForm
+    form_class = up_forms.LoginUserForm
 
-    def form_valid(self, form: forms.LoginUserForm):
-        create.update_first_login_record(user=form.get_user())
+    def form_valid(self, form: up_forms.LoginUserForm):
+        up_create.update_first_login_record(user=form.get_user())
         return super().form_valid(form)
 
     def get_success_url(self):
@@ -82,7 +85,7 @@ class UserProfileView(View):
 
 class EditUserProfileView(LoginRequiredMixin, UserPermissionMixin, View):
     template_name = 'user_profiles/detail/edit.html'
-    form_class = forms.EditUserProfileForm
+    form_class = up_forms.EditUserProfileForm
     login_url = reverse_lazy('login')
 
     def get(self, request: WSGIRequest, pk: int):
@@ -144,8 +147,8 @@ class UserChatListView(LoginRequiredMixin, View):
 
 
 class CreateUserPostView(LoginRequiredMixin, View):
-    template_name = 'user_profiles/detail/create_post.html'
-    form_class = forms.PostCreationForm
+    template_name = 'user_wall/create_post.html'
+    form_class = uw_forms.PostCreationForm
     login_url = reverse_lazy('login')
 
     def get(self, request: WSGIRequest):
@@ -153,14 +156,12 @@ class CreateUserPostView(LoginRequiredMixin, View):
 
     def post(self, request: WSGIRequest):
         form = self.form_class(request.POST)
-        print(request.POST)
 
-        if form.is_valid():
-            print('Form is valid')
-            print(form.cleaned_data)
-            return redirect(to='create_user_post')
+        if form.is_valid() and uw_create.create_user_post_from_form_data(
+                data=form.cleaned_data, user_pk=request.user.pk
+        ):
+            return redirect(to='user_profile', pk=request.user.pk)
 
-        print('Form is invalid')
         context = self.get_context_data(pk=request.user.pk)
         context['form'] = self.form_class(request.POST)
         return render(request, self.template_name, context=context)
