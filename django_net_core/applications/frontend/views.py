@@ -9,16 +9,16 @@ from django.views.generic import ListView, CreateView, View
 
 from applications.user_profiles import forms as up_forms
 from applications.user_profiles.permissions import UserPermissionMixin
-from applications.user_profiles.services.crud import read, update, create as up_create
+from applications.user_profiles.services.crud import read as up_read, update as up_update, create as up_create
 from applications.user_profiles.services.utils import form_utils, common_utils
 
 from applications.user_wall import forms as uw_forms
-from applications.user_wall.services.crud import create as uw_create
+from applications.user_wall.services.crud import create as uw_create, read as uw_read
 
 
 class UsersView(ListView):
     template_name = 'user_profiles/list/users.html'
-    queryset = read.get_all_users()
+    queryset = up_read.get_all_users()
     context_object_name = 'users'
 
     def get_context_data(self, *, object_list=None, **kwargs):
@@ -71,14 +71,13 @@ class UserProfileView(View):
     template_name = 'user_profiles/detail/profile.html'
 
     def get(self, request: WSGIRequest, pk: int):
-        if not read.is_user_with_given_pk(user_pk=pk):
+        user_obj = up_read.get_user_for_profile(user_pk=pk)
+        if not user_obj:
             raise Http404
 
         context = {
-            'user_obj': common_utils.form_user_data_for_profile_view(
-                read.get_user_data_for_profile_view(user_pk=pk)
-            ),
-            'user_avatar': read.get_user_avatar(user_pk=pk),
+            'user_obj': user_obj,
+            'user_posts': uw_read.get_user_posts(user_pk=pk),
         }
         return render(request, self.template_name, context=context)
 
@@ -90,29 +89,26 @@ class EditUserProfileView(LoginRequiredMixin, UserPermissionMixin, View):
 
     def get(self, request: WSGIRequest, pk: int):
         form = self.form_class()
-        user_obj = read.get_user_data_for_edit_profile_view(user_pk=pk)
 
         form_utils.fill_edit_user_profile_form(
             form=form,
-            user_data=user_obj,
+            user_data=up_read.get_user_data_for_edit_profile_view(user_pk=pk),
         )
         context = {
             'form': form,
-            'user_obj': common_utils.form_user_data_for_edit_profile_view(user_obj),
-            'user_avatar': read.get_user_avatar(user_pk=pk),
+            'user_obj': up_read.get_user_for_profile(user_pk=pk),
         }
         return render(request, self.template_name, context=context)
 
     def post(self, request: WSGIRequest, pk: int):
         form = self.form_class(request.POST, request.FILES)
 
-        if form.is_valid() and update.update_user_profile_data(form=form, user=request.user):
+        if form.is_valid() and up_update.update_user_profile_data(form=form, user=request.user):
             return redirect(to='edit_user_profile', pk=pk)
 
         context = {
             'form': form,
-            'user_obj': read.get_user_data_for_edit_profile_view(user_pk=pk),
-            'user_avatar': read.get_user_avatar(user_pk=pk),
+            'user_obj': up_read.get_user_for_profile(user_pk=pk),
         }
         return render(request, self.template_name, context=context)
 
@@ -166,11 +162,8 @@ class CreateUserPostView(LoginRequiredMixin, View):
         context['form'] = self.form_class(request.POST)
         return render(request, self.template_name, context=context)
 
-    def get_context_data(self, pk: int):
+    def get_context_data(self, pk: int) -> dict:
         return {
             'form': self.form_class(),
-            'user_obj': common_utils.form_user_data_for_post_creating_view(
-                read.get_user_data_for_post_creating_view(user_pk=pk)
-            ),
-            'user_avatar': read.get_user_avatar(user_pk=pk),
+            'user_obj': up_read.get_user_for_profile(user_pk=pk),
         }

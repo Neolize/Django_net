@@ -144,7 +144,7 @@ def update_hobby_model(
         )
     elif added_hobbies := return_added_hobbies(current_hobby_set=current_hobby_set, new_hobby_list=hobby_list):
         create.add_user_hobby(
-            added_hobbies=added_hobbies,
+            new_hobbies=added_hobbies,
             user=user,
         )
 

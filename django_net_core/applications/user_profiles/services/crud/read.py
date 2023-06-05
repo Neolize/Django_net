@@ -1,14 +1,15 @@
+import logging
+
 from django.db.models import QuerySet, F
 
 from applications.user_profiles import models
 
 
+LOGGER = logging.getLogger('main_logger')
+
+
 def get_all_users() -> QuerySet[models.CustomUser]:
     return models.CustomUser.objects.all()
-
-
-def is_user_with_given_pk(user_pk: int) -> bool:
-    return models.CustomUser.objects.filter(pk=user_pk).exists()
 
 
 def get_common_values_for_user_profile() -> tuple:
@@ -58,11 +59,6 @@ def get_user_data_for_edit_profile_view(user_pk: int) -> dict:
     return user_data[0]
 
 
-def get_user_avatar(user_pk: int) -> str:
-    user = models.CustomUser.objects.get(pk=user_pk)
-    return user.avatar
-
-
 def fill_hobbies_str(user_data: QuerySet[dict]) -> str:
     hobbies = ''
     for index, value in enumerate(user_data):
@@ -75,34 +71,22 @@ def fill_hobbies_str(user_data: QuerySet[dict]) -> str:
     return hobbies.capitalize()
 
 
-def get_user_data_for_profile_view(user_pk: int) -> dict:
-    values = get_common_values_for_user_profile()
-    user_data = models.CustomUser.objects.filter(pk=user_pk).annotate(
-        phone=F('personal_data__phone'),
-        birthday=F('personal_data__birthday'),
-        work=F('personal_data__work'),
-        address=F('personal_data__address'),
-        website=F('contacts__website'),
-        github=F('contacts__github'),
-        twitter=F('contacts__twitter'),
-        instagram=F('contacts__instagram'),
-        facebook=F('contacts__facebook'),
-    ).values(*values)
+def get_user_for_profile(user_pk: int) -> models.CustomUser | bool:
+    try:
+        deferred_fields = (
+            'password',
+            'last_login',
+            'is_superuser',
+            'is_staff',
+            'is_active',
+            'date_joined',
+            'first_login',
+        )
+        user_queryset = models.CustomUser.objects.filter(pk=user_pk).defer(*deferred_fields).\
+            select_related('personal_data', 'contacts').prefetch_related('hobbies')
+        user = user_queryset[0]
+    except IndexError as exc:
+        LOGGER.warning(f'User with pk - {user_pk} does not exist. {exc}')
+        user = False
 
-    return user_data[0]
-
-
-def get_user_data_for_post_creating_view(user_pk: int) -> dict:
-    values = (
-        'pk',
-        'username',
-        'first_name',
-        'middle_name',
-        'last_name',
-        'work',
-    )
-    user_data = models.CustomUser.objects.filter(pk=user_pk).annotate(
-        work=F('personal_data__work'),
-    ).values(*values)
-
-    return user_data[0]
+    return user
