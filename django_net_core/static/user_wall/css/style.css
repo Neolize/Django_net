@@ -646,3 +646,15 @@ select.form-control:not([size]):not([multiple]) {
 .text-danger, .text-red {
     color: #ff5b57!important;
 }
+
+.link-edit_post {
+    float: right;
+    margin-right: 15px;
+}
+
+.user_post__tags {
+    font-size: 10px;
+    color: blue;
+    text-decoration: underline;
+    margin-bottom: 25px;
+}

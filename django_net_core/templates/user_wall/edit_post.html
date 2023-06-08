@@ -1,0 +1,9 @@
+{% extends 'user_wall/create_post.html' %}
+
+
+{% block title %} Editing post {% endblock title %}
+
+
+{% block user_post_action %} {% url 'edit_user_post' slug=post_slug %} {% endblock user_post_action %}
+
+{% block post_button %} Edit post {% endblock post_button %}

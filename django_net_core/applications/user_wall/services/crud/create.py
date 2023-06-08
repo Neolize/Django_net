@@ -29,7 +29,7 @@ def _create_user_post(
 ) -> bool:
 
     slug = crud_utils.return_unique_slug(str_for_slug=title, model=models.UserPost)
-    tags = _create_tags_from_list(
+    tags = create_tags_from_list(
         crud_utils.form_tag_list(tags)
     )
     try:
@@ -40,7 +40,7 @@ def _create_user_post(
             is_published=is_published,
             author_id=user_pk,
         )
-        _add_tags_to_user_post(tags=tags, post=new_post)
+        add_tags_to_user_post(tags=tags, post=new_post)
         is_created = True
     except Exception as exc:
         LOGGER.error(exc)
@@ -60,7 +60,7 @@ def _create_new_tag(new_tag: str) -> models.Tag | bool:
     return created_tag
 
 
-def _create_tags_from_list(tag_list: list[str]) -> list[models.Tag]:
+def create_tags_from_list(tag_list: list[str]) -> list[models.Tag]:
     tags = []
     for tag in tag_list:
         new_tag = _create_new_tag(tag)
@@ -71,6 +71,6 @@ def _create_tags_from_list(tag_list: list[str]) -> list[models.Tag]:
     return tags
 
 
-def _add_tags_to_user_post(tags: list[models.Tag], post: models.UserPost) -> None:
+def add_tags_to_user_post(tags: list[models.Tag], post: models.UserPost) -> None:
     for tag in tags:
         post.tags.add(tag)

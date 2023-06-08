@@ -1,7 +1,9 @@
 from django import forms
 
+from applications.user_wall import models
 
-class PostCreationForm(forms.Form):
+
+class UserPostForm(forms.ModelForm):
     title = forms.CharField(
         max_length=150,
         required=True,
@@ -15,7 +17,7 @@ class PostCreationForm(forms.Form):
         required=False,
         widget=forms.TextInput(
             attrs={
-                'class': 'form-control',
+                'class': 'form-control user_post__tag',
                 'placeholder': 'Start your tags with # and write them separated by commas',
             }
         )
@@ -38,3 +40,7 @@ class PostCreationForm(forms.Form):
             }
         )
     )
+
+    class Meta:
+        model = models.UserPost
+        fields = ('title', 'tags', 'content', 'draft')

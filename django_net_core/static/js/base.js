@@ -22,10 +22,12 @@ function activateHeaderButtons() {
 
 function searchSigninButton() {
     let signinButton = document.getElementById('signin-header-button');
-    signinButton.addEventListener('click', (event) => {
-        let signinLink = event.target.querySelector('a');
-        signinLink.click();
-    });
+    if (signinButton) {
+        signinButton.addEventListener('click', (event) => {
+            let signinLink = event.target.querySelector('a');
+            signinLink.click();
+        });
+    }
 }
 
 

@@ -3,3 +3,8 @@
     height: 16px;
     width: 16px;
 }
+
+.user_post__tag {
+    text-decoration: underline;
+    color: rgba(108, 116, 186, 1);
+}

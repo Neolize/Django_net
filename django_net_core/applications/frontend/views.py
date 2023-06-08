@@ -1,19 +1,22 @@
+from datetime import datetime
+
 from django.contrib.auth import login
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.auth.views import LoginView, LogoutView
 from django.core.handlers.wsgi import WSGIRequest
-from django.http import Http404
+from django.http import Http404, HttpResponseForbidden
 from django.shortcuts import render, redirect
 from django.urls import reverse_lazy
 from django.views.generic import ListView, CreateView, View
 
 from applications.user_profiles import forms as up_forms
-from applications.user_profiles.permissions import UserPermissionMixin
+from applications.user_profiles.permissions import UserPermissionMixin, FORBIDDEN_MESSAGE
 from applications.user_profiles.services.crud import read as up_read, update as up_update, create as up_create
-from applications.user_profiles.services.utils import form_utils, common_utils
+from applications.user_profiles.services.utils import form_utils as up_form_utils
 
-from applications.user_wall import forms as uw_forms
-from applications.user_wall.services.crud import create as uw_create, read as uw_read
+from applications.user_wall import forms as uw_forms, models as uw_models
+from applications.user_wall.services.crud import create as uw_create, read as uw_read, update as uw_update
+from applications.user_wall.services.utils import form_utils as uw_form_utils
 
 
 class UsersView(ListView):
@@ -75,9 +78,13 @@ class UserProfileView(View):
         if not user_obj:
             raise Http404
 
+        today = datetime.today()
         context = {
             'user_obj': user_obj,
             'user_posts': uw_read.get_user_posts(user_pk=pk),
+            'today_date': today.date(),
+            'yesterday_date': datetime(year=today.year, month=today.month, day=today.day - 1).date(),
+            'is_owner': request.user.pk == pk,
         }
         return render(request, self.template_name, context=context)
 
@@ -90,7 +97,7 @@ class EditUserProfileView(LoginRequiredMixin, UserPermissionMixin, View):
     def get(self, request: WSGIRequest, pk: int):
         form = self.form_class()
 
-        form_utils.fill_edit_user_profile_form(
+        up_form_utils.fill_edit_user_profile_form(
             form=form,
             user_data=up_read.get_user_data_for_edit_profile_view(user_pk=pk),
         )
@@ -144,7 +151,7 @@ class UserChatListView(LoginRequiredMixin, View):
 
 class CreateUserPostView(LoginRequiredMixin, View):
     template_name = 'user_wall/create_post.html'
-    form_class = uw_forms.PostCreationForm
+    form_class = uw_forms.UserPostForm
     login_url = reverse_lazy('login')
 
     def get(self, request: WSGIRequest):
@@ -159,7 +166,7 @@ class CreateUserPostView(LoginRequiredMixin, View):
             return redirect(to='user_profile', pk=request.user.pk)
 
         context = self.get_context_data(pk=request.user.pk)
-        context['form'] = self.form_class(request.POST)
+        context['form'] = form
         return render(request, self.template_name, context=context)
 
     def get_context_data(self, pk: int) -> dict:
@@ -167,3 +174,43 @@ class CreateUserPostView(LoginRequiredMixin, View):
             'form': self.form_class(),
             'user_obj': up_read.get_user_for_profile(user_pk=pk),
         }
+
+
+class EditUserPostView(LoginRequiredMixin, View):
+    template_name = 'user_wall/edit_post.html'
+    form_class = uw_forms.UserPostForm
+    login_url = reverse_lazy('login')
+
+    def get(self, request: WSGIRequest, slug: str):
+        user_post = uw_read.get_user_post(slug=slug)
+        self.check_request(user_post=user_post)
+
+        context = self.get_context_data(pk=request.user.pk, post_slug=slug)
+        uw_form_utils.fill_edit_user_post_form(form=context['form'], post=user_post)
+        return render(request, self.template_name, context=context)
+
+    def post(self, request: WSGIRequest, slug: str):
+        user_post = uw_read.get_user_post(slug=slug)
+        self.check_request(user_post=user_post)
+
+        form = self.form_class(request.POST)
+        if form.is_valid() and uw_update.update_user_post(data=form.cleaned_data, post=user_post):
+            return redirect(to='user_profile', pk=request.user.pk)
+
+        context = self.get_context_data(pk=request.user.pk, post_slug=slug)
+        context['form'] = form
+        return render(request, self.template_name, context=context)
+
+    def get_context_data(self, pk: int, post_slug: str) -> dict:
+        return {
+            'form': self.form_class(),
+            'user_obj': up_read.get_user_for_profile(user_pk=pk),
+            'post_slug': post_slug,
+        }
+
+    def check_request(self, user_post: uw_models.UserPost):
+        if not user_post:
+            raise Http404
+
+        if user_post.author_id != self.request.user.pk:
+            return HttpResponseForbidden(FORBIDDEN_MESSAGE)

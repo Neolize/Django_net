@@ -7,9 +7,9 @@ function main() {
 
 
 function addEventToTextarea() {
-    console.log('Textarea was changed');
     const textarea = document.getElementById('form-edit__info_about_user');
     textarea.addEventListener('keyup', validateTextarea);
+    textarea.addEventListener('focus', validateTextarea);
 }
 
 
