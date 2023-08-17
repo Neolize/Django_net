@@ -140,7 +140,7 @@
                                  <span class="userimage"><img src="{{ user_obj.avatar.url }}" alt="avatar"></span>
                                  <span class="username"><a href="{% url 'user_profile' pk=user_obj.pk %}">{{ user_obj.get_full_name }}</a> <small></small></span>
                                  {% if post.last_edit %}
-                                    <span class="pull-right text-muted">(edited)</span>
+                                    <span class="pull-right text-muted" style="margin-left: 5px;">(edited)</span>
                                  {% endif %}
                                  <span class="pull-right text-muted">{{ post.view_counts }} Views</span>
                               </div>

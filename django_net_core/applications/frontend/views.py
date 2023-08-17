@@ -1,5 +1,3 @@
-from datetime import datetime
-
 from django.contrib.auth import login
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.auth.views import LoginView, LogoutView
@@ -81,7 +79,6 @@ class UserProfileView(View):
 
         context = up_common_utils.form_user_profile_context_data(
             user_obj=user_obj,
-            pk=pk,
             request=self.request,
             paginate_by=self.paginate_by,
         )

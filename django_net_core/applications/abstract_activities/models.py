@@ -1,4 +1,5 @@
 from django.db import models
+from django.contrib.postgres.fields import ArrayField
 
 
 class AbstractPost(models.Model):
@@ -8,6 +9,7 @@ class AbstractPost(models.Model):
     publication_date = models.DateTimeField(auto_now_add=True)
     last_edit = models.DateTimeField(blank=True, null=True)
     view_counts = models.PositiveIntegerField(default=0)
+    user_list = ArrayField(models.BigIntegerField(), default=list)
     slug = models.SlugField(max_length=175, blank=True, unique=True)
     is_published = models.BooleanField(default=True)
 

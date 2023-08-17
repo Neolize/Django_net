@@ -3,7 +3,7 @@ from datetime import date, datetime
 from django.core.handlers.wsgi import WSGIRequest
 
 from applications.user_profiles.models import CustomUser
-from applications.user_wall.services.crud.read import get_user_posts
+from applications.user_wall.services.crud.read import get_related_posts
 from applications.frontend.services.pagination import get_page_object
 
 from applications.user_wall.services.crud.update import update_user_posts_view_counts
@@ -22,7 +22,6 @@ def get_max_birthdate() -> str:
 
 def form_user_profile_context_data(
         user_obj: CustomUser,
-        pk: int,
         request: WSGIRequest,
         paginate_by: int,
 ) -> dict:
@@ -33,26 +32,24 @@ def form_user_profile_context_data(
     end = page * paginate_by
     start = end - paginate_by
 
-    user_posts = get_user_posts(user_pk=pk)
+    user_posts = get_related_posts(user=user_obj)
 
     page_obj = get_page_object(
         object_list=user_posts,
         paginate_by=paginate_by,
         page=page,
     )
-
+    relevant_posts = user_posts[start:end]
     update_user_posts_view_counts(
-        user=user_obj,
+        user_pk=user_obj.pk,
         visitor_pk=request.user.pk,
-        start=start,
-        end=end,
+        posts=relevant_posts,
     )
-
     return {
         'user_obj': user_obj,
-        'user_posts': user_posts[start:end],
+        'user_posts': relevant_posts,
         'today_date': today.date(),
         'yesterday_date': datetime(year=today.year, month=today.month, day=today.day - 1).date(),
-        'is_owner': request.user.pk == pk,
+        'is_owner': request.user.pk == user_obj.pk,
         'page_obj': page_obj,
     }

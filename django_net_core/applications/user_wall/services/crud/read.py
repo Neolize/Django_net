@@ -3,14 +3,14 @@ import logging
 from django.db.models import QuerySet
 
 from applications.user_wall import models
+from applications.user_profiles.models import CustomUser
 
 
 LOGGER = logging.getLogger('main_logger')
 
 
-def get_user_posts(user_pk: int) -> QuerySet[models.UserPost]:
-    return models.UserPost.objects.filter(author_id=user_pk, is_published=True)\
-        .order_by('-publication_date').prefetch_related('tags')
+def get_related_posts(user: CustomUser) -> QuerySet[models.UserPost]:
+    return user.user_posts.filter(is_published=True).order_by('-publication_date').prefetch_related('tags')
 
 
 def get_user_post(slug: str) -> models.UserPost | bool:
