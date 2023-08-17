@@ -9,16 +9,14 @@ from django.shortcuts import render, redirect
 from django.urls import reverse_lazy
 from django.views.generic import ListView, CreateView, View
 
-from applications.user_profiles import forms as up_forms, models as up_models
+from applications.user_profiles import forms as up_forms
 from applications.user_profiles.permissions import UserPermissionMixin, FORBIDDEN_MESSAGE
 from applications.user_profiles.services.crud import read as up_read, update as up_update, create as up_create
-from applications.user_profiles.services.utils import form_utils as up_form_utils
+from applications.user_profiles.services.utils import form_utils as up_form_utils, common_utils as up_common_utils
 
 from applications.user_wall import forms as uw_forms, models as uw_models
 from applications.user_wall.services.crud import create as uw_create, read as uw_read, update as uw_update
 from applications.user_wall.services.utils import form_utils as uw_form_utils
-
-from applications.frontend.services.pagination import get_page_object
 
 
 class UsersView(ListView):
@@ -81,32 +79,13 @@ class UserProfileView(View):
         if not user_obj:
             raise Http404
 
-        context = self.get_context_data(user_obj=user_obj, pk=pk)
-        return render(request, self.template_name, context=context)
-
-    def get_context_data(self, user_obj: up_models.CustomUser, pk: int) -> dict:
-        today = datetime.today()
-
-        page = int(self.request.GET.get('page', 1))
-        end = page * self.paginate_by
-        start = end - self.paginate_by
-
-        user_posts = uw_read.get_user_posts(user_pk=pk)
-
-        page_obj = get_page_object(
-            object_list=user_posts,
+        context = up_common_utils.form_user_profile_context_data(
+            user_obj=user_obj,
+            pk=pk,
+            request=self.request,
             paginate_by=self.paginate_by,
-            page=page
         )
-
-        return {
-            'user_obj': user_obj,
-            'user_posts': user_posts[start:end],
-            'today_date': today.date(),
-            'yesterday_date': datetime(year=today.year, month=today.month, day=today.day - 1).date(),
-            'is_owner': self.request.user.pk == pk,
-            'page_obj': page_obj,
-        }
+        return render(request, self.template_name, context=context)
 
 
 class EditUserProfileView(LoginRequiredMixin, UserPermissionMixin, View):

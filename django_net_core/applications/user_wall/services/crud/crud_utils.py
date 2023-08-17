@@ -1,8 +1,8 @@
 import re
 from time import time
 
-from django.utils.text import slugify as django_slugify
 from django.db.models.base import ModelBase
+from django.utils.text import slugify as django_slugify
 
 
 def return_unique_slug(str_for_slug: str, model: ModelBase) -> str:

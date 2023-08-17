@@ -1,6 +1,7 @@
 import logging
 from datetime import datetime
 
+from applications.user_profiles.models import CustomUser
 from applications.user_wall import models
 from applications.user_wall.services.crud import crud_utils, create
 
@@ -48,3 +49,14 @@ def _return_new_tag_list(new_tags: list[str], old_tags: list[str]) -> list[str]:
             new_tag_list.append(new_tag)
 
     return new_tag_list
+
+
+def update_user_posts_view_counts(user: CustomUser, visitor_pk: int, start: int = 0, end: int = 1) -> None:
+    if visitor_pk == user.pk:
+        return None
+
+    user_posts = user.user_posts.filter(is_published=True)[start:end]
+    for post in user_posts:
+        # increase counter when the appropriate page is opened
+        post.view_counts += 1
+        post.save()
