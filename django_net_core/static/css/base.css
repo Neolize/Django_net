@@ -5,6 +5,10 @@
     min-height: 100vh;
 }
 
+.navbar {
+    margin-bottom: 75px;
+}
+
 .navbar-logo {
     height: 32px;
     width: 32px;

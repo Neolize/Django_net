@@ -5,6 +5,8 @@
 {% block link %}
     <link rel="stylesheet" href="{% static 'user_profiles/css/style.css' %}" type="text/css" />
     <link rel="stylesheet" href="{% static 'user_wall/css/style.css' %}" type="text/css" />
+    <link rel="stylesheet" href="{% static 'css/pagination.css' %}" type="text/css" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css" type="text/css">
 {% endblock link %}
 
 {% block title %} Profile {% endblock title %}
@@ -140,7 +142,7 @@
                                  {% if post.last_edit %}
                                     <span class="pull-right text-muted">(edited)</span>
                                  {% endif %}
-                                 <span class="pull-right text-muted">18 Views</span>
+                                 <span class="pull-right text-muted">{{ post.view_counts }} Views</span>
                               </div>
                               <div class="timeline-content">
                                 {% if post.tags.all %}
@@ -155,7 +157,7 @@
                                     </p>
                                 {% endif %}
                                 <h4 class="template-title">
-                                    <i class="fa fa-map-marker text-danger fa-fw"></i>
+                                    <i class="text-danger"></i>
                                     {{ post.title }}
                                 </h4>
                                  <p class="mt-4">
@@ -223,4 +225,9 @@
         </div>
         <!-- end profile-content -->
     </div>
+
+{% if page_obj.has_other_pages %}
+    {% include 'include/pagination.html' %}
+{% endif %}
+
 {% endblock profile %}

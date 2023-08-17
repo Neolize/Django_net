@@ -8,9 +8,9 @@ from applications.user_wall import models
 LOGGER = logging.getLogger('main_logger')
 
 
-def get_user_posts(user_pk) -> QuerySet[models.UserPost]:
-    # return models.UserPost.objects.filter(author_id=user_pk).prefetch_related('tags')
-    return models.UserPost.objects.filter(author_id=user_pk).order_by('-publication_date')
+def get_user_posts(user_pk: int) -> QuerySet[models.UserPost]:
+    return models.UserPost.objects.filter(author_id=user_pk, is_published=True)\
+        .order_by('-publication_date').prefetch_related('tags')
 
 
 def get_user_post(slug: str) -> models.UserPost | bool:
@@ -21,16 +21,3 @@ def get_user_post(slug: str) -> models.UserPost | bool:
         post = False
 
     return post
-
-#  posts = models.UserPost.objects.filter(author_id=6, is_published=True).
-#  values('title', 'content', 'publication_date', 'last_edit', 'view_counts', 'tags__title')
-
-# def get_user_posts(user_pk) -> QuerySet[models.UserPost]:
-#     values = (
-#         'title',
-#         'content',
-#         'publication_date'
-#         'last_edit',
-#         'view_counts',
-#     )
-#     return models.UserPost.objects.filter(author_id=user_pk, is_published=True).values(*values)
