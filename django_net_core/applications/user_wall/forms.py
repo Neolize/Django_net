@@ -44,3 +44,21 @@ class UserPostForm(forms.ModelForm):
     class Meta:
         model = models.UserPost
         fields = ('title', 'tags', 'content', 'draft')
+
+
+class UserCommentForm(forms.ModelForm):
+    comment = forms.CharField(
+        required=True,
+        widget=forms.Textarea(
+            attrs={
+                'class': 'form-control rounded',
+                'style': 'margin-right: 10px',
+                'placeholder': 'Write a comment...',
+                'rows': 1,
+            }
+        )
+    )
+
+    class Meta:
+        model = models.UserComment
+        fields = ('comment', )

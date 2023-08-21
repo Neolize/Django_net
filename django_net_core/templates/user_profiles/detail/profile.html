@@ -190,31 +190,36 @@
                               </div>
                               <div class="timeline-comment-box">
                                  <div class="input">
-                                    <form action="">
+
+                                    <form action="" method="post">
+                                       {% csrf_token %}
                                        <div class="input-group">
-                                          <input type="text" class="form-control rounded" style="margin-right: 10px;" placeholder="Write a comment...">
+<!--                                          <input type="text" name="comment" class="form-control rounded" style="margin-right: 10px;" placeholder="Write a comment...">-->
+                                           <input type="hidden" name="post_id" value="{{ post.id }}">
+                                           {{ form.comment }}
                                           <span class="input-group-btn p-l-10">
-                                          <button class="btn btn-primary f-s-12 rounded-corner" type="button">Comment</button>
+                                          <button class="btn btn-primary f-s-12 rounded-corner" type="submit">Comment</button>
                                           </span>
                                        </div>
                                     </form>
+
                                  </div>
                               </div>
                            </div>
                            <!-- end timeline-body -->
                         </li>
-                        <li>
-                           <!-- begin timeline-icon -->
-                           <div class="timeline-icon">
-                              <a href="javascript:;">&nbsp;</a>
-                           </div>
-                           <!-- end timeline-icon -->
-                           <!-- begin timeline-body -->
-                           <div class="timeline-body">
-                              Loading...
-                           </div>
-                           <!-- begin timeline-body -->
-                        </li>
+<!--                        <li>-->
+<!--                           &lt;!&ndash; begin timeline-icon &ndash;&gt;-->
+<!--                           <div class="timeline-icon">-->
+<!--                              <a href="javascript:;">&nbsp;</a>-->
+<!--                           </div>-->
+<!--                           &lt;!&ndash; end timeline-icon &ndash;&gt;-->
+<!--                           &lt;!&ndash; begin timeline-body &ndash;&gt;-->
+<!--                           <div class="timeline-body">-->
+<!--                              Loading...-->
+<!--                           </div>-->
+<!--                           &lt;!&ndash; begin timeline-body &ndash;&gt;-->
+<!--                        </li>-->
                     {% endfor %}
                  </ul>
                  <!-- end timeline -->

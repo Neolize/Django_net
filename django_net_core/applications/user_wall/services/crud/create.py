@@ -1,10 +1,10 @@
 import logging
 
+from django.core.handlers.wsgi import WSGIRequest
 from django.db.utils import DataError
 
 from applications.user_wall import models
 from applications.user_wall.services.crud import crud_utils
-
 
 LOGGER = logging.getLogger('main_logger')
 
@@ -74,3 +74,38 @@ def create_tags_from_list(tag_list: list[str]) -> list[models.Tag]:
 def add_tags_to_user_post(tags: list[models.Tag], post: models.UserPost) -> None:
     for tag in tags:
         post.tags.add(tag)
+
+
+def create_comment_for_user_post(data: dict, request: WSGIRequest, user_pk: int) -> bool:
+    """content, author_id, parent_id, post_id"""
+    content = data.get('comment', '')
+    post_id = int(request.POST.get('post_id'))
+    parent_id = None
+
+    return _create_user_comment(
+        content=content,
+        author_id=user_pk,
+        post_id=post_id,
+        parent_id=parent_id,
+    )
+
+
+def _create_user_comment(
+        content: str,
+        author_id: int,
+        post_id: int,
+        parent_id: int | None,
+) -> bool:
+    try:
+        models.UserComment.objects.create(
+            content=content,
+            author_id=author_id,
+            post_id=post_id,
+            parent_id=parent_id,
+        )
+        is_created = True
+    except Exception as exc:
+        LOGGER.error(exc)
+        is_created = False
+
+    return is_created
