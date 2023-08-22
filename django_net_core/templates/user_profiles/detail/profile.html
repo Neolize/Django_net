@@ -166,8 +166,12 @@
                               </div>
                               <div class="timeline-likes">
                                  <div class="stats-right">
-                                    <span class="stats-text">259 Shares</span>
-                                    <span class="stats-text">21 Comments</span>
+                                     <span class="stats-text">259 Shares</span>
+                                     {% if post.comments_number == 1 %}
+                                        <span class="stats-text">{{ post.comments_number }} Comment</span>
+                                     {% else %}
+                                         <span class="stats-text">{{ post.comments_number }} Comments</span>
+                                     {% endif %}
                                  </div>
                                  <div class="stats">
                                     <span class="fa-stack fa-fw stats-icon">
@@ -205,6 +209,30 @@
 
                                  </div>
                               </div>
+
+                               {% if post.comments_number %}
+                                   <div class="commentline"></div>
+
+                                   <ul style="list-style-type: none">
+                                       {% for comment in post.comments.all %}
+                                           <li class="usercomment_block">
+                                               <div class="timeline-header usercomment-header">
+                                                   {% if comment.author.avatar %}
+                                                       <span class="userimage"><img src="{{ comment.author.avatar.url }}" alt="avatar"></span>
+                                                   {% else %}
+                                                       <span class="userimage"><img src="{% static 'user_profiles/images/anonymous.png' %}" alt="avatar"></span>
+                                                   {% endif %}
+                                                   <span class="usercomment_name"><a href="{% url 'user_profile' pk=comment.author.pk %}">{{ comment.author.get_full_name }}</a> <small></small></span>
+                                                   <p class="usercomment_content">
+                                                       {{ comment.content }}
+                                                   </p>
+                                                </div>
+                                           </li>
+                                       {% endfor %}
+                                   </ul>
+                               {% endif %}
+
+
                            </div>
                            <!-- end timeline-body -->
                         </li>

@@ -2,10 +2,9 @@ from datetime import date, datetime
 
 from django.core.handlers.wsgi import WSGIRequest
 
+from applications.frontend.services.pagination import get_page_object
 from applications.user_profiles.models import CustomUser
 from applications.user_wall.services.crud.read import get_related_posts
-from applications.frontend.services.pagination import get_page_object
-
 from applications.user_wall.services.crud.update import update_user_posts_view_counts
 
 
@@ -26,8 +25,6 @@ def form_user_profile_context_data(
         paginate_by: int,
 ) -> dict:
 
-    today = datetime.today()
-
     page = int(request.GET.get('page', 1))
     end = page * paginate_by
     start = end - paginate_by
@@ -45,6 +42,7 @@ def form_user_profile_context_data(
         visitor_pk=request.user.pk,
         posts=relevant_posts,
     )
+    today = datetime.today()
     return {
         'user_obj': user_obj,
         'user_posts': relevant_posts,

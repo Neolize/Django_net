@@ -20,5 +20,6 @@ class UserPostAdmin(admin.ModelAdmin):
 class UserCommentAdmin(admin.ModelAdmin):
     list_display = ('id', 'creation_date', 'author')
     list_display_links = ('id', )
+    readonly_fields = ('creation_date', )
 
 

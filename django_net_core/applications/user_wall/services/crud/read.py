@@ -1,6 +1,6 @@
 import logging
 
-from django.db.models import QuerySet
+from django.db.models import QuerySet, Count
 
 from applications.user_wall import models
 from applications.user_profiles.models import CustomUser
@@ -10,7 +10,8 @@ LOGGER = logging.getLogger('main_logger')
 
 
 def get_related_posts(user: CustomUser) -> QuerySet[models.UserPost]:
-    return user.user_posts.filter(is_published=True).order_by('-publication_date').prefetch_related('tags')
+    return user.user_posts.filter(is_published=True).order_by('-publication_date').\
+        prefetch_related('tags', 'comments', 'comments__author').annotate(comments_number=Count('comments'))
 
 
 def get_user_post(slug: str) -> models.UserPost | bool:
