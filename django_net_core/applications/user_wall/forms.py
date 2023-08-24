@@ -55,6 +55,7 @@ class UserCommentForm(forms.ModelForm):
                 'style': 'margin-right: 10px',
                 'placeholder': 'Write a comment...',
                 'rows': 1,
+                'id': 'usercomment-input',
             }
         )
     )

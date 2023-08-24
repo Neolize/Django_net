@@ -31,6 +31,15 @@ class UserPost(abstract_models.AbstractPost):
     def __str__(self):
         return f'{self.title} - {self.author}'
 
+    def get_comments(self):
+        return self.comments.filter(parent_id__isnull=True, is_published=True).select_related('author').\
+            prefetch_related(models.Prefetch(
+                'children',
+                UserComment.objects.filter(is_published=True).select_related('author'),
+                'children_comments',
+            )
+        )
+
 
 class UserComment(abstract_models.AbstractComment, MPTTModel):
     """User's comment model"""

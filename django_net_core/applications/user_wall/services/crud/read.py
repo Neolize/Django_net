@@ -11,7 +11,7 @@ LOGGER = logging.getLogger('main_logger')
 
 def get_related_posts(user: CustomUser) -> QuerySet[models.UserPost]:
     return user.user_posts.filter(is_published=True).order_by('-publication_date').\
-        prefetch_related('tags', 'comments', 'comments__author').annotate(comments_number=Count('comments'))
+        prefetch_related('tags').annotate(comments_number=Count('comments'))
 
 
 def get_user_post(slug: str) -> models.UserPost | bool:

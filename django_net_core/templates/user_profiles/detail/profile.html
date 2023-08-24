@@ -195,11 +195,11 @@
                               <div class="timeline-comment-box">
                                  <div class="input">
 
-                                    <form action="" method="post">
+                                    <form action="" method="post" id="formComment">
                                        {% csrf_token %}
                                        <div class="input-group">
-<!--                                          <input type="text" name="comment" class="form-control rounded" style="margin-right: 10px;" placeholder="Write a comment...">-->
                                            <input type="hidden" name="post_id" value="{{ post.id }}">
+                                           <input type="hidden" name="parent_id" value="" id="parentcomment">
                                            {{ form.comment }}
                                           <span class="input-group-btn p-l-10">
                                           <button class="btn btn-primary f-s-12 rounded-corner" type="submit">Comment</button>
@@ -214,7 +214,7 @@
                                    <div class="commentline"></div>
 
                                    <ul style="list-style-type: none">
-                                       {% for comment in post.comments.all %}
+                                       {% for comment in post.get_comments %}
                                            <li class="usercomment_block">
                                                <div class="timeline-header usercomment-header">
                                                    {% if comment.author.avatar %}
@@ -226,8 +226,26 @@
                                                    <p class="usercomment_content">
                                                        {{ comment.content }}
                                                    </p>
+                                                   <a href="#usercomment-input" class="comment_reply"
+                                                      onclick="addChildReview('{{ comment.author.username }}', '{{ comment.author.pk }}')">Reply</a>
                                                 </div>
                                            </li>
+
+                                           {% for child in comment.children_comments %}
+                                               <li class="childcomment_block">
+                                                   <div class="timeline-header usercomment-header">
+                                                       {% if child.author.avatar %}
+                                                           <span class="userimage"><img src="{{ child.author.avatar.url }}" alt="avatar"></span>
+                                                       {% else %}
+                                                           <span class="userimage"><img src="{% static 'user_profiles/images/anonymous.png' %}" alt="avatar"></span>
+                                                       {% endif %}
+                                                       <span class="usercomment_name"><a href="{% url 'user_profile' pk=child.author.pk %}">{{ child.author.get_full_name }}</a> <small></small></span>
+                                                       <p class="usercomment_content">
+                                                           {{ child.content }}
+                                                       </p>
+                                                   </div>
+                                               </li>
+                                           {% endfor %}
                                        {% endfor %}
                                    </ul>
                                {% endif %}
@@ -264,3 +282,8 @@
 {% endif %}
 
 {% endblock profile %}
+
+
+{% block script %}
+    <script src="{% static 'user_profiles/js/profile.js' %}"></script>
+{% endblock script %}
