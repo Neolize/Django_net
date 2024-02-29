@@ -97,3 +97,17 @@ body {
 .profile-form__textarea_danger{
     border:2px solid red !important;
 }
+
+.user-head-information {
+    display: inline-block;
+    margin-left: 45px;
+}
+
+.user-head-information span {
+    display: block;
+}
+
+.user-head-information__clickable:hover {
+    color:#767070;
+    cursor: pointer;
+}

@@ -1,6 +1,6 @@
 import logging
 
-from django.db.models import QuerySet, F
+from django.db.models import QuerySet, F, Q
 
 from applications.user_profiles import models
 
@@ -10,6 +10,15 @@ LOGGER = logging.getLogger('main_logger')
 
 def get_all_users() -> QuerySet[models.CustomUser]:
     return models.CustomUser.objects.all()
+
+
+def fetch_users_by_names(user_input) -> QuerySet[models.CustomUser]:
+    return models.CustomUser.objects.filter(
+        Q(username__icontains=user_input) |
+        Q(first_name__icontains=user_input) |
+        Q(middle_name__icontains=user_input) |
+        Q(last_name__icontains=user_input)
+    )
 
 
 def get_common_values_for_user_profile() -> tuple:

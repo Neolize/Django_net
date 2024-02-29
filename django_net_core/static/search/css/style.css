@@ -1,0 +1,35 @@
+.search_block {
+    display: table-cell;
+    vertical-align: middle;
+    text-align: center;
+    width: 550px;
+}
+
+.input_search {
+    height: 50px;
+}
+
+.button_search {
+    height: 50px;
+    width: 50px;
+    background-image: url('../images/search.png');
+    background-repeat: no-repeat;
+    background-position: 50% 50%;
+    position: relative;
+    left: 290px;
+    bottom: 55px;
+    cursor: pointer;
+    margin-bottom: -35px;
+}
+
+.card_block {
+    /* display: inline-block; */
+    width: 650px;
+    margin-bottom: -30px;
+}
+
+.user_link {
+    text-decoration: none;
+    color: #000;
+    cursor: pointer;
+}

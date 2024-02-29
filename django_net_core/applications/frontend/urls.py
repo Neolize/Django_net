@@ -11,9 +11,12 @@ urlpatterns = [
     path('user/profile/edit_profile/<int:pk>/', views.EditUserProfileView.as_view(), name='edit_user_profile'),
     path('user/profile/create_post/', views.CreateUserPostView.as_view(), name='create_user_post'),
     path('user/profile/edit_post/<slug:slug>/', views.EditUserPostView.as_view(), name='edit_user_post'),
-    path('user/friends/', views.UserFriendsView.as_view(), name='user_friends'),
+
+    path('user/friends/', views.UserFollowersView.as_view(), name='user_friends'),
     path('user/chat/<int:pk>/', views.UserChatView.as_view(), name='user_chat'),
     path('user/chat_list/', views.UserChatListView.as_view(), name='user_chat_list'),
+
+    path('search/', views.PeopleSearchView.as_view(), name='people_search'),
 
     path('login/', views.LoginUserView.as_view(), name='login'),
     path('signup/', views.SignupUserView.as_view(), name='signup'),

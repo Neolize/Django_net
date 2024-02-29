@@ -137,18 +137,32 @@ class UserWallView(LoginRequiredMixin, View):
         return render(request, self.template_name)
 
 
-class UserFriendsView(LoginRequiredMixin, View):
-    template_name = 'user_profiles/list/friends.html'
+class UserFollowersView(LoginRequiredMixin, View):
+    template_name = 'user_profiles/list/followers.html'
+
+    def get(self, request: WSGIRequest, pk: int):
+        return render(request, self.template_name)
+
+
+class PeopleSearchView(View):
+    template_name = 'search/people_search.html'
 
     def get(self, request: WSGIRequest):
-        return render(request, self.template_name)
+        user_input = request.GET.get('input')
+        if user_input is None:
+            users = up_read.get_all_users()
+        else:
+            users = up_read.fetch_users_by_names(user_input)
+        context = {
+            'users': users,
+        }
+        return render(request, self.template_name, context=context)
 
 
 class UserChatView(LoginRequiredMixin, View):
     template_name = 'user_profiles/detail/chat.html'
 
     def get(self, request, pk):
-        print(f'Current pk: {pk}')
         return render(request, self.template_name)
 
 

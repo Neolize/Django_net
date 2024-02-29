@@ -45,7 +45,9 @@ def form_user_profile_context_data(
     today = datetime.today()
     return {
         'user_obj': user_obj,
+        'posts_number': user_obj.user_posts.count(),
         'user_posts': relevant_posts,
+        'followers': user_obj.followers.count(),
         'today_date': today.date(),
         'yesterday_date': datetime(year=today.year, month=today.month, day=today.day - 1).date(),
         'is_owner': request.user.pk == user_obj.pk,

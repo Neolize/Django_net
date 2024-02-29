@@ -17,7 +17,7 @@
             Dropdown
           </a>
           <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
-            <li><a class="dropdown-item" href="#">News</a></li>
+            <li><a class="dropdown-item" href="{% url 'people_search' %}">People</a></li>
             <li><a class="dropdown-item" href="#">Blog</a></li>
             <li><hr class="dropdown-divider"></li>
             <li><a class="dropdown-item" href="#">Music</a></li>
@@ -37,7 +37,7 @@
           <div class="dropdown-menu" aria-labelledby="dropdownMenuLink">
             <a class="dropdown-item" href="{{ user.get_absolute_url }}">Your profile</a>
             <a class="dropdown-item" href="{% url 'create_user_post' %}">Create post</a>
-            <a class="dropdown-item" href="{% url 'user_friends' %}">Friends</a>
+            <a class="dropdown-item" href="{% url 'user_friends' %}">Followers</a>
             <a class="dropdown-item" href="{% url 'user_chat_list' %}">Chat list</a>
           </div>
         </div>
