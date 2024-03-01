@@ -12,6 +12,10 @@ def get_all_users() -> QuerySet[models.CustomUser]:
     return models.CustomUser.objects.all()
 
 
+def get_all_users_with_personal_data():
+    return models.CustomUser.objects.all().select_related('personal_data')
+
+
 def fetch_users_by_names(user_input) -> QuerySet[models.CustomUser]:
     return models.CustomUser.objects.filter(
         Q(username__icontains=user_input) |

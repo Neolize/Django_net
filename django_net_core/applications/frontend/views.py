@@ -150,7 +150,8 @@ class PeopleSearchView(View):
     def get(self, request: WSGIRequest):
         user_input = request.GET.get('input')
         if user_input is None:
-            users = up_read.get_all_users()
+            # users = up_read.get_all_users()
+            users = up_read.get_all_users_with_personal_data()
         else:
             users = up_read.fetch_users_by_names(user_input)
         context = {

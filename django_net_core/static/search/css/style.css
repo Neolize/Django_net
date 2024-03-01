@@ -23,13 +23,20 @@
 }
 
 .card_block {
-    /* display: inline-block; */
-    width: 650px;
+    width: 550px;
     margin-bottom: -30px;
+    padding-left: 16%;
+    display: inline-block;
 }
 
 .user_link {
+    display: inline-block;
+    margin: 10px 0 15px 0;
     text-decoration: none;
     color: #000;
     cursor: pointer;
+}
+
+.user-card {
+    width: 350px;
 }
