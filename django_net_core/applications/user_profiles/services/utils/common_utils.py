@@ -1,4 +1,4 @@
-from datetime import date, datetime
+from datetime import date, datetime, timedelta
 
 from django.core.handlers.wsgi import WSGIRequest
 
@@ -49,7 +49,7 @@ def form_user_profile_context_data(
         'user_posts': relevant_posts,
         'followers': user_obj.followers.count(),
         'today_date': today.date(),
-        'yesterday_date': datetime(year=today.year, month=today.month, day=today.day - 1).date(),
+        'yesterday_date': today - timedelta(days=1),
         'is_owner': request.user.pk == user_obj.pk,
         'page_obj': page_obj,
     }
