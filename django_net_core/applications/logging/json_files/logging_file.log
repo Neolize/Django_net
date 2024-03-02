@@ -1,0 +1,16 @@
+{
+  "message": "Cannot assign \"6\": \"Follower.user\" must be a \"CustomUser\" instance.",
+  "levelname": "ERROR",
+  "asctime": "2024-03-02 14:26:34,378",
+  "pathname": "/home/neolize/Neolize/Python/Django projects/Django Net/django_net_core/applications/user_profiles/services/crud/create.py",
+  "funcName": "create_new_follower",
+  "lineno": 114
+}
+{
+  "message": "Cannot assign \"6\": \"Follower.user\" must be a \"CustomUser\" instance.",
+  "levelname": "ERROR",
+  "asctime": "2024-03-02 14:28:24,677",
+  "pathname": "/home/neolize/Neolize/Python/Django projects/Django Net/django_net_core/applications/user_profiles/services/crud/create.py",
+  "funcName": "create_new_follower",
+  "lineno": 114
+}

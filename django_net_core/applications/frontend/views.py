@@ -8,6 +8,7 @@ from django.urls import reverse_lazy
 from django.views.generic import ListView, CreateView, View
 
 from applications.user_profiles import forms as up_forms
+from applications.user_profiles.models import CustomUser
 from applications.user_profiles.permissions import UserPermissionMixin, FORBIDDEN_MESSAGE
 from applications.user_profiles.services.crud import read as up_read, update as up_update, create as up_create
 from applications.user_profiles.services.utils import form_utils as up_form_utils, common_utils as up_common_utils
@@ -97,6 +98,13 @@ class UserProfileView(View):
             return self.get(request=request, pk=pk)
 
         return self.get(request=request, pk=pk, form=form)
+
+
+def follow_user(request: WSGIRequest, pk: int):
+    if request.user.is_authenticated:
+        owner = up_read.get_user_for_profile(user_pk=pk)
+        up_create.create_new_follower(owner=owner, follower=request.user)
+    return redirect(to='user_profile', pk=pk)
 
 
 class EditUserProfileView(LoginRequiredMixin, UserPermissionMixin, View):

@@ -101,3 +101,14 @@ def create_contact_record(
         is_created = False
 
     return is_created
+
+
+def create_new_follower(owner: models.CustomUser, follower: models.CustomUser) -> None:
+    try:
+        models.Follower.objects.create(
+            user=owner,
+            follower=follower,
+        )
+    except Exception as exc:
+        LOGGER.error(exc)
+        print('Exception occurred')
