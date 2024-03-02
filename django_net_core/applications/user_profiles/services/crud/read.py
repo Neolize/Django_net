@@ -13,15 +13,32 @@ def get_all_users() -> QuerySet[models.CustomUser]:
 
 
 def get_all_users_with_personal_data():
-    return models.CustomUser.objects.all().select_related('personal_data')
+    """Return all users with all needed information"""
+    return (
+        models.CustomUser.objects.all().
+        select_related('personal_data').
+        prefetch_related(
+            'followers',
+            'user_comments',
+            'user_groups',
+        )
+    )
 
 
 def fetch_users_by_names(user_input) -> QuerySet[models.CustomUser]:
-    return models.CustomUser.objects.filter(
-        Q(username__icontains=user_input) |
-        Q(first_name__icontains=user_input) |
-        Q(middle_name__icontains=user_input) |
-        Q(last_name__icontains=user_input)
+    """Return users selected by names with all needed information"""
+    return (
+        models.CustomUser.objects.filter(
+            Q(username__icontains=user_input) |
+            Q(first_name__icontains=user_input) |
+            Q(middle_name__icontains=user_input) |
+            Q(last_name__icontains=user_input)).
+        select_related('personal_data').
+        prefetch_related(
+            'followers',
+            'user_comments',
+            'user_groups',
+        )
     )
 
 

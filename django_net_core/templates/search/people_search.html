@@ -38,39 +38,35 @@
                                     {% if user.gender != 'not specified' %}
                                         {{ user.gender }} |
                                     {% endif %}
-                                    Born {{ user.personal_data.birthday|date:"j.m.o" }}
+                                    {% if user.personal_data.birthday %}
+                                        Born {{ user.personal_data.birthday|date:"j.m.o" }}
+                                    {% endif %}
                                 </p>
                                 <hr>
-    <!--                            <p class="text-muted m-t-15">Activity Level: 87%</p>-->
-    <!--                            <ul class="list-unstyled activity-leval">-->
-    <!--                                <li class="active"></li>-->
-    <!--                                <li class="active"></li>-->
-    <!--                                <li class="active"></li>-->
-    <!--                                <li></li>-->
-    <!--                                <li></li>-->
-    <!--                            </ul>-->
                                 <div class="bg-c-blue counter-block m-t-10 p-20">
                                     <div class="row">
                                         <div class="col-4">
-                                            <i class="fa fa-comment"></i>
-                                            <p>1256</p>
-                                        </div>
-                                        <div class="col-4">
                                             <i class="fa fa-user"></i>
-                                            <p>8562</p>
+                                            <p>{{ user.followers.count }}</p>
                                         </div>
                                         <div class="col-4">
-                                            <i class="fa fa-suitcase"></i>
-                                            <p>189</p>
+                                            <i class="fa fa-comment"></i>
+                                            <p>{{ user.user_comments.count }}</p>
+                                        </div>
+                                        <div class="col-4">
+                                            <i class="fa fa-sitemap"></i>
+                                            <p>{{ user.user_groups.count }}</p>
                                         </div>
                                     </div>
                                 </div>
-                                <p class="m-t-15 text-muted">Lorem Ipsum is simply dummy text of the printing and typesetting industry.</p>
+                                <p class="m-t-15 text-muted">
+                                    {{ user.personal_data.info_about_user|truncatechars:70 }}
+                                </p>
                                 <hr>
                                 <div class="row justify-content-center user-social-link">
-                                    <div class="col-auto"><a href="#!"><i class="fa fa-facebook text-facebook"></i></a></div>
+                                    <div class="col-auto"><a href="#!"><i class="fa fa-globe text-globe"></i></a></div>
                                     <div class="col-auto"><a href="#!"><i class="fa fa-twitter text-twitter"></i></a></div>
-                                    <div class="col-auto"><a href="#!"><i class="fa fa-dribbble text-dribbble"></i></a></div>
+                                    <div class="col-auto"><a href="#!"><i class="fa fa-github text-github"></i></a></div>
                                 </div>
                             </div>
                         </div>
