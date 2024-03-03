@@ -111,4 +111,3 @@ def create_new_follower(owner: models.CustomUser, follower: models.CustomUser) -
         )
     except Exception as exc:
         LOGGER.error(exc)
-        print('Exception occurred')

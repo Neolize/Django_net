@@ -120,3 +120,10 @@ def get_user_for_profile(user_pk: int) -> models.CustomUser | bool:
         user = False
 
     return user
+
+
+def get_raw_user_instance(user_pk: int) -> models.CustomUser:
+    try:
+        return models.CustomUser.objects.get(pk=user_pk)
+    except IndexError as exc:
+        LOGGER.warning(f'User with pk - {user_pk} does not exist. {exc}')

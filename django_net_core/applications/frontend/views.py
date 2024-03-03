@@ -102,7 +102,7 @@ class UserProfileView(View):
 
 def follow_user(request: WSGIRequest, pk: int):
     if request.user.is_authenticated:
-        owner = up_read.get_user_for_profile(user_pk=pk)
+        owner = up_read.get_raw_user_instance(user_pk=pk)
         up_create.create_new_follower(owner=owner, follower=request.user)
     return redirect(to='user_profile', pk=pk)
 
