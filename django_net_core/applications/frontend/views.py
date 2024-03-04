@@ -8,9 +8,9 @@ from django.urls import reverse_lazy
 from django.views.generic import ListView, CreateView, View
 
 from applications.user_profiles import forms as up_forms
-from applications.user_profiles.models import CustomUser
 from applications.user_profiles.permissions import UserPermissionMixin, FORBIDDEN_MESSAGE
-from applications.user_profiles.services.crud import read as up_read, update as up_update, create as up_create
+from applications.user_profiles.services.crud import (read as up_read, update as up_update,
+                                                      create as up_create, delete as up_delete)
 from applications.user_profiles.services.utils import form_utils as up_form_utils, common_utils as up_common_utils
 
 from applications.user_wall import forms as uw_forms, models as uw_models
@@ -101,9 +101,19 @@ class UserProfileView(View):
 
 
 def follow_user(request: WSGIRequest, pk: int):
+    """Follow a user if the request goes from authenticated and unsubscribed user"""
     if request.user.is_authenticated:
         owner = up_read.get_raw_user_instance(user_pk=pk)
-        up_create.create_new_follower(owner=owner, follower=request.user)
+        if not up_common_utils.is_followed(current_user=owner, visitor=request.user):
+            up_create.create_new_follower(owner=owner, follower=request.user)
+    return redirect(to='user_profile', pk=pk)
+
+
+def unfollow_user(request: WSGIRequest, pk: int):
+    if request.user.is_authenticated:
+        owner = up_read.get_raw_user_instance(user_pk=pk)
+        if up_common_utils.is_followed(current_user=owner, visitor=request.user):
+            up_delete.delete_follower(owner=owner, follower=request.user)
     return redirect(to='user_profile', pk=pk)
 
 
@@ -158,7 +168,6 @@ class PeopleSearchView(View):
     def get(self, request: WSGIRequest):
         user_input = request.GET.get('input')
         if user_input is None:
-            # users = up_read.get_all_users()
             users = up_read.get_all_users_with_personal_data()
         else:
             users = up_read.fetch_users_by_names(user_input)

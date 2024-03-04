@@ -48,8 +48,13 @@ def form_user_profile_context_data(
         'posts_number': user_obj.user_posts.count(),
         'user_posts': relevant_posts,
         'followers': user_obj.followers.count(),
+        'is_followed': is_followed(current_user=user_obj, visitor=request.user),
         'today_date': today.date(),
         'yesterday_date': today - timedelta(days=1),
         'is_owner': request.user.pk == user_obj.pk,
         'page_obj': page_obj,
     }
+
+
+def is_followed(current_user: CustomUser, visitor: CustomUser) -> bool:
+    return current_user.pk in visitor.owner.values_list('user__pk', flat=True)

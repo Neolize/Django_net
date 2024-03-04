@@ -38,9 +38,15 @@
                                     <h4>{{ user_obj.get_full_name }}</h4>
                                     <p class="text-secondary mb-1">{{ user_obj.personal_data.work }}</p>
                                     <p class="text-muted font-size-sm">{{ user_obj.personal_data.address }}</p>
-                                    <form action="{% url 'follow_user' pk=user_obj.pk %}" method="get" style="display: inline;">
-                                        <button class="btn btn-primary" type="submit">Follow</button>
-                                    </form>
+                                    {% if is_followed %}
+                                        <form action="{% url 'unfollow_user' pk=user_obj.pk %}" method="get" style="display: inline;">
+                                            <button class="btn btn-primary" type="submit">Unfollow</button>
+                                        </form>
+                                    {% else %}
+                                        <form action="{% url 'follow_user' pk=user_obj.pk %}" method="get" style="display: inline;">
+                                            <button class="btn btn-primary" type="submit">Follow</button>
+                                        </form>
+                                    {% endif %}
                                     <a href="{% url 'user_chat' pk=user_obj.pk %}" class="btn btn-outline-primary">Message</a>
                                 </div>
                             </div>

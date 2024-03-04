@@ -12,6 +12,7 @@ urlpatterns = [
     path('user/profile/create_post/', views.CreateUserPostView.as_view(), name='create_user_post'),
     path('user/profile/edit_post/<slug:slug>/', views.EditUserPostView.as_view(), name='edit_user_post'),
     path('user/profile/follow/<int:pk>/', views.follow_user, name='follow_user'),
+    path('user/profile/unfollow/<int:pk>/', views.unfollow_user, name='unfollow_user'),
 
     path('user/friends/', views.UserFollowersView.as_view(), name='user_friends'),
     path('user/chat/<int:pk>/', views.UserChatView.as_view(), name='user_chat'),
