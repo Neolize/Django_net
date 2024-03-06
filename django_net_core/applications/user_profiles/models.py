@@ -32,6 +32,9 @@ class CustomUser(AbstractUser):
     def get_absolute_url_for_editing(self):
         return reverse_lazy('edit_user_profile', kwargs={'pk': self.pk})
 
+    def get_absolute_url_for_group_creation(self):
+        return reverse_lazy('create_group', kwargs={'pk': self.pk})
+
 
 class UserPersonalData(models.Model):
     """Additional information about user"""

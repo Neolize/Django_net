@@ -1,0 +1,282 @@
+{% extends 'user_profiles/detail/base_profile.html' %}
+
+{% load static %}
+
+{% block title %} Group creation {% endblock title %}
+
+
+{% block breadcrumbs %}
+    <li class="breadcrumb-item"><a href="{% url 'home' %}">Home</a></li>
+    <li class="breadcrumb-item"><a href="{% url 'user_wall' %}">User</a></li>
+    <li class="breadcrumb-item"><a href="{{ user_obj.get_absolute_url }}">User profile</a></li>
+    <li class="breadcrumb-item active" aria-current="page">Create a group</li>
+{% endblock breadcrumbs %}
+
+
+{% block profile %}
+    <div class="col-lg-8">
+        <div class="card card-edit">
+            <div class="card-body">
+
+                <form action="" method="post" enctype="multipart/form-data">
+                    {% csrf_token %}
+
+                    {% if form.non_field_errors %}
+                        <div class="alert alert-danger">{{ form.non_field_errors }}</div>
+                    {% endif %}
+
+                    <div class="row mb-3">
+                        <div class="col-sm-3" style="margin-top: 10px;">
+                            <h6 class="mb-0">First name</h6>
+                        </div>
+                        <div class="col-sm-9 text-secondary">
+                            {{ form.first_name }}
+
+                            {% if form.first_name.errors %}
+                                <div class="alert alert-danger mt-3">{{ form.first_name.errors }}</div>
+                            {% endif %}
+                        </div>
+                    </div>
+
+                    <div class="row mb-3">
+                        <div class="col-sm-3" style="margin-top: 10px;">
+                            <h6 class="mb-0">Middle name</h6>
+                        </div>
+                        <div class="col-sm-9 text-secondary">
+                            {{ form.middle_name }}
+
+                            {% if form.middle_name.errors %}
+                                <div class="alert alert-danger mt-3">{{ form.middle_name.errors }}</div>
+                            {% endif %}
+                        </div>
+                    </div>
+
+                    <div class="row mb-3">
+                        <div class="col-sm-3" style="margin-top: 10px;">
+                            <h6 class="mb-0">Last name</h6>
+                        </div>
+                        <div class="col-sm-9 text-secondary">
+                            {{ form.last_name }}
+
+                            {% if form.last_name.errors %}
+                                <div class="alert alert-danger mt-3">{{ form.last_name.errors }}</div>
+                            {% endif %}
+                        </div>
+                    </div>
+
+                    <div class="row mb-3">
+                        <div class="col-sm-3" style="margin-top: 10px;">
+                            <h6 class="mb-0">Email</h6>
+                        </div>
+                        <div class="col-sm-9 text-secondary">
+                            {{ form.email }}
+
+                            {% if form.email.errors %}
+                                <div class="alert alert-danger mt-3">{{ form.email.errors }}</div>
+                            {% endif %}
+                        </div>
+                    </div>
+
+                    <div class="row mb-3">
+                        <div class="col-sm-3" style="margin-top: 10px;">
+                            <h6 class="mb-0">Phone</h6>
+                        </div>
+                        <div class="col-sm-9 text-secondary">
+                            {{ form.phone }}
+
+                            {% if form.phone.errors %}
+                                <div class="alert alert-danger mt-3">{{ form.phone.errors }}</div>
+                            {% endif %}
+                        </div>
+                    </div>
+
+                    <div class="row mb-3">
+                        <div class="col-sm-3" style="margin-top: 10px;">
+                            <h6 class="mb-0">Birthday</h6>
+                        </div>
+                        <div class="col-sm-9 text-secondary">
+
+                            {% if user_obj.birthday %}
+                                <input type="text" class="form-control profile-form__disabled-birthday col-sm-3"
+                                       id="form-edit__disabled-birthday" value="{{ user_obj.birthday }}" disabled />
+                                {{ form.birthday }}
+
+                            {% else %}
+                                {{ form.birthday }}
+                            {% endif %}
+
+                            {% if form.birthday.errors %}
+                                <div class="alert alert-danger mt-3">{{ form.birthday.errors }}</div>
+                            {% endif %}
+                        </div>
+                    </div>
+
+                    <div class="row mb-3">
+                        <div class="col-sm-3" style="margin-top: 10px;">
+                            <h6 class="mb-0">Gender</h6>
+                        </div>
+                        <div class="col-sm-9 text-secondary">
+                            {{ form.gender }}
+
+                            {% if form.gender.errors %}
+                                <div class="alert alert-danger mt-3">{{ form.gender.errors }}</div>
+                            {% endif %}
+                        </div>
+                    </div>
+
+                    <div class="row mb-3">
+                        <div class="col-sm-3" style="margin-top: 10px;">
+                            <h6 class="mb-0">Town</h6>
+                        </div>
+                        <div class="col-sm-9 text-secondary">
+                            {{ form.town }}
+
+                            {% if form.town.errors %}
+                                <div class="alert alert-danger mt-3">{{ form.town.errors }}</div>
+                            {% endif %}
+                        </div>
+                    </div>
+
+                    <div class="row mb-3">
+                        <div class="col-sm-3" style="margin-top: 10px;">
+                            <h6 class="mb-0">Address</h6>
+                        </div>
+                        <div class="col-sm-9 text-secondary">
+                            {{ form.address }}
+
+                            {% if form.address.errors %}
+                                <div class="alert alert-danger mt-3">{{ form.address.errors }}</div>
+                            {% endif %}
+                        </div>
+                    </div>
+
+                    <div class="row mb-3">
+                        <div class="col-sm-3" style="margin-top: 10px;">
+                            <h6 class="mb-0">Work</h6>
+                        </div>
+                        <div class="col-sm-9 text-secondary">
+                            {{ form.work }}
+
+                            {% if form.work.errors %}
+                                <div class="alert alert-danger mt-3">{{ form.work.errors }}</div>
+                            {% endif %}
+                        </div>
+                    </div>
+
+                    <div class="row mb-3">
+                        <div class="col-sm-3" style="margin-top: 10px;">
+                            <h6 class="mb-0">Hobbies</h6>
+                        </div>
+                        <div class="col-sm-9 text-secondary">
+                            {{ form.hobby }}
+
+                            {% if form.hobby.errors %}
+                                <div class="alert alert-danger mt-3">{{ form.hobby.errors }}</div>
+                            {% endif %}
+                        </div>
+                    </div>
+
+                    <div class="row mb-3">
+                        <div class="col-sm-3" style="margin-top: 10px;">
+                            <h6 class="mb-0">About me</h6>
+                        </div>
+                        <div class="col-sm-9 text-secondary">
+                            {{ form.info_about_user }}
+                            <div class="d-flex justify-content-end">
+                                <span id="words_count" class="d-none">Words count - <span id="text_count"></span></span>
+                            </div>
+                            {% if form.info_about_user.errors %}
+                                <div class="alert alert-danger mt-3">{{ form.info_about_user.errors }}</div>
+                            {% endif %}
+                        </div>
+                    </div>
+
+                    <div class="row mb-3">
+                        <div class="col-sm-3" style="margin-top: 10px;">
+                            <h6 class="mb-0">Avatar</h6>
+                        </div>
+                        <div class="col-sm-9 text-secondary">
+                            {{ form.avatar }}
+
+                            {% if form.avatar.errors %}
+                                <div class="alert alert-danger mt-3">{{ form.avatar.errors }}</div>
+                            {% endif %}
+                        </div>
+                    </div>
+
+                    <div class="row mb-3">
+                        <div class="col-sm-3" style="margin-top: 10px;">
+                            <h6 class="mb-0">Website</h6>
+                        </div>
+                        <div class="col-sm-9 text-secondary">
+                            {{ form.website }}
+
+                            {% if form.website.errors %}
+                                <div class="alert alert-danger mt-3">{{ form.website.errors }}</div>
+                            {% endif %}
+                        </div>
+                    </div>
+
+                    <div class="row mb-3">
+                        <div class="col-sm-3" style="margin-top: 10px;">
+                            <h6 class="mb-0">Github</h6>
+                        </div>
+                        <div class="col-sm-9 text-secondary">
+                            {{ form.github }}
+
+                            {% if form.github.errors %}
+                                <div class="alert alert-danger mt-3">{{ form.github.errors }}</div>
+                            {% endif %}
+                        </div>
+                    </div>
+
+                    <div class="row mb-3">
+                        <div class="col-sm-3" style="margin-top: 10px;">
+                            <h6 class="mb-0">Twitter</h6>
+                        </div>
+                        <div class="col-sm-9 text-secondary">
+                            {{ form.twitter }}
+
+                            {% if form.twitter.errors %}
+                                <div class="alert alert-danger mt-3">{{ form.twitter.errors }}</div>
+                            {% endif %}
+                        </div>
+                    </div>
+
+                    <div class="row mb-3">
+                        <div class="col-sm-3" style="margin-top: 10px;">
+                            <h6 class="mb-0">Instagram</h6>
+                        </div>
+                        <div class="col-sm-9 text-secondary">
+                            {{ form.instagram }}
+
+                            {% if form.instagram.errors %}
+                                <div class="alert alert-danger mt-3">{{ form.instagram.errors }}</div>
+                            {% endif %}
+                        </div>
+                    </div>
+
+                    <div class="row mb-3">
+                        <div class="col-sm-3" style="margin-top: 10px;">
+                            <h6 class="mb-0">Facebook</h6>
+                        </div>
+                        <div class="col-sm-9 text-secondary">
+                            {{ form.facebook }}
+
+                            {% if form.facebook.errors %}
+                                <div class="alert alert-danger mt-3">{{ form.facebook.errors }}</div>
+                            {% endif %}
+                        </div>
+                    </div>
+
+                    <div class="row mt-5">
+                        <div class="col-sm-3"></div>
+                        <div class="col-sm-9 text-secondary">
+                            <button class="btn btn-primary px-4">Save Changes</button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+{% endblock profile %}

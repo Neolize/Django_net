@@ -148,6 +148,21 @@ class EditUserProfileView(LoginRequiredMixin, UserPermissionMixin, View):
         return render(request, self.template_name, context=context)
 
 
+class GroupCreationView(LoginRequiredMixin, View):
+    template_name = 'groups/create_group.html'
+    form_class = None
+    login_url = reverse_lazy('login')
+
+    def get(self, request: WSGIRequest, pk: int):
+        # form = self.form_class()
+        context = {
+            # 'form': form,
+            'text': 'Group creation',
+            'user_obj': up_read.get_user_for_profile(user_pk=pk),
+        }
+        return render(request, self.template_name, context=context)
+
+
 class UserWallView(LoginRequiredMixin, View):
     template_name = 'user_wall/wall.html'
 

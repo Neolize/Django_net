@@ -14,6 +14,8 @@ urlpatterns = [
     path('user/profile/follow/<int:pk>/', views.follow_user, name='follow_user'),
     path('user/profile/unfollow/<int:pk>/', views.unfollow_user, name='unfollow_user'),
 
+    path('user/<int:pk>/create_group/', views.GroupCreationView.as_view(), name='create_group'),
+
     path('user/friends/', views.UserFollowersView.as_view(), name='user_friends'),
     path('user/chat/<int:pk>/', views.UserChatView.as_view(), name='user_chat'),
     path('user/chat_list/', views.UserChatListView.as_view(), name='user_chat_list'),
