@@ -17,6 +17,8 @@ from applications.user_wall import forms as uw_forms, models as uw_models
 from applications.user_wall.services.crud import create as uw_create, read as uw_read, update as uw_update
 from applications.user_wall.services.utils import form_utils as uw_form_utils
 
+from applications.groups import forms as g_forms
+
 
 class UsersView(ListView):
     template_name = 'user_profiles/list/users.html'
@@ -150,14 +152,13 @@ class EditUserProfileView(LoginRequiredMixin, UserPermissionMixin, View):
 
 class GroupCreationView(LoginRequiredMixin, View):
     template_name = 'groups/create_group.html'
-    form_class = None
+    form_class = g_forms.CreateGroup
     login_url = reverse_lazy('login')
 
     def get(self, request: WSGIRequest, pk: int):
-        # form = self.form_class()
+        form = self.form_class()
         context = {
-            # 'form': form,
-            'text': 'Group creation',
+            'form': form,
             'user_obj': up_read.get_user_for_profile(user_pk=pk),
         }
         return render(request, self.template_name, context=context)
