@@ -18,6 +18,7 @@ from applications.user_wall.services.crud import create as uw_create, read as uw
 from applications.user_wall.services.utils import form_utils as uw_form_utils
 
 from applications.groups import forms as g_forms
+from applications.groups.services.crud import create as g_create
 
 
 class UsersView(ListView):
@@ -131,23 +132,30 @@ class EditUserProfileView(LoginRequiredMixin, UserPermissionMixin, View):
             form=form,
             user_data=up_read.get_user_data_for_edit_profile_view(user_pk=pk),
         )
-        context = {
-            'form': form,
-            'user_obj': up_read.get_user_for_profile(user_pk=pk),
-        }
-        return render(request, self.template_name, context=context)
+        return render(
+            request,
+            self.template_name,
+            context=self.get_context_data(form, pk)
+        )
 
     def post(self, request: WSGIRequest, pk: int):
         form = self.form_class(request.POST, request.FILES)
 
         if form.is_valid() and up_update.update_user_profile_data(form=form, user=request.user):
-            return redirect(to='edit_user_profile', pk=pk)
+            return redirect(to='user_profile', pk=pk)
 
-        context = {
+        return render(
+            request,
+            self.template_name,
+            context=self.get_context_data(form, pk)
+        )
+
+    @staticmethod
+    def get_context_data(form, pk) -> dict:
+        return {
             'form': form,
             'user_obj': up_read.get_user_for_profile(user_pk=pk),
         }
-        return render(request, self.template_name, context=context)
 
 
 class GroupCreationView(LoginRequiredMixin, View):
@@ -157,11 +165,34 @@ class GroupCreationView(LoginRequiredMixin, View):
 
     def get(self, request: WSGIRequest, pk: int):
         form = self.form_class()
-        context = {
+        return render(
+            request,
+            self.template_name,
+            context=self.get_context_data(form, pk)
+        )
+
+    def post(self, request: WSGIRequest, pk: int):
+        form = self.form_class(request.POST, request.FILES)
+
+        if form.is_valid() and g_create.create_new_group_from_form_data(
+            data=form.cleaned_data,
+            data_files=request.FILES.dict(),
+            user_pk=request.user.pk,
+        ):
+            return redirect(to='user_profile', pk=pk)
+
+        return render(
+            request,
+            self.template_name,
+            context=self.get_context_data(form, pk)
+        )
+
+    @staticmethod
+    def get_context_data(form, pk) -> dict:
+        return {
             'form': form,
             'user_obj': up_read.get_user_for_profile(user_pk=pk),
         }
-        return render(request, self.template_name, context=context)
 
 
 class UserWallView(LoginRequiredMixin, View):
