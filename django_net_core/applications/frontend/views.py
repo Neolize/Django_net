@@ -18,7 +18,7 @@ from applications.user_wall.services.crud import create as uw_create, read as uw
 from applications.user_wall.services.utils import form_utils as uw_form_utils
 
 from applications.groups import forms as g_forms
-from applications.groups.services.crud import create as g_create
+from applications.groups.services.crud import create as g_create, read as g_read
 
 
 class UsersView(ListView):
@@ -193,6 +193,20 @@ class GroupCreationView(LoginRequiredMixin, View):
             'form': form,
             'user_obj': up_read.get_user_for_profile(user_pk=pk),
         }
+
+
+class GroupView(View):
+    template_name = 'groups/group.html'
+
+    def get(self, request, group_slug: str):
+        group = g_read.get_group_by_slug(group_slug)
+        if not group:
+            raise Http404
+
+        context = {
+            'group': group
+        }
+        return render(request, self.template_name, context=context)
 
 
 class UserWallView(LoginRequiredMixin, View):

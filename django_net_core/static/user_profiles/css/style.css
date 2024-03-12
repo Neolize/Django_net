@@ -107,7 +107,14 @@ body {
     display: block;
 }
 
+.user-head-information__clickable {
+    color: #2c2828;
+    cursor: pointer;
+    text-decoration: none;
+}
+
 .user-head-information__clickable:hover {
     color:#767070;
     cursor: pointer;
+    text-decoration: none;
 }

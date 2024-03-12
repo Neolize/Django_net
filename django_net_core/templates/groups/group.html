@@ -1,0 +1,73 @@
+{% extends 'base.html' %}
+
+{% load static %}
+
+{% block link %}
+    <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css" rel="stylesheet" />
+<!--    <link rel="stylesheet" href="{% static 'user_profiles/css/style.css' %}" type="text/css" />-->
+    {% block additional_link %} {% endblock additional_link %}
+{% endblock link %}
+
+
+{% block title %} {{ group.title }} {% endblock title %}
+
+
+{% block content %}
+    <div class="container">
+        <div class="main-body">
+
+              <!-- Breadcrumb -->
+            <nav aria-label="breadcrumb" class="main-breadcrumb user-profile-navbar">
+                <ol class="breadcrumb">
+                    {% block breadcrumbs %}
+
+                    {% endblock breadcrumbs %}
+                </ol>
+            </nav>
+              <!-- /Breadcrumb -->
+
+            <div class="row gutters-sm">
+                <div class="col-md-4 mb-3">
+                    <div class="card">
+                        <div class="card-body">
+                            <div class="d-flex flex-column align-items-center text-center">
+
+                                {% if group.logo %}
+                                    <img src="{{ group.logo.url }}" alt="Logo" class="rounded-circle" width="128">
+                                {% else %}
+                                    <img src="{% static 'user_profiles/images/anonymous.png' %}" alt="Avatar" class="rounded-circle" width="128">
+                                {% endif %}
+
+                                <div class="mt-3">
+                                    <h4>{{ group.title }}</h4>
+                                    <p class="text-secondary mb-1">{{ group.description }}</p>
+                                    <p class="text-muted font-size-sm">{{ user_obj.personal_data.address }}</p>
+
+
+                                    <form action="" method="get" style="display: inline;">
+                                        <button class="btn btn-primary" type="submit">Unfollow</button>
+                                    </form>
+                                    <form action="" method="get" style="display: inline;">
+                                        <button class="btn btn-primary" type="submit">Follow</button>
+                                    </form>
+
+
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card mt-3">
+                        <ul class="list-group list-group-flush">
+                            <li class="list-group-item d-flex justify-content-between align-items-center flex-wrap">
+                                <h6 class="mb-0"><i class="fa fa-user text-user" style="margin-right: 10px;"></i>Owner</h6>
+                                <a class="text-dark" href="{{ group.creator.get_absolute_url }}" target="_blank" style="text-decoration: none;">{{ group.creator.get_full_name }}</a>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+
+
+            </div>
+        </div>
+    </div>
+{% endblock content %}

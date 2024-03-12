@@ -80,7 +80,7 @@
         </div>
 
         <div class="row">
-            <div class="col-sm-7">
+            <div class="col-sm-8">
                 <div class="card card-edit">
                     <div class="card-body">
 
@@ -105,6 +105,17 @@
                         </div>
 
                         <div class="user-head-information"><span class="user-head-information__clickable">20 following</span></div>
+
+                        <div class="user-head-information">
+                            <a class="user-head-information__clickable" href="#">
+                                {% if groups == 1 %}
+                                    {{ groups }} group
+                                {% else %}
+                                    {{ groups }} groups
+                                {% endif %}
+                            </a>
+                        </div>
+
                     </div>
                 </div>
             </div>
