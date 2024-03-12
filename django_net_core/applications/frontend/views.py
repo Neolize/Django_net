@@ -18,6 +18,7 @@ from applications.user_wall.services.crud import create as uw_create, read as uw
 from applications.user_wall.services.utils import form_utils as uw_form_utils
 
 from applications.groups import forms as g_forms
+from applications.groups.permissions import GROUP_FORBIDDEN_MESSAGE
 from applications.groups.services.crud import create as g_create, read as g_read
 
 
@@ -158,20 +159,28 @@ class EditUserProfileView(LoginRequiredMixin, UserPermissionMixin, View):
         }
 
 
-class GroupCreationView(LoginRequiredMixin, View):
+class GroupCreationView(LoginRequiredMixin, UserPermissionMixin, View):
     template_name = 'groups/create_group.html'
     form_class = g_forms.CreateGroup
     login_url = reverse_lazy('login')
 
     def get(self, request: WSGIRequest, pk: int):
+        user_obj = up_read.get_user_for_profile(user_pk=pk)
+        if g_read.does_user_have_group(user_obj):
+            return HttpResponseForbidden(GROUP_FORBIDDEN_MESSAGE)
+
         form = self.form_class()
-        return render(
-            request,
-            self.template_name,
-            context=self.get_context_data(form, pk)
-        )
+        context = {
+            'form': form,
+            'user_obj': user_obj
+        }
+        return render(request, self.template_name, context=context)
 
     def post(self, request: WSGIRequest, pk: int):
+        user_obj = up_read.get_user_for_profile(user_pk=pk)
+        if g_read.does_user_have_group(user_obj):
+            return HttpResponseForbidden(GROUP_FORBIDDEN_MESSAGE)
+
         form = self.form_class(request.POST, request.FILES)
 
         if form.is_valid() and g_create.create_new_group_from_form_data(
@@ -181,11 +190,11 @@ class GroupCreationView(LoginRequiredMixin, View):
         ):
             return redirect(to='user_profile', pk=pk)
 
-        return render(
-            request,
-            self.template_name,
-            context=self.get_context_data(form, pk)
-        )
+        context = {
+            'form': form,
+            'user_obj': user_obj
+        }
+        return render(request, self.template_name, context=context)
 
     @staticmethod
     def get_context_data(form, pk) -> dict:

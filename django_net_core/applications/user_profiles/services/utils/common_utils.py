@@ -49,7 +49,7 @@ def form_user_profile_context_data(
         'user_posts': relevant_posts,
         'followers': user_obj.followers.count(),
         'is_followed': is_followed(current_user=user_obj, visitor=request.user),
-        'groups': user_obj.user_groups.count(),
+        'group_exists': user_obj.user_groups.exists(),
         'today_date': today.date(),
         'yesterday_date': today - timedelta(days=1),
         'is_owner': request.user.pk == user_obj.pk,

@@ -72,7 +72,9 @@
                     <div class="row">
                         <div class="col-sm-12">
                             <a class="btn btn-info profile-edit__button" href="{{ user.get_absolute_url_for_editing }}">Edit</a>
-                            <a class="btn btn-primary" href="{{ user.get_absolute_url_for_group_creation }}">Create a group</a>
+                            {% if not group_exists %}
+                                <a class="btn btn-primary" href="{{ user.get_absolute_url_for_group_creation }}">Create a group</a>
+                            {% endif %}
                         </div>
                     </div>
                 {% endif %}
