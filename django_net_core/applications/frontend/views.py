@@ -166,7 +166,7 @@ class GroupCreationView(LoginRequiredMixin, UserPermissionMixin, View):
 
     def get(self, request: WSGIRequest, pk: int):
         user_obj = up_read.get_user_for_profile(user_pk=pk)
-        if g_read.does_user_have_group(user_obj):
+        if not g_read.is_user_allowed_to_create_group(user_obj):
             return HttpResponseForbidden(GROUP_FORBIDDEN_MESSAGE)
 
         form = self.form_class()
@@ -178,7 +178,7 @@ class GroupCreationView(LoginRequiredMixin, UserPermissionMixin, View):
 
     def post(self, request: WSGIRequest, pk: int):
         user_obj = up_read.get_user_for_profile(user_pk=pk)
-        if g_read.does_user_have_group(user_obj):
+        if not g_read.is_user_allowed_to_create_group(user_obj):
             return HttpResponseForbidden(GROUP_FORBIDDEN_MESSAGE)
 
         form = self.form_class(request.POST, request.FILES)

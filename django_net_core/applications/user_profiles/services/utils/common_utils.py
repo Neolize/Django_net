@@ -6,6 +6,7 @@ from applications.frontend.services.pagination import get_page_object
 from applications.user_profiles.models import CustomUser
 from applications.user_wall.services.crud.read import get_related_posts
 from applications.user_wall.services.crud.update import update_user_posts_view_counts
+from applications.groups.services.crud.read import is_user_allowed_to_create_group
 
 
 def get_min_birthdate() -> str:
@@ -49,7 +50,8 @@ def form_user_profile_context_data(
         'user_posts': relevant_posts,
         'followers': user_obj.followers.count(),
         'is_followed': is_followed(current_user=user_obj, visitor=request.user),
-        'group_exists': user_obj.user_groups.exists(),
+        'allowed_to_create_group': is_user_allowed_to_create_group(user_obj),
+        'groups': user_obj.user_groups.all(),
         'today_date': today.date(),
         'yesterday_date': today - timedelta(days=1),
         'is_owner': request.user.pk == user_obj.pk,

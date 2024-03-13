@@ -21,3 +21,7 @@ def get_group_by_slug(group_slug: str) -> models.Group | bool:
 
 def does_user_have_group(user: CustomUser) -> bool:
     return user.user_groups.exists()
+
+
+def is_user_allowed_to_create_group(user: CustomUser) -> bool:
+    return user.user_groups.count() < 5  # user can't own more than 5 groups
