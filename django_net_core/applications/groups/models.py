@@ -1,5 +1,6 @@
 from django.db import models
 from django.conf import settings
+from django.urls import reverse_lazy
 
 from mptt.models import MPTTModel, TreeForeignKey
 
@@ -23,6 +24,9 @@ class Group(models.Model):
 
     def __str__(self):
         return self.title
+
+    def get_absolute_url(self):
+        return reverse_lazy('group', kwargs={'group_slug': self.slug})
 
 
 class GroupPost(abstract_models.AbstractPost):

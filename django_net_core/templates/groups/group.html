@@ -4,7 +4,7 @@
 
 {% block link %}
     <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css" rel="stylesheet" />
-<!--    <link rel="stylesheet" href="{% static 'user_profiles/css/style.css' %}" type="text/css" />-->
+    <link rel="stylesheet" href="{% static 'user_profiles/css/style.css' %}" type="text/css" />
     {% block additional_link %} {% endblock additional_link %}
 {% endblock link %}
 
@@ -41,17 +41,18 @@
                                 <div class="mt-3">
                                     <h4>{{ group.title }}</h4>
                                     <p class="text-secondary mb-1">{{ group.description }}</p>
-                                    <p class="text-muted font-size-sm">{{ user_obj.personal_data.address }}</p>
+                                    <p class="text-muted font-size-sm">Created: {{ group.creation_date }}</p>
 
-
-                                    <form action="" method="get" style="display: inline;">
-                                        <button class="btn btn-primary" type="submit">Unfollow</button>
-                                    </form>
-                                    <form action="" method="get" style="display: inline;">
-                                        <button class="btn btn-primary" type="submit">Follow</button>
-                                    </form>
-
-
+                                    {% if request.user.pk == group.creator.pk %}
+                                        <a class="btn btn-primary" href="{% url 'create_group_post' %}">Create a new post</a>
+                                    {% else %}
+                                        <form action="" method="get" style="display: inline;">
+                                            <button class="btn btn-primary" type="submit">Unfollow</button>
+                                        </form>
+                                        <form action="" method="get" style="display: inline;">
+                                            <button class="btn btn-primary" type="submit">Follow</button>
+                                        </form>
+                                    {% endif %}
                                 </div>
                             </div>
                         </div>

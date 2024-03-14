@@ -2,7 +2,7 @@ from django.contrib.auth import login
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.auth.views import LoginView, LogoutView
 from django.core.handlers.wsgi import WSGIRequest
-from django.http import Http404, HttpResponseForbidden
+from django.http import Http404, HttpResponseForbidden, HttpResponse
 from django.shortcuts import render, redirect
 from django.urls import reverse_lazy
 from django.views.generic import ListView, CreateView, View
@@ -18,7 +18,7 @@ from applications.user_wall.services.crud import create as uw_create, read as uw
 from applications.user_wall.services.utils import form_utils as uw_form_utils
 
 from applications.groups import forms as g_forms
-from applications.groups.permissions import GROUP_FORBIDDEN_MESSAGE
+from applications.groups.permissions import GROUP_FORBIDDEN_MESSAGE, GROUP_CREATION_FORBIDDEN_MESSAGE
 from applications.groups.services.crud import create as g_create, read as g_read
 
 
@@ -183,12 +183,14 @@ class GroupCreationView(LoginRequiredMixin, UserPermissionMixin, View):
 
         form = self.form_class(request.POST, request.FILES)
 
-        if form.is_valid() and g_create.create_new_group_from_form_data(
-            data=form.cleaned_data,
-            data_files=request.FILES.dict(),
-            user_pk=request.user.pk,
-        ):
-            return redirect(to='user_profile', pk=pk)
+        if form.is_valid():
+            new_group = g_create.create_new_group_from_form_data(
+                data=form.cleaned_data,
+                data_files=request.FILES.dict(),
+                user_pk=request.user.pk,
+            )
+            if new_group:
+                return redirect(to='group', group_slug=new_group.slug)
 
         context = {
             'form': form,
@@ -218,6 +220,21 @@ class GroupView(View):
         return render(request, self.template_name, context=context)
 
 
+class GroupPostCreationView(View):
+    template_name = 'groups/create_post.html'
+
+    def get(self, request):
+        return render(request, self.template_name)
+
+    def post(self):
+        pass
+
+
+def create_group_post(request: WSGIRequest) -> HttpResponse:
+    if not request.method.lower() == 'post':
+        return HttpResponseForbidden(GROUP_CREATION_FORBIDDEN_MESSAGE)
+
+
 class UserWallView(LoginRequiredMixin, View):
     template_name = 'user_wall/wall.html'
 
@@ -228,7 +245,7 @@ class UserWallView(LoginRequiredMixin, View):
 class UserFollowersView(LoginRequiredMixin, View):
     template_name = 'user_profiles/list/followers.html'
 
-    def get(self, request: WSGIRequest, pk: int):
+    def get(self, request: WSGIRequest):
         return render(request, self.template_name)
 
 

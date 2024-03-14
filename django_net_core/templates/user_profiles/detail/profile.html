@@ -72,8 +72,9 @@
                     <div class="row">
                         <div class="col-sm-12">
                             <a class="btn btn-info profile-edit__button" href="{{ user.get_absolute_url_for_editing }}">Edit</a>
+                            <a class="btn btn-primary" href="{% url 'create_user_post' %}">Create a post</a>
                             {% if allowed_to_create_group %}
-                                <a class="btn btn-primary" href="{{ user.get_absolute_url_for_group_creation }}">Create a group</a>
+                                <a class="btn btn-success" href="{{ user.get_absolute_url_for_group_creation }}">Create a group</a>
                             {% endif %}
                         </div>
                     </div>
@@ -97,13 +98,13 @@
                         </div>
 
                         <div class="user-head-information">
-                            <span class="user-head-information__clickable">
+                            <a class="user-head-information__clickable" href="#">
                                 {% if followers == 1 %}
                                     {{ followers }} follower
                                 {% else %}
                                     {{ followers }} followers
                                 {% endif %}
-                            </span>
+                            </a>
                         </div>
 
                         <div class="user-head-information"><span class="user-head-information__clickable">20 following</span></div>
@@ -123,7 +124,7 @@
                                 {% for group in groups %}
                                     <li>
                                         <div>
-                                            <a class="user-head-information__clickable" href="#">{{ group.title }}</a>
+                                            <a class="user-head-information__clickable" href="{{ group.get_absolute_url }}">{{ group.title }}</a>
                                         </div>
                                     </li>
                                 {% endfor %}

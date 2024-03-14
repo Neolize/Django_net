@@ -14,3 +14,27 @@
   "funcName": "create_new_follower",
   "lineno": 114
 }
+{
+  "message": "Group with slug - create_post does not exist. Group matching query does not exist.",
+  "levelname": "WARNING",
+  "asctime": "2024-03-14 14:44:19,248",
+  "pathname": "/home/neolize/Neolize/Python/Django projects/Django Net/django_net_core/applications/groups/services/crud/read.py",
+  "funcName": "get_group_by_slug",
+  "lineno": 16
+}
+{
+  "message": "Group with slug - create_post does not exist. Group matching query does not exist.",
+  "levelname": "WARNING",
+  "asctime": "2024-03-14 14:46:03,192",
+  "pathname": "/home/neolize/Neolize/Python/Django projects/Django Net/django_net_core/applications/groups/services/crud/read.py",
+  "funcName": "get_group_by_slug",
+  "lineno": 16
+}
+{
+  "message": "Group with slug - create_post does not exist. Group matching query does not exist.",
+  "levelname": "WARNING",
+  "asctime": "2024-03-14 14:46:28,958",
+  "pathname": "/home/neolize/Neolize/Python/Django projects/Django Net/django_net_core/applications/groups/services/crud/read.py",
+  "funcName": "get_group_by_slug",
+  "lineno": 16
+}

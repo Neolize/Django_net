@@ -1,6 +1,8 @@
 import logging
 from datetime import date
 
+from django.core.files.uploadedfile import InMemoryUploadedFile
+
 from applications.groups import models
 from applications.user_wall.services.crud.crud_utils import return_unique_slug
 
@@ -20,13 +22,13 @@ def create_new_group_from_form_data(data: dict, data_files: dict, user_pk: int) 
 def _create_new_group(
         title: str,
         description: str,
-        logo: str,
+        logo: InMemoryUploadedFile,
         creator_id: int,
 ) -> models.Group | bool:
     slug = return_unique_slug(str_for_slug=title, model=models.Group)
 
     try:
-        is_created = models.Group.objects.create(
+        new_group = models.Group.objects.create(
             title=title,
             description=description,
             logo=logo,
@@ -36,6 +38,6 @@ def _create_new_group(
         )
     except Exception as exc:
         LOGGER.error(exc)
-        is_created = False
+        new_group = False
 
-    return is_created
+    return new_group
