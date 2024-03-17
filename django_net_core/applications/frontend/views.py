@@ -245,7 +245,9 @@ class UserWallView(LoginRequiredMixin, View):
 class UserFollowersView(LoginRequiredMixin, View):
     template_name = 'user_profiles/list/followers.html'
 
-    def get(self, request: WSGIRequest):
+    def get(self, request: WSGIRequest, pk: int):
+        user = up_read.get_raw_user_instance(pk)
+        print(user.followers.all())
         return render(request, self.template_name)
 
 
