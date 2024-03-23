@@ -185,3 +185,18 @@ body {
     left: 0;
     z-index: 10;
 }
+
+.user_link {
+    display: inline-block;
+    margin: 10px 0 15px 0;
+    text-decoration: none;
+    color: #000;
+    cursor: pointer;
+}
+
+.user-profile-navbar {
+    background-color: rgb(231, 230, 230);
+    height: 40px;
+    padding-left: 10px;
+    padding-top: 7px;
+}

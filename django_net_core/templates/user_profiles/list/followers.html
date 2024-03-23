@@ -48,7 +48,7 @@
 
                                 <p class="text-muted">
                                     {% if follower.follower.gender != 'not specified' %}
-                                        {{ follower.follower.gender }} |
+                                        {{ follower.follower.gender|title }} |
                                     {% endif %}
 
                                     {% if follower.follower.personal_data.birthday %}
@@ -56,31 +56,6 @@
                                     {% endif %}
                                 </p>
                                 <hr>
-
-                                <p class="text-muted m-t-15">Activity Level: 87%</p>
-                                <ul class="list-unstyled activity-leval">
-                                    <li class="active"></li>
-                                    <li class="active"></li>
-                                    <li class="active"></li>
-                                    <li></li>
-                                    <li></li>
-                                </ul>
-<!--                                <div class="bg-c-blue counter-block m-t-10 p-20">-->
-<!--                                    <div class="row">-->
-<!--                                        <div class="col-4">-->
-<!--                                            <i class="fa fa-comment"></i>-->
-<!--                                            <p>1256</p>-->
-<!--                                        </div>-->
-<!--                                        <div class="col-4">-->
-<!--                                            <i class="fa fa-user"></i>-->
-<!--                                            <p>8562</p>-->
-<!--                                        </div>-->
-<!--                                        <div class="col-4">-->
-<!--                                            <i class="fa fa-suitcase"></i>-->
-<!--                                            <p>189</p>-->
-<!--                                        </div>-->
-<!--                                    </div>-->
-<!--                                </div>-->
 
                                 <div class="bg-c-blue counter-block m-t-10 p-20">
                                     <div class="row">
@@ -104,9 +79,15 @@
                                 </p>
                                 <hr>
                                 <div class="row justify-content-center user-social-link">
-                                    <div class="col-auto"><a href="#!"><i class="fa fa-globe text-globe"></i></a></div>
-                                    <div class="col-auto"><a href="#!"><i class="fa fa-twitter text-twitter"></i></a></div>
-                                    <div class="col-auto"><a href="#!"><i class="fa fa-github text-github"></i></a></div>
+                                    {% if follower.follower.contacts.website %}
+                                        <div class="col-auto"><a href="{{ follower.follower.contacts.website }}"><i class="fa fa-globe text-globe"></i></a></div>
+                                    {% endif %}
+                                    {% if follower.follower.contacts.twitter %}
+                                        <div class="col-auto"><a href="{{ follower.follower.contacts.twitter }}"><i class="fa fa-twitter text-twitter"></i></a></div>
+                                    {% endif %}
+                                    {% if follower.follower.contacts.github %}
+                                    <div class="col-auto"><a href="{{ follower.follower.contacts.github }}"><i class="fa fa-github text-github"></i></a></div>
+                                    {% endif %}
                                 </div>
                             </div>
                         </div>

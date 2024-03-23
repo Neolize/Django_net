@@ -36,7 +36,7 @@
                                 {% endif %}
                                 <p class="text-muted">
                                     {% if user.gender != 'not specified' %}
-                                        {{ user.gender }} |
+                                        {{ user.gender|title }} |
                                     {% endif %}
                                     {% if user.personal_data.birthday %}
                                         Born {{ user.personal_data.birthday|date:"j.m.o" }}
@@ -64,9 +64,15 @@
                                 </p>
                                 <hr>
                                 <div class="row justify-content-center user-social-link">
-                                    <div class="col-auto"><a href="#!"><i class="fa fa-globe text-globe"></i></a></div>
-                                    <div class="col-auto"><a href="#!"><i class="fa fa-twitter text-twitter"></i></a></div>
-                                    <div class="col-auto"><a href="#!"><i class="fa fa-github text-github"></i></a></div>
+                                    {% if user.contacts.website %}
+                                        <div class="col-auto"><a href="{{ user.contacts.website }}"><i class="fa fa-globe text-globe"></i></a></div>
+                                    {% endif %}
+                                    {% if user.contacts.twitter %}
+                                        <div class="col-auto"><a href="{{ user.contacts.twitter }}"><i class="fa fa-twitter text-twitter"></i></a></div>
+                                    {% endif %}
+                                    {% if user.contacts.github %}
+                                    <div class="col-auto"><a href="{{ user.contacts.github }}"><i class="fa fa-github text-github"></i></a></div>
+                                    {% endif %}
                                 </div>
                             </div>
                         </div>

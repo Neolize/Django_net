@@ -16,7 +16,10 @@ def get_all_users_with_personal_data():
     """Return all users with all needed information"""
     return (
         models.CustomUser.objects.all().
-        select_related('personal_data').
+        select_related(
+            'personal_data',
+            'contacts'
+        ).
         prefetch_related(
             'followers',
             'user_comments',
@@ -33,7 +36,10 @@ def fetch_users_by_names(user_input) -> QuerySet[models.CustomUser]:
             Q(first_name__icontains=user_input) |
             Q(middle_name__icontains=user_input) |
             Q(last_name__icontains=user_input)).
-        select_related('personal_data').
+        select_related(
+            'personal_data',
+            'contacts'
+        ).
         prefetch_related(
             'followers',
             'user_comments',
@@ -131,7 +137,11 @@ def get_raw_user_instance(user_pk: int) -> models.CustomUser:
 
 def fetch_all_user_followers(user: models.CustomUser) -> QuerySet[models.Follower]:
     return (
-        user.followers.all().select_related('follower', 'follower__personal_data').
+        user.followers.all().select_related(
+            'follower',
+            'follower__personal_data',
+            'follower__contacts',
+        ).
         prefetch_related(
             'follower__followers',
             'follower__user_comments',
