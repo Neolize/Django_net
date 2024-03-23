@@ -246,9 +246,19 @@ class UserFollowersView(LoginRequiredMixin, View):
     template_name = 'user_profiles/list/followers.html'
 
     def get(self, request: WSGIRequest, pk: int):
-        user = up_read.get_raw_user_instance(pk)
-        print(user.followers.all())
-        return render(request, self.template_name)
+        user_obj = up_read.get_user_for_profile(user_pk=pk)
+        if not user_obj:
+            raise Http404
+
+        context = {
+            'user_obj': user_obj,
+            'followers': up_read.fetch_all_user_followers(user_obj),
+            'is_followed': up_common_utils.is_followed(
+                current_user=user_obj,
+                visitor=request.user
+            ),
+        }
+        return render(request, self.template_name, context=context)
 
 
 class PeopleSearchView(View):

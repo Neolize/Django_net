@@ -127,3 +127,14 @@ def get_raw_user_instance(user_pk: int) -> models.CustomUser:
         return models.CustomUser.objects.get(pk=user_pk)
     except IndexError as exc:
         LOGGER.warning(f'User with pk - {user_pk} does not exist. {exc}')
+
+
+def fetch_all_user_followers(user: models.CustomUser) -> QuerySet[models.Follower]:
+    return (
+        user.followers.all().select_related('follower', 'follower__personal_data').
+        prefetch_related(
+            'follower__followers',
+            'follower__user_comments',
+            'follower__user_groups',
+        )
+    )
