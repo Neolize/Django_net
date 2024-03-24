@@ -246,7 +246,7 @@ class UserFollowersView(LoginRequiredMixin, View):
     template_name = 'user_profiles/list/followers.html'
 
     def get(self, request: WSGIRequest, pk: int):
-        user_obj = up_read.get_user_for_profile(user_pk=pk)
+        user_obj = up_read.fetch_user_for_followers_page(user_pk=pk)
         if not user_obj:
             raise Http404
 
@@ -259,6 +259,10 @@ class UserFollowersView(LoginRequiredMixin, View):
             ),
         }
         return render(request, self.template_name, context=context)
+
+
+class UserFollowingView(LoginRequiredMixin, View):
+    template_name = 'user_profiles/list/following.html'
 
 
 class PeopleSearchView(View):

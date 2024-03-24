@@ -49,6 +49,7 @@ def form_user_profile_context_data(
         'posts_number': user_obj.user_posts.count(),
         'user_posts': relevant_posts,
         'followers': user_obj.followers.count(),
+        'following': user_obj.owner.count(),
         'is_followed': is_followed(current_user=user_obj, visitor=request.user),
         'allowed_to_create_group': is_user_allowed_to_create_group(user_obj),
         'groups': user_obj.user_groups.all(),
@@ -60,4 +61,6 @@ def form_user_profile_context_data(
 
 
 def is_followed(current_user: CustomUser, visitor: CustomUser) -> bool:
+    if visitor.is_anonymous:
+        return False
     return current_user.pk in visitor.owner.values_list('user__pk', flat=True)

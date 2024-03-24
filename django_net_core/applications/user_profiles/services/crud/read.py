@@ -119,7 +119,14 @@ def get_user_for_profile(user_pk: int) -> models.CustomUser | bool:
             'first_login',
         )
         user_queryset = models.CustomUser.objects.filter(pk=user_pk).defer(*deferred_fields).\
-            select_related('personal_data', 'contacts').prefetch_related('hobbies')
+            select_related(
+            'personal_data',
+            'contacts'
+        ).prefetch_related(
+            'hobbies',
+            'followers',
+            'owner',
+        )
         user = user_queryset[0]
     except IndexError as exc:
         LOGGER.warning(f'User with pk - {user_pk} does not exist. {exc}')
@@ -148,3 +155,24 @@ def fetch_all_user_followers(user: models.CustomUser) -> QuerySet[models.Followe
             'follower__user_groups',
         )
     )
+
+
+def fetch_user_for_followers_page(user_pk: int) -> models.CustomUser | bool:
+    try:
+        deferred_fields = (
+            'password',
+            'last_login',
+            'is_superuser',
+            'is_staff',
+            'is_active',
+            'date_joined',
+            'first_login',
+        )
+        user_queryset = models.CustomUser.objects.filter(pk=user_pk).defer(*deferred_fields).\
+            select_related('personal_data', 'contacts')
+        user = user_queryset[0]
+    except IndexError as exc:
+        LOGGER.warning(f'User with pk - {user_pk} does not exist. {exc}')
+        user = False
+
+    return user
