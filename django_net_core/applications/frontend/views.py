@@ -106,18 +106,22 @@ class UserProfileView(View):
 
 def follow_user(request: WSGIRequest, pk: int):
     """Follow a user if the request goes from authenticated and unsubscribed user"""
-    if request.user.is_authenticated:
-        owner = up_read.get_raw_user_instance(user_pk=pk)
-        if not up_common_utils.is_followed(current_user=owner, visitor=request.user):
-            up_create.create_new_follower(owner=owner, follower=request.user)
+    if not request.user.is_authenticated:
+        return redirect(to='login')
+
+    owner = up_read.get_raw_user_instance(user_pk=pk)
+    if not up_common_utils.is_followed(current_user=owner, visitor=request.user):
+        up_create.create_new_follower(owner=owner, follower=request.user)
     return redirect(to='user_profile', pk=pk)
 
 
 def unfollow_user(request: WSGIRequest, pk: int):
-    if request.user.is_authenticated:
-        owner = up_read.get_raw_user_instance(user_pk=pk)
-        if up_common_utils.is_followed(current_user=owner, visitor=request.user):
-            up_delete.delete_follower(owner=owner, follower=request.user)
+    if not request.user.is_authenticated:
+        return redirect(to='login')
+
+    owner = up_read.get_raw_user_instance(user_pk=pk)
+    if up_common_utils.is_followed(current_user=owner, visitor=request.user):
+        up_delete.delete_follower(owner=owner, follower=request.user)
     return redirect(to='user_profile', pk=pk)
 
 
@@ -242,7 +246,7 @@ class UserWallView(LoginRequiredMixin, View):
         return render(request, self.template_name)
 
 
-class UserFollowersView(LoginRequiredMixin, View):
+class UserFollowersView(View):
     template_name = 'user_profiles/list/followers.html'
 
     def get(self, request: WSGIRequest, pk: int):
@@ -261,8 +265,23 @@ class UserFollowersView(LoginRequiredMixin, View):
         return render(request, self.template_name, context=context)
 
 
-class UserFollowingView(LoginRequiredMixin, View):
+class UserFollowingView(View):
     template_name = 'user_profiles/list/following.html'
+
+    def get(self, request: WSGIRequest, pk: int):
+        user_obj = up_read.fetch_user_for_followers_page(user_pk=pk)
+        if not user_obj:
+            raise Http404
+
+        context = {
+            'user_obj': user_obj,
+            'followings': up_read.fetch_all_user_followings(user_obj),
+            'is_followed': up_common_utils.is_followed(
+                current_user=user_obj,
+                visitor=request.user,
+            ),
+        }
+        return render(request, self.template_name, context=context)
 
 
 class PeopleSearchView(View):

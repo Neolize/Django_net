@@ -38,6 +38,9 @@ class CustomUser(AbstractUser):
     def get_absolute_url_for_followers(self):
         return reverse_lazy('user_followers', kwargs={'pk': self.pk})
 
+    def get_absolute_url_for_following(self):
+        return reverse_lazy('user_following', kwargs={'pk': self.pk})
+
 
 class UserPersonalData(models.Model):
     """Additional information about user"""

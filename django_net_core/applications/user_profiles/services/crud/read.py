@@ -176,3 +176,18 @@ def fetch_user_for_followers_page(user_pk: int) -> models.CustomUser | bool:
         user = False
 
     return user
+
+
+def fetch_all_user_followings(user: models.CustomUser) -> QuerySet[models.CustomUser]:
+    return (
+        user.owner.all().select_related(
+            'user',
+            'user__personal_data',
+            'user__contacts',
+        ).
+        prefetch_related(
+            'user__followers',
+            'user__user_comments',
+            'user__user_groups',
+        )
+    )
