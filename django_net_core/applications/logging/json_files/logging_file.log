@@ -38,3 +38,11 @@
   "funcName": "get_group_by_slug",
   "lineno": 16
 }
+{
+  "message": "Group() got unexpected keyword arguments: 'member', 'group'",
+  "levelname": "ERROR",
+  "asctime": "2024-03-28 14:52:32,895",
+  "pathname": "/home/neolize/Neolize/Python/Django projects/Django Net/django_net_core/applications/groups/services/crud/create.py",
+  "funcName": "create_new_group_follower",
+  "lineno": 54
+}

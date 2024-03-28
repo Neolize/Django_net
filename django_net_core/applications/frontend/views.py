@@ -20,7 +20,7 @@ from applications.user_wall.services.utils import form_utils as uw_form_utils
 from applications.groups import forms as g_forms
 from applications.groups.permissions import GROUP_FORBIDDEN_MESSAGE, GROUP_CREATION_FORBIDDEN_MESSAGE
 from applications.groups.services import utils as g_utils
-from applications.groups.services.crud import create as g_create, read as g_read
+from applications.groups.services.crud import create as g_create, read as g_read, delete as g_delete
 
 
 class UsersView(ListView):
@@ -242,14 +242,30 @@ class GroupPostCreationView(View):
 
 
 def follow_group(request: WSGIRequest, group_slug: str):
+    """Follow a group if the request goes from authenticated user, who isn't subscribed to this group"""
     if not request.user.is_authenticated:
         return redirect(to='login')
 
     group = g_read.get_group_by_slug(group_slug)
+    if not group:
+        raise Http404
+
+    if not g_utils.is_user_subscribed_to_group(group=group, visitor=request.user):
+        g_create.create_new_group_follower(group=group, member=request.user)
+    return redirect(to='group', group_slug=group_slug)
 
 
 def unfollow_group(request: WSGIRequest, group_slug: str):
-    pass
+    if not request.user.is_authenticated:
+        return redirect(to='login')
+
+    group = g_read.get_group_by_slug(group_slug)
+    if not group:
+        raise Http404
+
+    if g_utils.is_user_subscribed_to_group(group=group, visitor=request.user):
+        g_delete.delete_group_follower(group=group, member=request.user)
+    return redirect(to='group', group_slug=group_slug)
 
 
 # def create_group_post(request: WSGIRequest) -> HttpResponse:

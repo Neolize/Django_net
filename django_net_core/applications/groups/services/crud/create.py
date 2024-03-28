@@ -4,6 +4,7 @@ from datetime import date
 from django.core.files.uploadedfile import InMemoryUploadedFile
 
 from applications.groups import models
+from applications.user_profiles.models import CustomUser
 from applications.user_wall.services.crud.crud_utils import return_unique_slug
 
 
@@ -41,3 +42,13 @@ def _create_new_group(
         new_group = False
 
     return new_group
+
+
+def create_new_group_follower(group: models.Group, member: CustomUser) -> None:
+    try:
+        models.GroupMember.objects.create(
+            member=member,
+            group=group,
+        )
+    except Exception as exc:
+        LOGGER.error(exc)

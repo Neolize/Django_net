@@ -46,10 +46,10 @@
                                     {% if request.user.pk == group.creator.pk %}
                                         <a class="btn btn-primary" href="{% url 'create_group_post' %}">Create a new post</a>
                                     {% else %}
-                                        <form action="" method="get" style="display: inline;">
+                                        <form action="{% url 'unfollow_group' group_slug=group.slug %}" method="get" style="display: inline;">
                                             <button class="btn btn-primary" type="submit">Unfollow</button>
                                         </form>
-                                        <form action="" method="get" style="display: inline;">
+                                        <form action="{% url 'follow_group' group_slug=group.slug %}" method="get" style="display: inline;">
                                             <button class="btn btn-primary" type="submit">Follow</button>
                                         </form>
                                     {% endif %}

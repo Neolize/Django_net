@@ -21,5 +21,7 @@ def delete_follower(owner: models.CustomUser, follower: models.CustomUser) -> No
             user=owner,
             follower=follower,
         ).delete()
+    except IndexError as exc:
+        LOGGER.warning(f'Follower instance with user - {owner} and follower - {follower} was not found. {exc}')
     except Exception as exc:
         LOGGER.error(exc)
