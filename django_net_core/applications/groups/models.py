@@ -29,6 +29,20 @@ class Group(models.Model):
         return reverse_lazy('group', kwargs={'group_slug': self.slug})
 
 
+class GroupMember(models.Model):
+    """Group member model"""
+    member = models.ForeignKey(
+        settings.AUTH_USER_MODEL, on_delete=models.SET_NULL, null=True, related_name='user_member'
+    )
+    group = models.ForeignKey('Group', on_delete=models.CASCADE, related_name='group_members')
+
+    class Meta:
+        db_table = 'group_member'
+
+    def __str__(self):
+        return f'Group: {self.group} - member: {self.member}'
+
+
 class GroupPost(abstract_models.AbstractPost):
     """Group's Post model"""
     author = models.ForeignKey(
