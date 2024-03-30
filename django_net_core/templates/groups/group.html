@@ -44,14 +44,17 @@
                                     <p class="text-muted font-size-sm">Created: {{ group.creation_date }}</p>
 
                                     {% if request.user.pk == group.creator.pk %}
-                                        <a class="btn btn-primary" href="{% url 'create_group_post' %}">Create a new post</a>
+                                        <a class="btn btn-primary" href="{{ group.get_absolute_url_for_post_creation }}">Create a new post</a>
                                     {% else %}
-                                        <form action="{% url 'unfollow_group' group_slug=group.slug %}" method="get" style="display: inline;">
-                                            <button class="btn btn-primary" type="submit">Unfollow</button>
-                                        </form>
-                                        <form action="{% url 'follow_group' group_slug=group.slug %}" method="get" style="display: inline;">
-                                            <button class="btn btn-primary" type="submit">Follow</button>
-                                        </form>
+                                        {% if is_subscribed_to_group %}
+                                            <form action="{% url 'unfollow_group' group_slug=group.slug %}" method="get" style="display: inline;">
+                                                <button class="btn btn-primary" type="submit">Unfollow</button>
+                                            </form>
+                                        {% else %}
+                                            <form action="{% url 'follow_group' group_slug=group.slug %}" method="get" style="display: inline;">
+                                                <button class="btn btn-primary" type="submit">Follow</button>
+                                            </form>
+                                        {% endif %}
                                     {% endif %}
                                 </div>
                             </div>
@@ -66,8 +69,8 @@
                         </ul>
                     </div>
                 </div>
-
-
+                {% block group_content %}
+                {% endblock group_content %}
             </div>
         </div>
     </div>

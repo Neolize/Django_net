@@ -226,19 +226,13 @@ class GroupView(View):
             raise Http404
 
         context = {
-            'group': group
+            'group': group,
+            'is_subscribed_to_group': g_utils.is_user_subscribed_to_group(
+                group=group,
+                visitor=request.user,
+            )
         }
         return render(request, self.template_name, context=context)
-
-
-class GroupPostCreationView(View):
-    template_name = 'groups/create_post.html'
-
-    def get(self, request):
-        return render(request, self.template_name)
-
-    def post(self):
-        pass
 
 
 def follow_group(request: WSGIRequest, group_slug: str):
@@ -271,6 +265,24 @@ def unfollow_group(request: WSGIRequest, group_slug: str):
 # def create_group_post(request: WSGIRequest) -> HttpResponse:
 #     if not request.method.lower() == 'post':
 #         return HttpResponseForbidden(GROUP_CREATION_FORBIDDEN_MESSAGE)
+
+class CreateGroupPostView(LoginRequiredMixin, View):
+    template_name = 'groups/create_post.html'
+    form_class = g_forms.GroupPostForm
+    login_url = reverse_lazy('login')
+
+    def get(self, request: WSGIRequest, group_slug: str):
+        group = g_read.get_group_by_slug(group_slug)
+        context = {
+            'group': group,
+            'form': self.form_class(),
+        }
+        return render(request, self.template_name, context=context)
+
+    def post(self, request: WSGIRequest, group_slug: str):
+        form = self.form_class(request.POST)
+        print(form)
+        return redirect(to='group', group_slug=group_slug)
 
 
 class UserWallView(LoginRequiredMixin, View):

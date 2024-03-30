@@ -1,1 +1,92 @@
 {% extends 'groups/group.html' %}
+
+{% load static %}
+
+{% block title %} Creating a new group post {% endblock title %}
+
+
+{% block breadcrumbs %}
+    <li class="breadcrumb-item"><a href="{% url 'home' %}">Home</a></li>
+    <li class="breadcrumb-item"><a href="{{ group_obj.get_absolute_url }}">Group page</a></li>
+    <li class="breadcrumb-item active" aria-current="page">Create group post</li>
+{% endblock breadcrumbs %}
+
+
+{% block group_content %}
+    <div class="col-lg-8">
+        <div class="card card-edit">
+            <div class="card-body">
+
+                <form action="#" method="post">
+                    {% csrf_token %}
+
+                    {% if form.non_field_errors %}
+                        <div class="alert alert-danger">{{ form.non_field_errors }}</div>
+                    {% endif %}
+
+                    <div class="row mb-3">
+                        <div class="col-sm-3" style="margin-top: 10px;">
+                            <h6 class="mb-0">Title</h6>
+                        </div>
+                        <div class="col-sm-9 text-secondary">
+                            {{ form.title }}
+
+                            {% if form.title.errors %}
+                                <div class="alert alert-danger mt-3">{{ form.title.errors }}</div>
+                            {% endif %}
+                        </div>
+                    </div>
+
+                    <div class="row mb-3">
+                        <div class="col-sm-3" style="margin-top: 10px;">
+                            <h6 class="mb-0">Tags</h6>
+                        </div>
+                        <div class="col-sm-9 text-secondary">
+                            {{ form.tags }}
+
+                            {% if form.tags.errors %}
+                                <div class="alert alert-danger mt-3">{{ form.tags.errors }}</div>
+                            {% endif %}
+                        </div>
+                    </div>
+
+                    <div class="row mb-3">
+                        <div class="col-sm-3" style="margin-top: 10px;">
+                            <h6 class="mb-0">Content</h6>
+                        </div>
+                        <div class="col-sm-9 text-secondary">
+                            {{ form.content }}
+                            <div class="d-flex justify-content-end">
+                                <span id="words_count" class="d-none">Words count - <span id="text_count"></span></span>
+                            </div>
+
+                            {% if form.content.errors %}
+                                <div class="alert alert-danger mt-3">{{ form.content.errors }}</div>
+                            {% endif %}
+                        </div>
+                    </div>
+
+                    <div class="row mb-3">
+                        <div class="col-sm-3" style="margin-top: 10px;">
+                            <h6 class="mb-0">Draft</h6>
+                        </div>
+                        <div class="col-sm-9 text-secondary">
+                            {{ form.draft }}
+
+                            {% if form.draft.errors %}
+                                <div class="alert alert-danger mt-3">{{ form.draft.errors }}</div>
+                            {% endif %}
+                        </div>
+                    </div>
+
+                    <div class="row mt-5">
+                        <div class="col-sm-3"></div>
+                        <div class="col-sm-9 text-secondary">
+                            <button class="btn btn-primary px-4">{% block post_button %} Create post {% endblock post_button %}</button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+{% endblock group_content %}

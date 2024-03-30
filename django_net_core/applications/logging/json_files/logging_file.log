@@ -46,3 +46,27 @@
   "funcName": "create_new_group_follower",
   "lineno": 54
 }
+{
+  "message": "Group with slug - metal-gear-rising-revengeancea does not exist. Group matching query does not exist.",
+  "levelname": "WARNING",
+  "asctime": "2024-03-30 14:35:59,990",
+  "pathname": "/home/neolize/Neolize/Python/Django projects/Django Net/django_net_core/applications/groups/services/crud/read.py",
+  "funcName": "get_group_by_slug",
+  "lineno": 16
+}
+{
+  "message": "Group with slug - create_group_post does not exist. Group matching query does not exist.",
+  "levelname": "WARNING",
+  "asctime": "2024-03-30 14:47:18,433",
+  "pathname": "/home/neolize/Neolize/Python/Django projects/Django Net/django_net_core/applications/groups/services/crud/read.py",
+  "funcName": "get_group_by_slug",
+  "lineno": 16
+}
+{
+  "message": "Group with slug - create_group_post does not exist. Group matching query does not exist.",
+  "levelname": "WARNING",
+  "asctime": "2024-03-30 14:49:28,657",
+  "pathname": "/home/neolize/Neolize/Python/Django projects/Django Net/django_net_core/applications/groups/services/crud/read.py",
+  "funcName": "get_group_by_slug",
+  "lineno": 16
+}
