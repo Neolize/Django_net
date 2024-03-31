@@ -33,7 +33,7 @@ def update_user_post(data: dict, post: models.UserPost) -> bool:
         post.is_published = is_published
         post.last_edit = datetime.now()
 
-        create.add_tags_to_user_post(tags=tags, post=post)
+        create.add_tags_to_post(tags=tags, post=post)
         post.save()
         is_edited = True
     except Exception as exc:

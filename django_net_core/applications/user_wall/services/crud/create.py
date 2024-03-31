@@ -4,6 +4,7 @@ from django.core.handlers.wsgi import WSGIRequest
 from django.db.utils import DataError
 
 from applications.user_wall import models
+from applications.groups.models import GroupPost
 from applications.user_wall.services.crud import crud_utils
 
 LOGGER = logging.getLogger('main_logger')
@@ -40,7 +41,7 @@ def _create_user_post(
             is_published=is_published,
             author_id=user_pk,
         )
-        add_tags_to_user_post(tags=tags, post=new_post)
+        add_tags_to_post(tags=tags, post=new_post)
         is_created = True
     except Exception as exc:
         LOGGER.error(exc)
@@ -71,7 +72,7 @@ def create_tags_from_list(tag_list: list[str]) -> list[models.Tag]:
     return tags
 
 
-def add_tags_to_user_post(tags: list[models.Tag], post: models.UserPost) -> None:
+def add_tags_to_post(tags: list[models.Tag], post: models.UserPost | GroupPost) -> None:
     for tag in tags:
         post.tags.add(tag)
 
