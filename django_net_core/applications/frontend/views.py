@@ -2,7 +2,7 @@ from django.contrib.auth import login
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.auth.views import LoginView, LogoutView
 from django.core.handlers.wsgi import WSGIRequest
-from django.http import Http404, HttpResponseForbidden, HttpResponse
+from django.http import Http404, HttpResponseForbidden
 from django.shortcuts import render, redirect
 from django.urls import reverse_lazy
 from django.views.generic import ListView, CreateView, View
@@ -18,7 +18,7 @@ from applications.user_wall.services.crud import create as uw_create, read as uw
 from applications.user_wall.services.utils import form_utils as uw_form_utils
 
 from applications.groups import forms as g_forms
-from applications.groups.permissions import GROUP_FORBIDDEN_MESSAGE, GROUP_CREATION_FORBIDDEN_MESSAGE
+from applications.groups import permissions as g_permissions
 from applications.groups.services import utils as g_utils
 from applications.groups.services.crud import create as g_create, read as g_read, delete as g_delete
 
@@ -178,7 +178,7 @@ class GroupCreationView(LoginRequiredMixin, UserPermissionMixin, View):
     def get(self, request: WSGIRequest, pk: int):
         user_obj = up_read.get_user_for_profile(user_pk=pk)
         if not g_read.is_user_allowed_to_create_group(user_obj):
-            return HttpResponseForbidden(GROUP_FORBIDDEN_MESSAGE)
+            return HttpResponseForbidden(g_permissions.GROUP_FORBIDDEN_MESSAGE)
 
         form = self.form_class()
         context = {
@@ -190,7 +190,7 @@ class GroupCreationView(LoginRequiredMixin, UserPermissionMixin, View):
     def post(self, request: WSGIRequest, pk: int):
         user_obj = up_read.get_user_for_profile(user_pk=pk)
         if not g_read.is_user_allowed_to_create_group(user_obj):
-            return HttpResponseForbidden(GROUP_FORBIDDEN_MESSAGE)
+            return HttpResponseForbidden(g_permissions.GROUP_FORBIDDEN_MESSAGE)
 
         form = self.form_class(request.POST, request.FILES)
 
@@ -262,10 +262,6 @@ def unfollow_group(request: WSGIRequest, group_slug: str):
     return redirect(to='group', group_slug=group_slug)
 
 
-# def create_group_post(request: WSGIRequest) -> HttpResponse:
-#     if not request.method.lower() == 'post':
-#         return HttpResponseForbidden(GROUP_CREATION_FORBIDDEN_MESSAGE)
-
 class CreateGroupPostView(LoginRequiredMixin, View):
     template_name = 'groups/create_post.html'
     form_class = g_forms.GroupPostForm
@@ -280,8 +276,13 @@ class CreateGroupPostView(LoginRequiredMixin, View):
         return render(request, self.template_name, context=context)
 
     def post(self, request: WSGIRequest, group_slug: str):
+        group = g_read.get_group_by_slug(group_slug)
+        if not g_permissions.is_user_group_author(visitor=request.user, group=group):
+            return HttpResponseForbidden(g_permissions.GROUP_CREATION_FORBIDDEN_MESSAGE)
+
         form = self.form_class(request.POST)
-        print(form)
+        print(form.is_valid())
+        print(form.cleaned_data)
         return redirect(to='group', group_slug=group_slug)
 
 

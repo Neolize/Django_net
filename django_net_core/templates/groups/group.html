@@ -20,7 +20,11 @@
             <nav aria-label="breadcrumb" class="main-breadcrumb user-profile-navbar">
                 <ol class="breadcrumb">
                     {% block breadcrumbs %}
-
+                        <li class="breadcrumb-item"><a href="{% url 'home' %}">Home</a></li>
+                        {% if request.user.is_authenticated %}
+                            <li class="breadcrumb-item"><a href="{{ request.user.get_absolute_url }}">User Profile</a></li>
+                        {% endif %}
+                        <li class="breadcrumb-item active" aria-current="page">Group page</li>
                     {% endblock breadcrumbs %}
                 </ol>
             </nav>

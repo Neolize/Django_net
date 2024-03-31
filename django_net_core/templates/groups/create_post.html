@@ -7,7 +7,8 @@
 
 {% block breadcrumbs %}
     <li class="breadcrumb-item"><a href="{% url 'home' %}">Home</a></li>
-    <li class="breadcrumb-item"><a href="{{ group_obj.get_absolute_url }}">Group page</a></li>
+    <li class="breadcrumb-item"><a href="{{ request.user.get_absolute_url }}">User Profile</a></li>
+    <li class="breadcrumb-item"><a href="{{ group.get_absolute_url }}">Group page</a></li>
     <li class="breadcrumb-item active" aria-current="page">Create group post</li>
 {% endblock breadcrumbs %}
 
