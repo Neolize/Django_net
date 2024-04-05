@@ -269,6 +269,9 @@ class CreateGroupPostView(LoginRequiredMixin, View):
 
     def get(self, request: WSGIRequest, group_slug: str):
         group = g_read.get_group_by_slug(group_slug)
+        if not group:
+            raise Http404
+
         context = {
             'group': group,
             'form': self.form_class(),
@@ -277,13 +280,23 @@ class CreateGroupPostView(LoginRequiredMixin, View):
 
     def post(self, request: WSGIRequest, group_slug: str):
         group = g_read.get_group_by_slug(group_slug)
+        if not group:
+            raise Http404
+
         if not g_permissions.is_user_group_author(visitor=request.user, group=group):
             return HttpResponseForbidden(g_permissions.GROUP_CREATION_FORBIDDEN_MESSAGE)
 
         form = self.form_class(request.POST)
-        print(form.is_valid())
-        print(form.cleaned_data)
-        return redirect(to='group', group_slug=group_slug)
+        if form.is_valid() and g_create.create_group_post_from_form_data(
+            data=form.cleaned_data, user_pk=request.user.pk, group_pk=group.pk
+        ):
+            return redirect(to='group', group_slug=group_slug)
+
+        context = {
+            'group': group,
+            'form': form,
+        }
+        return render(request, self.template_name, context=context)
 
 
 class UserWallView(LoginRequiredMixin, View):

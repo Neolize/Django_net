@@ -55,13 +55,12 @@ def create_new_group_follower(group: models.Group, member: CustomUser) -> None:
         LOGGER.error(exc)
 
 
-def create_group_post_from_form_date(
+def create_group_post_from_form_data(
         data: dict,
         user_pk: int,
         group_pk: int,
 ) -> bool:
     is_published = not data.get('draft')
-    #  group_id
     return _create_group_post(
         title=data.get('title'),
         content=data.get('content'),
@@ -82,9 +81,6 @@ def _create_group_post(
 ) -> bool:
 
     slug = crud_utils.return_unique_slug(str_for_slug=title, model=models.GroupPost)
-    tags = create_tags_from_list(
-        crud_utils.form_tag_list(tags)
-    )
     try:
         new_group_post = models.GroupPost.objects.create(
             title=title,
@@ -93,6 +89,9 @@ def _create_group_post(
             is_published=is_published,
             author_id=author_id,
             group_id=group_id,
+        )
+        tags = create_tags_from_list(
+            crud_utils.form_tag_list(tags)
         )
         add_tags_to_post(tags=tags, post=new_group_post)
         is_created = True

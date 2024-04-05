@@ -30,9 +30,6 @@ def _create_user_post(
 ) -> bool:
 
     slug = crud_utils.return_unique_slug(str_for_slug=title, model=models.UserPost)
-    tags = create_tags_from_list(
-        crud_utils.form_tag_list(tags)
-    )
     try:
         new_post = models.UserPost.objects.create(
             title=title,
@@ -40,6 +37,9 @@ def _create_user_post(
             slug=slug,
             is_published=is_published,
             author_id=user_pk,
+        )
+        tags = create_tags_from_list(
+            crud_utils.form_tag_list(tags)
         )
         add_tags_to_post(tags=tags, post=new_post)
         is_created = True
@@ -65,9 +65,8 @@ def create_tags_from_list(tag_list: list[str]) -> list[models.Tag]:
     tags = []
     for tag in tag_list:
         new_tag = _create_new_tag(tag)
-        if not new_tag:
-            raise Exception('Error occurred during creating a new post')
-        tags.append(new_tag)
+        if new_tag:
+            tags.append(new_tag)
 
     return tags
 
