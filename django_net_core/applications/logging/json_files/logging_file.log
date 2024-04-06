@@ -70,3 +70,27 @@
   "funcName": "get_group_by_slug",
   "lineno": 16
 }
+{
+  "message": "duplicate key value violates unique constraint \"tag_title_key\"\nDETAIL:  Key (title)=(news) already exists.\n",
+  "levelname": "ERROR",
+  "asctime": "2024-04-06 14:43:36,670",
+  "pathname": "/home/neolize/Neolize/Python/Django projects/Django Net/django_net_core/applications/groups/services/crud/create.py",
+  "funcName": "_create_group_post",
+  "lineno": 99
+}
+{
+  "message": "duplicate key value violates unique constraint \"tag_title_key\"\nDETAIL:  Key (title)=(news) already exists.\n",
+  "levelname": "ERROR",
+  "asctime": "2024-04-06 14:43:40,303",
+  "pathname": "/home/neolize/Neolize/Python/Django projects/Django Net/django_net_core/applications/groups/services/crud/create.py",
+  "funcName": "_create_group_post",
+  "lineno": 99
+}
+{
+  "message": "local variable 'created_tag' referenced before assignment",
+  "levelname": "ERROR",
+  "asctime": "2024-04-06 14:55:05,780",
+  "pathname": "/home/neolize/Neolize/Python/Django projects/Django Net/django_net_core/applications/groups/services/crud/create.py",
+  "funcName": "_create_group_post",
+  "lineno": 99
+}

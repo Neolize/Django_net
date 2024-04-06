@@ -54,7 +54,7 @@ def form_user_profile_context_data(
         'allowed_to_create_group': is_user_allowed_to_create_group(user_obj),
         'groups': user_obj.user_groups.all(),
         'today_date': today.date(),
-        'yesterday_date': today - timedelta(days=1),
+        'yesterday_date': (today - timedelta(days=1)).date(),
         'is_owner': request.user.pk == user_obj.pk,
         'page_obj': page_obj,
     }

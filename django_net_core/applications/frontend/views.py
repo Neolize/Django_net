@@ -225,13 +225,10 @@ class GroupView(View):
         if not group:
             raise Http404
 
-        context = {
-            'group': group,
-            'is_subscribed_to_group': g_utils.is_user_subscribed_to_group(
-                group=group,
-                visitor=request.user,
-            )
-        }
+        context = g_utils.form_group_context_data(
+            group=group,
+            user=request.user,
+        )
         return render(request, self.template_name, context=context)
 
 

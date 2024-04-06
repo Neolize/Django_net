@@ -1,5 +1,6 @@
 import logging
 
+from django.db.models import QuerySet
 from django.core.exceptions import ObjectDoesNotExist
 
 from applications.groups import models
@@ -25,3 +26,8 @@ def does_user_have_group(user: CustomUser) -> bool:
 
 def is_user_allowed_to_create_group(user: CustomUser) -> bool:
     return user.user_groups.count() < 5  # user can't own more than 5 groups
+
+
+def get_related_group_posts(group: models.Group) -> QuerySet[models.GroupPost]:
+    return (group.group_posts.filter(is_published=True).order_by('-publication_date').
+            select_related('author').prefetch_related('tags'))

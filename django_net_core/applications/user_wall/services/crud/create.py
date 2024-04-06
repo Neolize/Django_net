@@ -51,12 +51,16 @@ def _create_user_post(
 
 
 def _create_new_tag(new_tag: str) -> models.Tag | bool:
-    slug = crud_utils.return_unique_slug(str_for_slug=new_tag, model=models.Tag)
-    try:
-        created_tag = models.Tag.objects.create(title=new_tag.lower(), slug=slug)
-    except DataError as exc:
-        LOGGER.error(exc)
-        created_tag = False
+    created_tag = False
+
+    if not models.Tag.objects.filter(title__iexact=new_tag).exists():
+        slug = crud_utils.return_unique_slug(str_for_slug=new_tag, model=models.Tag)
+
+        try:
+            created_tag = models.Tag.objects.create(title=new_tag.lower(), slug=slug)
+        except DataError as exc:
+            LOGGER.error(exc)
+            created_tag = False
 
     return created_tag
 
