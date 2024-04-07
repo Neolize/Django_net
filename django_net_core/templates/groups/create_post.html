@@ -2,6 +2,12 @@
 
 {% load static %}
 
+
+{% block additional_link %}
+    <link rel="stylesheet" href="{% static 'user_wall/css/create_post.css' %}" type="text/css" />
+{% endblock additional_link %}
+
+
 {% block title %} Creating a new group post {% endblock title %}
 
 
@@ -58,7 +64,7 @@
                         <div class="col-sm-9 text-secondary">
                             {{ form.content }}
                             <div class="d-flex justify-content-end">
-                                <span id="words_count" class="d-none">Words count - <span id="text_count"></span></span>
+                                <span id="words_count" class="d-none">Characters count - <span id="text_count"></span></span>
                             </div>
 
                             {% if form.content.errors %}
@@ -91,3 +97,9 @@
         </div>
     </div>
 {% endblock group_content %}
+
+
+{% block script %}
+    <script src="{% static 'user_profiles/js/textarea_field.js' %}"></script>
+    <script src="{% static 'user_wall/js/tags.js' %}"></script>
+{% endblock script %}

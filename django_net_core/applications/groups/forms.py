@@ -47,7 +47,7 @@ class GroupPostForm(forms.ModelForm):
         required=False,
         widget=forms.TextInput(
             attrs={
-                'class': 'form-control',
+                'class': 'form-control user_post__tag',
                 'placeholder': 'Start your tags with # and write them separated by commas',
             }
         )
@@ -57,6 +57,7 @@ class GroupPostForm(forms.ModelForm):
         widget=forms.Textarea(
             attrs={
                 'class': 'form-control',
+                'id': 'form-edit__info_about_user',
                 'rows': '10',
             }
         )
@@ -65,7 +66,7 @@ class GroupPostForm(forms.ModelForm):
         required=False,
         widget=forms.CheckboxInput(
             attrs={
-                'clas': 'form-control',
+                'class': 'form-draft',
             }
         )
     )
