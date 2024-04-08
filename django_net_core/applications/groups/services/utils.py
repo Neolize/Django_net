@@ -13,8 +13,6 @@ def is_user_subscribed_to_group(group: Group, visitor: CustomUser) -> bool:
 
 def form_group_context_data(group: Group, user: CustomUser) -> dict:
     today = datetime.today()
-    print(type(today.date()))
-    print(type(today - timedelta(days=1)))
     return {
         'group': group,
         'group_posts': read.get_related_group_posts(group),

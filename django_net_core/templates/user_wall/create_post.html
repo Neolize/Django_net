@@ -22,7 +22,7 @@
         <div class="card card-edit">
             <div class="card-body">
 
-                <form action="{% block user_post_action %} {% url 'create_user_post' %} {% endblock user_post_action %}" method="post">
+                <form action="{% block user_post_action %} {% url 'create_user_post' %} {% endblock user_post_action %}" method="post" id="post_form">
                     {% csrf_token %}
 
                     {% if form.non_field_errors %}
@@ -98,6 +98,6 @@
 
 
 {% block script %}
-    <script src="{% static 'user_profiles/js/textarea_field.js' %}"></script>
-    <script src="{% static 'user_wall/js/tags.js' %}"></script>
+    <script src="{% static 'utils/js/textarea_field.js' %}"></script>
+    <script src="{% static 'utils/js/tags.js' %}"></script>
 {% endblock script %}
