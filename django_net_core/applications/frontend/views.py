@@ -219,6 +219,7 @@ class GroupCreationView(LoginRequiredMixin, UserPermissionMixin, View):
 
 class GroupView(View):
     template_name = 'groups/group.html'
+    paginate_by = 1
 
     def get(self, request, group_slug: str):
         group = g_read.get_group_by_slug(group_slug)
@@ -227,7 +228,8 @@ class GroupView(View):
 
         context = g_utils.form_group_context_data(
             group=group,
-            user=request.user,
+            request=request,
+            paginate_by=self.paginate_by,
         )
         return render(request, self.template_name, context=context)
 

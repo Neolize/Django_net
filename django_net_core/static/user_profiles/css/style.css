@@ -118,3 +118,7 @@ body {
     cursor: pointer;
     text-decoration: none;
 }
+
+.group-head-block {
+    margin-left: 120px;
+}
