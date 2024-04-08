@@ -199,7 +199,13 @@
                                  {% if post.last_edit %}
                                     <span class="pull-right text-muted" style="margin-left: 5px;">(edited)</span>
                                  {% endif %}
-                                 <span class="pull-right text-muted">{{ post.view_counts }} Views</span>
+                                 <span class="pull-right text-muted">
+                                     {% if post.view_counts == 1 %}
+                                        {{ post.view_counts }} View
+                                     {% else %}
+                                        {{ post.view_counts }} Views
+                                     {% endif %}
+                                 </span>
                               </div>
                               <div class="timeline-content">
                                 {% if post.tags.all %}

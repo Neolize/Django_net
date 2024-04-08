@@ -5,7 +5,7 @@ from django.core.handlers.wsgi import WSGIRequest
 from applications.frontend.services.pagination import get_page_object
 from applications.user_profiles.models import CustomUser
 from applications.user_wall.services.crud.read import get_related_posts
-from applications.user_wall.services.crud.update import update_user_posts_view_counts
+from applications.user_wall.services.crud.update import update_user_posts_view_count
 from applications.groups.services.crud.read import is_user_allowed_to_create_group
 
 
@@ -38,7 +38,7 @@ def form_user_profile_context_data(
         page=page,
     )
     relevant_posts = user_posts[start:end]
-    update_user_posts_view_counts(
+    update_user_posts_view_count(
         user_pk=user_obj.pk,
         visitor_pk=request.user.pk,
         posts=relevant_posts,

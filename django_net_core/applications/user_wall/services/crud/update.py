@@ -52,7 +52,11 @@ def _return_new_tag_list(new_tags: list[str], old_tags: list[str]) -> list[str]:
     return new_tag_list
 
 
-def update_user_posts_view_counts(user_pk: int, visitor_pk: int, posts: QuerySet[models.UserPost]) -> None:
+def update_user_posts_view_count(
+        user_pk: int,
+        visitor_pk: int,
+        posts: QuerySet[models.UserPost]
+) -> None:
     if visitor_pk == user_pk:
         return None
 

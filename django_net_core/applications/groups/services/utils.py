@@ -2,7 +2,8 @@ from datetime import datetime, timedelta
 
 from applications.user_profiles.models import CustomUser
 from applications.groups.models import Group
-from applications.groups.services.crud import read
+from applications.groups.services.crud.read import get_related_group_posts
+from applications.groups.services.crud.update import update_group_posts_view_count
 
 
 def is_user_subscribed_to_group(group: Group, visitor: CustomUser) -> bool:
@@ -12,10 +13,16 @@ def is_user_subscribed_to_group(group: Group, visitor: CustomUser) -> bool:
 
 
 def form_group_context_data(group: Group, user: CustomUser) -> dict:
+    relevant_posts = get_related_group_posts(group)
+    update_group_posts_view_count(
+        group=group,
+        visitor_pk=user.pk,
+        posts=relevant_posts,
+    )
     today = datetime.today()
     return {
         'group': group,
-        'group_posts': read.get_related_group_posts(group),
+        'group_posts': relevant_posts,
         'is_subscribed_to_group': is_user_subscribed_to_group(
             group=group,
             visitor=user,
