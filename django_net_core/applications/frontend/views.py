@@ -93,6 +93,9 @@ class UserProfileView(View):
         return render(request, self.template_name, context=context)
 
     def post(self, request: WSGIRequest, pk: int):
+        if request.user.is_anonymous:
+            return HttpResponseForbidden(FORBIDDEN_MESSAGE)
+
         user_obj = up_read.get_user_for_profile(user_pk=pk)
         if not user_obj:
             raise Http404
@@ -239,6 +242,9 @@ class GroupView(View):
         return render(request, self.template_name, context=context)
 
     def post(self, request: WSGIRequest, group_slug: str):
+        if request.user.is_anonymous:
+            return HttpResponseForbidden(FORBIDDEN_MESSAGE)
+
         group = g_read.get_group_by_slug(group_slug)
         if not group:
             raise Http404
