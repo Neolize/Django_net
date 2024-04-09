@@ -1,26 +1,28 @@
-{% extends 'user_profiles/detail/base_profile.html' %}
+{% extends 'groups/detail/group.html' %}
 
 
 {% load static %}
 
-{% block link %}
+{% block additional_link %}
     <link rel="stylesheet" href="{% static 'user_profiles/css/style.css' %}" type="text/css" />
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css" type="text/css">
     <link rel="stylesheet" href="{% static 'user_profiles/css/friends.css' %}" type="text/css" />
-{% endblock link %}
+{% endblock additional_link %}
 
-{% block title %} {{ user_obj.get_full_name }}'s followers {% endblock title %}
+{% block title %} Followers of "{{ group.title }}" {% endblock title %}
 
 
 {% block breadcrumbs %}
     <li class="breadcrumb-item"><a href="{% url 'home' %}">Home</a></li>
-    <li class="breadcrumb-item"><a href="{% url 'user_wall' %}">User</a></li>
-    <li class="breadcrumb-item"><a href="{{ user_obj.get_absolute_url }}">User Profile</a></li>
-    <li class="breadcrumb-item active" aria-current="page">Followers</li>
+    {% if request.user.is_authenticated %}
+        <li class="breadcrumb-item"><a href="{{ request.user.get_absolute_url }}">User Profile</a></li>
+    {% endif %}
+    <li class="breadcrumb-item"><a href="{{ group.get_absolute_url }}">Group page</a></li>
+    <li class="breadcrumb-item active" aria-current="page">Group followers</li>
 {% endblock breadcrumbs %}
 
 
-{% block profile %}
+{% block group_content %}
     <div class="col-md-8">
         <div class="container" style="margin-top: 0px;">
             <div class="row">
@@ -30,26 +32,26 @@
                             <div class="card-block">
 
                                 <div class="user-image">
-                                    {% if follower.follower.avatar %}
-                                        <a href="{{ follower.follower.get_absolute_url }}"><img src="{{ follower.follower.avatar.url }}" class="img-radius" alt="avatar"></a>
+                                    {% if follower.member.avatar %}
+                                        <a href="{{ follower.member.get_absolute_url }}"><img src="{{ follower.member.avatar.url }}" class="img-radius" alt="avatar"></a>
                                     {% else %}
-                                        <a href="{{ follower.follower.get_absolute_url }}"><img src="{% static 'user_profiles/images/anonymous.png' %}" class="img-radius" alt="User-Profile-Image"></a>
+                                        <a href="{{ follower.member.get_absolute_url }}"><img src="{% static 'user_profiles/images/anonymous.png' %}" class="img-radius" alt="User-Profile-Image"></a>
                                     {% endif %}
                                 </div>
 
-                                {% if follower.follower.get_full_name %}
-                                    <h5><a class="user_link" href="{{ follower.follower.get_absolute_url }}">{{ follower.follower.get_full_name }}</a></h5>
+                                {% if follower.member.get_full_name %}
+                                    <h5><a class="user_link" href="{{ follower.member.get_absolute_url }}">{{ follower.member.get_full_name }}</a></h5>
                                 {% else %}
-                                    <h5><a class="user_link" href="{{ follower.follower.get_absolute_url }}">{{ follower.follower.username }}</a></h5>
+                                    <h5><a class="user_link" href="{{ follower.member.get_absolute_url }}">{{ follower.member.username }}</a></h5>
                                 {% endif %}
 
                                 <p class="text-muted">
-                                    {% if follower.follower.gender != 'not specified' %}
-                                        {{ follower.follower.gender|title }} |
+                                    {% if follower.member.gender != 'not specified' %}
+                                        {{ follower.member.gender|title }} |
                                     {% endif %}
 
-                                    {% if follower.follower.personal_data.birthday %}
-                                        Born {{ follower.follower.personal_data.birthday|date:"j.m.o" }}
+                                    {% if follower.member.personal_data.birthday %}
+                                        Born {{ follower.member.personal_data.birthday|date:"j.m.o" }}
                                     {% endif %}
                                 </p>
                                 <hr>
@@ -58,32 +60,32 @@
                                     <div class="row">
                                         <div class="col-4">
                                             <i class="fa fa-user"></i>
-                                            <p>{{ follower.follower.followers.count }}</p>
+                                            <p>{{ follower.member.followers.count }}</p>
                                         </div>
                                         <div class="col-4">
                                             <i class="fa fa-comment"></i>
-                                            <p>{{ follower.follower.user_comments.count }}</p>
+                                            <p>{{ follower.member.user_comments.count }}</p>
                                         </div>
                                         <div class="col-4">
                                             <i class="fa fa-sitemap"></i>
-                                            <p>{{ follower.follower.user_groups.count }}</p>
+                                            <p>{{ follower.member.user_groups.count }}</p>
                                         </div>
                                     </div>
                                 </div>
 
                                 <p class="m-t-15 text-muted">
-                                    {{ follower.follower.personal_data.info_about_user|truncatechars:70 }}
+                                    {{ follower.member.personal_data.info_about_user|truncatechars:70 }}
                                 </p>
                                 <hr>
                                 <div class="row justify-content-center user-social-link">
-                                    {% if follower.follower.contacts.website %}
-                                        <div class="col-auto"><a href="{{ follower.follower.contacts.website }}"><i class="fa fa-globe text-globe"></i></a></div>
+                                    {% if follower.member.contacts.website %}
+                                        <div class="col-auto"><a href="{{ follower.member.contacts.website }}"><i class="fa fa-globe text-globe"></i></a></div>
                                     {% endif %}
-                                    {% if follower.follower.contacts.twitter %}
-                                        <div class="col-auto"><a href="{{ follower.follower.contacts.twitter }}"><i class="fa fa-twitter text-twitter"></i></a></div>
+                                    {% if follower.member.contacts.twitter %}
+                                        <div class="col-auto"><a href="{{ follower.member.contacts.twitter }}"><i class="fa fa-twitter text-twitter"></i></a></div>
                                     {% endif %}
-                                    {% if follower.follower.contacts.github %}
-                                    <div class="col-auto"><a href="{{ follower.follower.contacts.github }}"><i class="fa fa-github text-github"></i></a></div>
+                                    {% if follower.member.contacts.github %}
+                                    <div class="col-auto"><a href="{{ follower.member.contacts.github }}"><i class="fa fa-github text-github"></i></a></div>
                                     {% endif %}
                                 </div>
                             </div>
@@ -181,4 +183,4 @@
             </div>
         </div>
     </div>
-{% endblock profile %}
+{% endblock group_content %}

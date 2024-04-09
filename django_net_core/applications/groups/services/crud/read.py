@@ -35,3 +35,17 @@ def get_related_group_posts(group: models.Group) -> QuerySet[models.GroupPost]:
         annotate(comments_number=Count('comments'))
     )
 
+
+def fetch_all_group_followers(group: models.Group) -> QuerySet[models.GroupMember]:
+    return (
+        group.group_members.all().select_related(
+            'member',
+            'member__personal_data',
+            'member__contacts',
+        ).
+        prefetch_related(
+            'member__followers',
+            'member__user_comments',
+            'member__user_groups',
+        )
+    )

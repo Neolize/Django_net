@@ -31,6 +31,9 @@ class Group(models.Model):
     def get_absolute_url_for_post_creation(self):
         return reverse_lazy('create_group_post', kwargs={'group_slug': self.slug})
 
+    def get_absolute_url_for_followers(self):
+        return reverse_lazy('group_followers', kwargs={'group_slug': self.slug})
+
 
 class GroupMember(models.Model):
     """Group member model"""

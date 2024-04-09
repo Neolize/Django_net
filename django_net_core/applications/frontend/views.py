@@ -177,7 +177,7 @@ class EditUserProfileView(LoginRequiredMixin, UserPermissionMixin, View):
 
 
 class GroupCreationView(LoginRequiredMixin, UserPermissionMixin, View):
-    template_name = 'groups/create_group.html'
+    template_name = 'groups/detail/create_group.html'
     form_class = g_forms.CreateGroup
     login_url = reverse_lazy('login')
 
@@ -224,7 +224,7 @@ class GroupCreationView(LoginRequiredMixin, UserPermissionMixin, View):
 
 
 class GroupView(View):
-    template_name = 'groups/group.html'
+    template_name = 'groups/detail/group.html'
     paginate_by = 1
     form_class = g_forms.GroupCommentForm
 
@@ -288,7 +288,7 @@ def unfollow_group(request: WSGIRequest, group_slug: str):
 
 
 class CreateGroupPostView(LoginRequiredMixin, View):
-    template_name = 'groups/create_post.html'
+    template_name = 'groups/detail/create_post.html'
     form_class = g_forms.GroupPostForm
     login_url = reverse_lazy('login')
 
@@ -320,6 +320,25 @@ class CreateGroupPostView(LoginRequiredMixin, View):
         context = {
             'group': group,
             'form': form,
+        }
+        return render(request, self.template_name, context=context)
+
+
+class GroupFollowersView(View):
+    template_name = 'groups/list/group_followers.html'
+
+    def get(self, request: WSGIRequest, group_slug: str):
+        group = g_read.get_group_by_slug(group_slug)
+        if not group:
+            raise Http404
+
+        context = {
+            'group': group,
+            'followers': g_read.fetch_all_group_followers(group),
+            'is_subscribed_to_group': g_utils.is_user_subscribed_to_group(
+                group=group,
+                visitor=request.user,
+            )
         }
         return render(request, self.template_name, context=context)
 

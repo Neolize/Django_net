@@ -102,17 +102,27 @@
                         </div>
 
                         <div class="user-head-information">
-                            <a class="user-head-information__clickable" href="{{ user_obj.get_absolute_url_for_followers }}">
-                                {% if followers == 1 %}
-                                    {{ followers }} follower
-                                {% else %}
-                                    {{ followers }} followers
-                                {% endif %}
-                            </a>
+                            {% if followers != 0 %}
+                                <a class="user-head-information__clickable" href="{{ user_obj.get_absolute_url_for_followers }}">
+                                    {% if followers == 1 %}
+                                        {{ followers }} follower
+                                    {% else %}
+                                        {{ followers }} followers
+                                    {% endif %}
+                                </a>
+                            {% else %}
+                                <span>{{ followers }} followers</span>
+                            {% endif %}
                         </div>
 
                         <div class="user-head-information">
-                            <a class="user-head-information__clickable" href="{{ user_obj.get_absolute_url_for_following }}">{{ following }} following</a>
+                            {% if following != 0 %}
+                                <a class="user-head-information__clickable" href="{{ user_obj.get_absolute_url_for_following }}">
+                                    {{ following }} following
+                                </a>
+                            {% else %}
+                                <span>{{ following }} following</span>
+                            {% endif %}
                         </div>
 
                     </div>
