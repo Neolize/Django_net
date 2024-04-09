@@ -6,6 +6,7 @@ from django.db.utils import DataError
 from applications.user_wall import models
 from applications.groups.models import GroupPost
 from applications.user_wall.services.crud import crud_utils
+from applications.abstract_activities.services.crud.create import create_comment
 
 LOGGER = logging.getLogger('main_logger')
 
@@ -80,7 +81,11 @@ def add_tags_to_post(tags: list[models.Tag], post: models.UserPost | GroupPost) 
         post.tags.add(tag)
 
 
-def create_comment_for_user_post(data: dict, request: WSGIRequest, user_pk: int) -> bool:
+def create_comment_for_user_post(
+        data: dict,
+        request: WSGIRequest,
+        user_pk: int
+) -> bool:
     content = data.get('comment', '')
     post_id = int(request.POST.get('post_id'))
 
@@ -89,11 +94,12 @@ def create_comment_for_user_post(data: dict, request: WSGIRequest, user_pk: int)
     else:
         parent_id = None
 
-    return _create_user_comment(
+    return create_comment(
         content=content,
         author_id=user_pk,
         post_id=post_id,
         parent_id=parent_id,
+        model=models.UserComment,
     )
 
 

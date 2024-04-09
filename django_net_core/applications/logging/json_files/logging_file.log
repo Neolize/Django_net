@@ -94,3 +94,19 @@
   "funcName": "_create_group_post",
   "lineno": 99
 }
+{
+  "message": "UserComment matching query does not exist.",
+  "levelname": "ERROR",
+  "asctime": "2024-04-09 09:13:48,822",
+  "pathname": "/home/neolize/Neolize/Python/Django projects/Django Net/django_net_core/applications/abstract_activities/services/crud/create.py",
+  "funcName": "create_comment",
+  "lineno": 25
+}
+{
+  "message": "UserComment matching query does not exist.",
+  "levelname": "ERROR",
+  "asctime": "2024-04-09 10:08:10,230",
+  "pathname": "/home/neolize/Neolize/Python/Django projects/Django Net/django_net_core/applications/abstract_activities/services/crud/create.py",
+  "funcName": "create_comment",
+  "lineno": 32
+}
