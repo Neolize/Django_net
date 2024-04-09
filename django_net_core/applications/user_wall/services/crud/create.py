@@ -101,24 +101,3 @@ def create_comment_for_user_post(
         parent_id=parent_id,
         model=models.UserComment,
     )
-
-
-def _create_user_comment(
-        content: str,
-        author_id: int,
-        post_id: int,
-        parent_id: int | None,
-) -> bool:
-    try:
-        models.UserComment.objects.create(
-            content=content,
-            author_id=author_id,
-            post_id=post_id,
-            parent_id=parent_id,
-        )
-        is_created = True
-    except Exception as exc:
-        LOGGER.error(exc)
-        is_created = False
-
-    return is_created

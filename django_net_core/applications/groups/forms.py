@@ -75,3 +75,22 @@ class GroupPostForm(forms.ModelForm):
     class Meta:
         model = models.GroupPost
         fields = ('title', 'tags', 'content', 'draft')
+
+
+class GroupCommentForm(forms.ModelForm):
+    comment = forms.CharField(
+        required=True,
+        widget=forms.Textarea(
+            attrs={
+                'class': 'form-control rounded',
+                'placeholder': 'Write a comment...',
+                'style': 'margin-right: 10px',
+                'rows': 1,
+                'id': 'usercomment-input',
+            }
+        )
+    )
+
+    class Meta:
+        model = models.GroupComment
+        fields = ('comment', )

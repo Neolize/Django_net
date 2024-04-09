@@ -1,12 +1,14 @@
 import logging
 from datetime import date
 
+from django.core.handlers.wsgi import WSGIRequest
 from django.core.files.uploadedfile import InMemoryUploadedFile
 
 from applications.groups import models
 from applications.user_profiles.models import CustomUser
 from applications.user_wall.services.crud import crud_utils
 from applications.user_wall.services.crud.create import create_tags_from_list, add_tags_to_post
+from applications.abstract_activities.services.crud.create import create_comment
 
 
 LOGGER = logging.getLogger('main_logger')
@@ -100,3 +102,25 @@ def _create_group_post(
         is_created = False
 
     return is_created
+
+
+def create_comment_for_group_post(
+        data: dict,
+        request: WSGIRequest,
+        user_pk: int,
+) -> bool:
+    content = data.get('comment', '')
+    post_id = int(request.POST.get('post_id'))
+
+    if request.POST.get('parent_id'):
+        parent_id = int(request.POST.get('parent_id'))
+    else:
+        parent_id = None
+
+    return create_comment(
+        content=content,
+        author_id=user_pk,
+        post_id=post_id,
+        parent_id=parent_id,
+        model=models.GroupComment,
+    )

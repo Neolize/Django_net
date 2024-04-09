@@ -1,6 +1,6 @@
 import logging
 
-from django.db.models import QuerySet
+from django.db.models import QuerySet, Count
 from django.core.exceptions import ObjectDoesNotExist
 
 from applications.groups import models
@@ -29,5 +29,9 @@ def is_user_allowed_to_create_group(user: CustomUser) -> bool:
 
 
 def get_related_group_posts(group: models.Group) -> QuerySet[models.GroupPost]:
-    return (group.group_posts.filter(is_published=True).order_by('-publication_date').
-            select_related('author').prefetch_related('tags'))
+    return (
+        group.group_posts.filter(is_published=True).order_by('-publication_date').
+        select_related('author').prefetch_related('tags').
+        annotate(comments_number=Count('comments'))
+    )
+

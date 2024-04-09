@@ -93,8 +93,11 @@ class UserProfileView(View):
         return render(request, self.template_name, context=context)
 
     def post(self, request: WSGIRequest, pk: int):
-        form = self.form_class(request.POST)
+        user_obj = up_read.get_user_for_profile(user_pk=pk)
+        if not user_obj:
+            raise Http404
 
+        form = self.form_class(request.POST)
         if form.is_valid() and uw_create.create_comment_for_user_post(
             data=form.cleaned_data,
             request=request,
@@ -220,8 +223,9 @@ class GroupCreationView(LoginRequiredMixin, UserPermissionMixin, View):
 class GroupView(View):
     template_name = 'groups/group.html'
     paginate_by = 1
+    form_class = g_forms.GroupCommentForm
 
-    def get(self, request, group_slug: str):
+    def get(self, request, group_slug: str, form: g_forms.GroupCommentForm | None = None):
         group = g_read.get_group_by_slug(group_slug)
         if not group:
             raise Http404
@@ -231,7 +235,23 @@ class GroupView(View):
             request=request,
             paginate_by=self.paginate_by,
         )
+        context['form'] = form or self.form_class()
         return render(request, self.template_name, context=context)
+
+    def post(self, request: WSGIRequest, group_slug: str):
+        group = g_read.get_group_by_slug(group_slug)
+        if not group:
+            raise Http404
+
+        form = self.form_class(request.POST)
+        if form.is_valid() and g_create.create_comment_for_group_post(
+            data=form.cleaned_data,
+            request=request,
+            user_pk=request.user.pk,
+        ):
+            return self.get(request=request, group_slug=group_slug)
+
+        return self.get(request=request, group_slug=group_slug, form=form)
 
 
 def follow_group(request: WSGIRequest, group_slug: str):

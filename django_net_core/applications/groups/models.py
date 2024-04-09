@@ -60,6 +60,18 @@ class GroupPost(abstract_models.AbstractPost):
     def __str__(self):
         return self.title
 
+    def get_comments(self):
+        return (
+            self.comments.filter(parent_id__isnull=True, is_published=True).
+            select_related('author').prefetch_related(
+                models.Prefetch(
+                    'children',
+                    GroupComment.objects.filter(is_published=True).select_related('author'),
+                    'children_comments',
+                )
+            )
+        )
+
 
 class GroupComment(abstract_models.AbstractComment, MPTTModel):
     """Group's Comment model"""
