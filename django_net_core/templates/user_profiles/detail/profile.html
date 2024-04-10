@@ -262,6 +262,7 @@
                                  <a href="javascript:;" class="m-r-15 text-inverse-lighter"><i class="fa fa-thumbs-up fa-fw fa-lg m-r-3"></i> Like</a>
                                  <a href="javascript:;" class="m-r-15 text-inverse-lighter"><i class="fa fa-share fa-fw fa-lg m-r-3"></i> Share</a>
                                  {% if is_owner %}
+                                    <a href="{% url 'delete_user_post' user_post_slug=post.slug %}" class="m-r-15 text-inverse-danger link-delete_post">Delete post</a>
                                     <a href="{% url 'edit_user_post' slug=post.slug %}" class="m-r-15 text-inverse-lighter link-edit_post">Edit post</a>
                                  {% endif %}
                               </div>

@@ -7,6 +7,9 @@ from django.shortcuts import render, redirect
 from django.urls import reverse_lazy
 from django.views.generic import ListView, CreateView, View
 
+
+from applications.frontend.permissions import is_user_post_author
+
 from applications.user_profiles import forms as up_forms
 from applications.user_profiles.permissions import UserPermissionMixin, FORBIDDEN_MESSAGE
 from applications.user_profiles.services.crud import (read as up_read, update as up_update,
@@ -14,7 +17,8 @@ from applications.user_profiles.services.crud import (read as up_read, update as
 from applications.user_profiles.services.utils import form_utils as up_form_utils, common_utils as up_common_utils
 
 from applications.user_wall import forms as uw_forms, models as uw_models
-from applications.user_wall.services.crud import create as uw_create, read as uw_read, update as uw_update
+from applications.user_wall.services.crud import (create as uw_create, read as uw_read,
+                                                  update as uw_update, delete as uw_delete)
 from applications.user_wall.services.utils import form_utils as uw_form_utils
 
 from applications.groups import forms as g_forms
@@ -176,6 +180,148 @@ class EditUserProfileView(LoginRequiredMixin, UserPermissionMixin, View):
         }
 
 
+class CreateUserPostView(LoginRequiredMixin, View):
+    template_name = 'user_wall/create_post.html'
+    form_class = uw_forms.UserPostForm
+    login_url = reverse_lazy('login')
+
+    def get(self, request: WSGIRequest):
+        return render(request, self.template_name, context=self.get_context_data(pk=request.user.pk))
+
+    def post(self, request: WSGIRequest):
+        form = self.form_class(request.POST)
+
+        if form.is_valid() and uw_create.create_user_post_from_form_data(
+                data=form.cleaned_data, user_pk=request.user.pk
+        ):
+            return redirect(to='user_profile', pk=request.user.pk)
+
+        context = self.get_context_data(pk=request.user.pk)
+        context['form'] = form
+        return render(request, self.template_name, context=context)
+
+    def get_context_data(self, pk: int) -> dict:
+        return {
+            'form': self.form_class(),
+            'user_obj': up_read.get_user_for_profile(user_pk=pk),
+        }
+
+
+class EditUserPostView(LoginRequiredMixin, View):
+    template_name = 'user_wall/edit_post.html'
+    form_class = uw_forms.UserPostForm
+    login_url = reverse_lazy('login')
+
+    def get(self, request: WSGIRequest, slug: str):
+        user_post = uw_read.get_user_post(slug=slug)
+        self.check_request(user_post=user_post)
+
+        if user_post.author_id != request.user.pk:
+            return HttpResponseForbidden(FORBIDDEN_MESSAGE)
+
+        context = self.get_context_data(pk=request.user.pk, post_slug=slug)
+        uw_form_utils.fill_edit_user_post_form(form=context['form'], post=user_post)
+        return render(request, self.template_name, context=context)
+
+    def post(self, request: WSGIRequest, slug: str):
+        user_post = uw_read.get_user_post(slug=slug)
+        self.check_request(user_post=user_post)
+
+        if user_post.author_id != request.user.pk:
+            return HttpResponseForbidden(FORBIDDEN_MESSAGE)
+
+        form = self.form_class(request.POST)
+        if form.is_valid() and uw_update.update_user_post(data=form.cleaned_data, post=user_post):
+            return redirect(to='user_profile', pk=request.user.pk)
+
+        context = self.get_context_data(pk=request.user.pk, post_slug=slug)
+        context['form'] = form
+        return render(request, self.template_name, context=context)
+
+    def get_context_data(self, pk: int, post_slug: str) -> dict:
+        return {
+            'form': self.form_class(),
+            'user_obj': up_read.get_user_for_profile(user_pk=pk),
+            'post_slug': post_slug,
+        }
+
+    @staticmethod
+    def check_request(user_post: uw_models.UserPost):
+        if not user_post:
+            raise Http404
+
+
+def delete_user_post(request: WSGIRequest, user_post_slug: str):
+    if not request.user.is_authenticated:
+        return redirect(to='login')
+
+    user_post = uw_read.fetch_user_post(user_post_slug)
+    if not user_post:
+        raise Http404
+
+    if not is_user_post_author(
+        visitor=request.user,
+        post=user_post,
+    ):
+        return HttpResponseForbidden(FORBIDDEN_MESSAGE)
+
+    uw_delete.delete_user_post(user_post)
+    return redirect(to='user_profile', pk=request.user.pk)
+
+
+class UserFollowersView(View):
+    template_name = 'user_profiles/list/followers.html'
+
+    def get(self, request: WSGIRequest, pk: int):
+        user_obj = up_read.fetch_user_for_followers_page(user_pk=pk)
+        if not user_obj:
+            raise Http404
+
+        context = {
+            'user_obj': user_obj,
+            'followers': up_read.fetch_all_user_followers(user_obj),
+            'is_followed': up_common_utils.is_followed(
+                current_user=user_obj,
+                visitor=request.user
+            ),
+        }
+        return render(request, self.template_name, context=context)
+
+
+class UserFollowingView(View):
+    template_name = 'user_profiles/list/following.html'
+
+    def get(self, request: WSGIRequest, pk: int):
+        user_obj = up_read.fetch_user_for_followers_page(user_pk=pk)
+        if not user_obj:
+            raise Http404
+
+        context = {
+            'user_obj': user_obj,
+            'followings': up_read.fetch_all_user_followings(user_obj),
+            'is_followed': up_common_utils.is_followed(
+                current_user=user_obj,
+                visitor=request.user,
+            ),
+        }
+        return render(request, self.template_name, context=context)
+
+
+class PeopleSearchView(View):
+    template_name = 'search/people_search.html'
+
+    def get(self, request: WSGIRequest):
+        user_input = request.GET.get('input')
+        if user_input is None:
+            users = up_read.get_all_users_with_personal_data()
+        else:
+            users = up_read.fetch_users_by_names(user_input)
+        context = {
+            'users': users,
+        }
+        return render(request, self.template_name, context=context)
+
+
 class GroupCreationView(LoginRequiredMixin, UserPermissionMixin, View):
     template_name = 'groups/detail/create_group.html'
     form_class = g_forms.CreateGroup
@@ -332,7 +478,7 @@ def delete_group_post(request: WSGIRequest, group_post_slug: str):
     if not group_post:
         raise Http404
 
-    if not g_permissions.is_user_group_post_author(
+    if not is_user_post_author(
         visitor=request.user,
         group_post=group_post,
     ):
@@ -368,59 +514,6 @@ class UserWallView(LoginRequiredMixin, View):
         return render(request, self.template_name)
 
 
-class UserFollowersView(View):
-    template_name = 'user_profiles/list/followers.html'
-
-    def get(self, request: WSGIRequest, pk: int):
-        user_obj = up_read.fetch_user_for_followers_page(user_pk=pk)
-        if not user_obj:
-            raise Http404
-
-        context = {
-            'user_obj': user_obj,
-            'followers': up_read.fetch_all_user_followers(user_obj),
-            'is_followed': up_common_utils.is_followed(
-                current_user=user_obj,
-                visitor=request.user
-            ),
-        }
-        return render(request, self.template_name, context=context)
-
-
-class UserFollowingView(View):
-    template_name = 'user_profiles/list/following.html'
-
-    def get(self, request: WSGIRequest, pk: int):
-        user_obj = up_read.fetch_user_for_followers_page(user_pk=pk)
-        if not user_obj:
-            raise Http404
-
-        context = {
-            'user_obj': user_obj,
-            'followings': up_read.fetch_all_user_followings(user_obj),
-            'is_followed': up_common_utils.is_followed(
-                current_user=user_obj,
-                visitor=request.user,
-            ),
-        }
-        return render(request, self.template_name, context=context)
-
-
-class PeopleSearchView(View):
-    template_name = 'search/people_search.html'
-
-    def get(self, request: WSGIRequest):
-        user_input = request.GET.get('input')
-        if user_input is None:
-            users = up_read.get_all_users_with_personal_data()
-        else:
-            users = up_read.fetch_users_by_names(user_input)
-        context = {
-            'users': users,
-        }
-        return render(request, self.template_name, context=context)
-
-
 class UserChatView(LoginRequiredMixin, View):
     template_name = 'user_profiles/detail/chat.html'
 
@@ -433,70 +526,3 @@ class UserChatListView(LoginRequiredMixin, View):
 
     def get(self, request):
         return render(request, self.template_name)
-
-
-class CreateUserPostView(LoginRequiredMixin, View):
-    template_name = 'user_wall/create_post.html'
-    form_class = uw_forms.UserPostForm
-    login_url = reverse_lazy('login')
-
-    def get(self, request: WSGIRequest):
-        return render(request, self.template_name, context=self.get_context_data(pk=request.user.pk))
-
-    def post(self, request: WSGIRequest):
-        form = self.form_class(request.POST)
-
-        if form.is_valid() and uw_create.create_user_post_from_form_data(
-                data=form.cleaned_data, user_pk=request.user.pk
-        ):
-            return redirect(to='user_profile', pk=request.user.pk)
-
-        context = self.get_context_data(pk=request.user.pk)
-        context['form'] = form
-        return render(request, self.template_name, context=context)
-
-    def get_context_data(self, pk: int) -> dict:
-        return {
-            'form': self.form_class(),
-            'user_obj': up_read.get_user_for_profile(user_pk=pk),
-        }
-
-
-class EditUserPostView(LoginRequiredMixin, View):
-    template_name = 'user_wall/edit_post.html'
-    form_class = uw_forms.UserPostForm
-    login_url = reverse_lazy('login')
-
-    def get(self, request: WSGIRequest, slug: str):
-        user_post = uw_read.get_user_post(slug=slug)
-        self.check_request(user_post=user_post)
-
-        context = self.get_context_data(pk=request.user.pk, post_slug=slug)
-        uw_form_utils.fill_edit_user_post_form(form=context['form'], post=user_post)
-        return render(request, self.template_name, context=context)
-
-    def post(self, request: WSGIRequest, slug: str):
-        user_post = uw_read.get_user_post(slug=slug)
-        self.check_request(user_post=user_post)
-
-        form = self.form_class(request.POST)
-        if form.is_valid() and uw_update.update_user_post(data=form.cleaned_data, post=user_post):
-            return redirect(to='user_profile', pk=request.user.pk)
-
-        context = self.get_context_data(pk=request.user.pk, post_slug=slug)
-        context['form'] = form
-        return render(request, self.template_name, context=context)
-
-    def get_context_data(self, pk: int, post_slug: str) -> dict:
-        return {
-            'form': self.form_class(),
-            'user_obj': up_read.get_user_for_profile(user_pk=pk),
-            'post_slug': post_slug,
-        }
-
-    def check_request(self, user_post: uw_models.UserPost):
-        if not user_post:
-            raise Http404
-
-        if user_post.author_id != self.request.user.pk:
-            return HttpResponseForbidden(FORBIDDEN_MESSAGE)

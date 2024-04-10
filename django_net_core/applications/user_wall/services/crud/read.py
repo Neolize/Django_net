@@ -1,6 +1,7 @@
 import logging
 
 from django.db.models import QuerySet, Count
+from django.core.exceptions import ObjectDoesNotExist
 
 from applications.user_wall import models
 from applications.user_profiles.models import CustomUser
@@ -22,3 +23,13 @@ def get_user_post(slug: str) -> models.UserPost | bool:
         post = False
 
     return post
+
+
+def fetch_user_post(user_post_slug: str) -> models.UserPost | bool:
+    try:
+        user_post = models.UserPost.objects.get(slug=user_post_slug)
+    except ObjectDoesNotExist as exc:
+        LOGGER.error(f'User post with slug - {user_post_slug} does not exist. {exc}')
+        user_post = False
+
+    return user_post
