@@ -8,7 +8,6 @@ LOGGER = logging.getLogger('main_logger')
 
 
 def delete_group_follower(group: models.Group, member: CustomUser) -> None:
-    print('here')
     try:
         models.GroupMember.objects.get(
             member=member,
@@ -16,5 +15,12 @@ def delete_group_follower(group: models.Group, member: CustomUser) -> None:
         ).delete()
     except IndexError as exc:
         LOGGER.warning(f'Group instance with member - {member} and group - {group} was not found. {exc}')
+    except Exception as exc:
+        LOGGER.error(exc)
+
+
+def delete_group_post(group_post: models.GroupPost) -> None:
+    try:
+        group_post.delete()
     except Exception as exc:
         LOGGER.error(exc)

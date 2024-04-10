@@ -324,6 +324,24 @@ class CreateGroupPostView(LoginRequiredMixin, View):
         return render(request, self.template_name, context=context)
 
 
+def delete_group_post(request: WSGIRequest, group_post_slug: str):
+    if not request.user.is_authenticated:
+        return redirect(to='login')
+
+    group_post = g_read.fetch_group_post(group_post_slug)
+    if not group_post:
+        raise Http404
+
+    if not g_permissions.is_user_group_post_author(
+        visitor=request.user,
+        group_post=group_post,
+    ):
+        return HttpResponseForbidden(FORBIDDEN_MESSAGE)
+
+    g_delete.delete_group_post(group_post)
+    return redirect(to='group', group_slug=group_post.group.slug)
+
+
 class GroupFollowersView(View):
     template_name = 'groups/list/group_followers.html'
 

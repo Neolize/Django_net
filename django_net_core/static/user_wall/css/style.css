@@ -643,6 +643,23 @@ select.form-control:not([size]):not([multiple]) {
     margin-right: 15px;
 }
 
+.link-edit_post:hover {
+    float: right;
+    margin-right: 15px;
+    font-style: italic;
+}
+
+.link-delete_post {
+    float: right;
+    margin-right: 15px;
+}
+
+.link-delete_post:hover {
+    float: right;
+    margin-right: 15px;
+    font-style: italic;
+}
+
 .user_post__tags {
     font-size: 10px;
     color: blue;

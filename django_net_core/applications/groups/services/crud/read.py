@@ -49,3 +49,13 @@ def fetch_all_group_followers(group: models.Group) -> QuerySet[models.GroupMembe
             'member__user_groups',
         )
     )
+
+
+def fetch_group_post(group_post_slug: str) -> models.GroupPost | bool:
+    try:
+        group_post = models.GroupPost.objects.get(slug=group_post_slug)
+    except ObjectDoesNotExist as exc:
+        LOGGER.error(f'Group post with slug - {group_post_slug} does not exist. {exc}')
+        group_post = False
+
+    return group_post

@@ -1,5 +1,5 @@
 from applications.user_profiles.models import CustomUser
-from applications.groups.models import Group
+from applications.groups.models import Group, GroupPost
 
 
 GROUP_FORBIDDEN_MESSAGE = """<div style=\"width: 700px; margin: auto; margin-top: 50px; font-size: 24px;\" >
@@ -15,3 +15,7 @@ GROUP_CREATION_FORBIDDEN_MESSAGE = """<div style=\"width: 700px; margin: auto; m
 
 def is_user_group_author(visitor: CustomUser, group: Group) -> bool:
     return group.creator.pk == visitor.pk
+
+
+def is_user_group_post_author(visitor: CustomUser, group_post: GroupPost) -> bool:
+    return group_post.author.pk == visitor.pk
