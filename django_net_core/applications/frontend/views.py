@@ -4,11 +4,15 @@ from django.contrib.auth.views import LoginView, LogoutView
 from django.core.handlers.wsgi import WSGIRequest
 from django.http import Http404, HttpResponseForbidden
 from django.shortcuts import render, redirect
-from django.urls import reverse_lazy
+from django.urls import reverse_lazy, reverse
 from django.views.generic import ListView, CreateView, View
 
 
+from django_net_core.settings import USER_POSTS_PAGINATE_BY, GROUP_POSTS_PAGINATE_BY
+
 from applications.frontend.permissions import is_user_post_author
+
+from applications.abstract_activities.services import utils as aa_utils
 
 from applications.user_profiles import forms as up_forms
 from applications.user_profiles.permissions import UserPermissionMixin, FORBIDDEN_MESSAGE
@@ -19,7 +23,6 @@ from applications.user_profiles.services.utils import form_utils as up_form_util
 from applications.user_wall import forms as uw_forms, models as uw_models
 from applications.user_wall.services.crud import (create as uw_create, read as uw_read,
                                                   update as uw_update, delete as uw_delete)
-from applications.user_wall.services.utils import form_utils as uw_form_utils
 
 from applications.groups import forms as g_forms
 from applications.groups import permissions as g_permissions
@@ -80,7 +83,7 @@ class LogoutUserView(LogoutView):
 
 class UserProfileView(View):
     template_name = 'user_profiles/detail/profile.html'
-    paginate_by = 1
+    paginate_by = USER_POSTS_PAGINATE_BY
     form_class = uw_forms.UserCommentForm
 
     def get(self, request: WSGIRequest, pk: int, form: uw_forms.UserCommentForm | None = None):
@@ -220,7 +223,7 @@ class EditUserPostView(LoginRequiredMixin, View):
             return HttpResponseForbidden(FORBIDDEN_MESSAGE)
 
         context = self.get_context_data(pk=request.user.pk, post_slug=slug)
-        uw_form_utils.fill_edit_user_post_form(form=context['form'], post=user_post)
+        aa_utils.fill_edit_post_form(form=context['form'], post=user_post)
         return render(request, self.template_name, context=context)
 
     def post(self, request: WSGIRequest, slug: str):
@@ -232,7 +235,14 @@ class EditUserPostView(LoginRequiredMixin, View):
 
         form = self.form_class(request.POST)
         if form.is_valid() and uw_update.update_user_post(data=form.cleaned_data, post=user_post):
-            return redirect(to='user_profile', pk=request.user.pk)
+            base_url = reverse('user_profile', kwargs={'pk': request.user.pk})
+            page = aa_utils.calculate_post_page(
+                paginate_by=USER_POSTS_PAGINATE_BY,
+                author_id=user_post.author_id,
+                model=uw_models.UserPost,
+                post=user_post,
+            )
+            return redirect(to=f'{base_url}?page={page}')  # redirect user to a post page
 
         context = self.get_context_data(pk=request.user.pk, post_slug=slug)
         context['form'] = form
@@ -371,7 +381,7 @@ class GroupCreationView(LoginRequiredMixin, UserPermissionMixin, View):
 
 class GroupView(View):
     template_name = 'groups/detail/group.html'
-    paginate_by = 1
+    paginate_by = GROUP_POSTS_PAGINATE_BY
     form_class = g_forms.GroupCommentForm
 
     def get(self, request, group_slug: str, form: g_forms.GroupCommentForm | None = None):
@@ -480,7 +490,7 @@ def delete_group_post(request: WSGIRequest, group_post_slug: str):
 
     if not is_user_post_author(
         visitor=request.user,
-        group_post=group_post,
+        post=group_post,
     ):
         return HttpResponseForbidden(FORBIDDEN_MESSAGE)
 
