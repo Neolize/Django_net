@@ -32,6 +32,7 @@ def _create_user_post(
 ) -> bool:
 
     slug = crud_utils.return_unique_slug(str_for_slug=title, model=models.UserPost)
+
     try:
         new_post = models.UserPost.objects.create(
             title=title,
@@ -40,7 +41,7 @@ def _create_user_post(
             is_published=is_published,
             author_id=user_pk,
         )
-        tags = create_tags_from_list(
+        tags = return_tag_objects_from_list(
             crud_utils.form_tag_list(tags)
         )
         add_tags_to_post(tags=tags, post=new_post)
@@ -65,16 +66,6 @@ def _create_new_tag(new_tag: str) -> models.Tag | bool:
             created_tag = False
 
     return created_tag
-
-
-def create_tags_from_list(tag_list: list[str]) -> list[models.Tag]:
-    tags = []
-    for tag in tag_list:
-        new_tag = _create_new_tag(tag)
-        if new_tag:
-            tags.append(new_tag)
-
-    return tags
 
 
 def add_tags_to_post(tags: list[models.Tag], post: models.UserPost | GroupPost) -> None:

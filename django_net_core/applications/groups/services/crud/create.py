@@ -7,7 +7,7 @@ from django.core.files.uploadedfile import InMemoryUploadedFile
 from applications.groups import models
 from applications.user_profiles.models import CustomUser
 from applications.user_wall.services.crud import crud_utils
-from applications.user_wall.services.crud.create import create_tags_from_list, add_tags_to_post
+from applications.user_wall.services.crud.create import return_tag_objects_from_list, add_tags_to_post
 from applications.abstract_activities.services.crud.create import create_comment
 
 
@@ -92,7 +92,7 @@ def _create_group_post(
             author_id=author_id,
             group_id=group_id,
         )
-        tags = create_tags_from_list(
+        tags = return_tag_objects_from_list(
             crud_utils.form_tag_list(tags)
         )
         add_tags_to_post(tags=tags, post=new_group_post)
