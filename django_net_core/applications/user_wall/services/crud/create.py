@@ -6,6 +6,7 @@ from django.db.utils import DataError
 from applications.user_wall import models
 from applications.groups.models import GroupPost
 from applications.user_wall.services.crud import crud_utils
+from applications.user_wall.services.crud.read import get_tag_by_title
 from applications.abstract_activities.services.crud.create import create_comment
 
 LOGGER = logging.getLogger('main_logger')
@@ -101,3 +102,16 @@ def create_comment_for_user_post(
         parent_id=parent_id,
         model=models.UserComment,
     )
+
+
+def return_tag_objects_from_list(tag_list: list[str]) -> list[models.Tag]:
+    """If there's no tag with a given title, a new tag will be created. Otherwise, existing one will be extracted."""
+    tags = []
+    for tag in tag_list:
+        created_tag = _create_new_tag(tag)
+        if created_tag:
+            tags.append(created_tag)
+        elif new_tag := get_tag_by_title(tag=tag):
+            tags.append(new_tag)
+
+    return tags

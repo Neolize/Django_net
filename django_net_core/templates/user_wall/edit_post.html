@@ -4,6 +4,14 @@
 {% block title %} Editing post {% endblock title %}
 
 
+{% block breadcrumbs %}
+    <li class="breadcrumb-item"><a href="{% url 'home' %}">Home</a></li>
+    <li class="breadcrumb-item"><a href="{% url 'user_wall' %}">User</a></li>
+    <li class="breadcrumb-item"><a href="{{ user.get_absolute_url }}">User Profile</a></li>
+    <li class="breadcrumb-item active" aria-current="page">Edit post</li>
+{% endblock breadcrumbs %}
+
+
 {% block user_post_action %} {% url 'edit_user_post' slug=post_slug %} {% endblock user_post_action %}
 
 {% block post_button %} Edit post {% endblock post_button %}

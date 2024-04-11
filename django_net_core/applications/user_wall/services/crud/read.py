@@ -33,3 +33,13 @@ def fetch_user_post(user_post_slug: str) -> models.UserPost | bool:
         user_post = False
 
     return user_post
+
+
+def get_tag_by_title(tag: str) -> models.Tag | bool:
+    try:
+        tag = models.Tag.objects.get(title__iexact=tag)
+    except ObjectDoesNotExist as exc:
+        LOGGER.error(f'Tag with title - {tag} does not exist. {exc}')
+        tag = False
+
+    return tag

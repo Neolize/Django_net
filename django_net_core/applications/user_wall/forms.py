@@ -17,6 +17,7 @@ class UserPostForm(forms.ModelForm):
         required=False,
         widget=forms.TextInput(
             attrs={
+                'id': 'post_id',
                 'class': 'form-control user_post__tag',
                 'placeholder': 'Start your tags with # and write them separated by commas',
             }
