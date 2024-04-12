@@ -78,9 +78,14 @@ def get_group_post_for_editing(group_post_slug: str) -> models.GroupPost | bool:
     return group_post
 
 
-def get_group_posts_number_from_group(group: models.Group) -> int:
+def get_group_posts_number_from_group(group: models.Group, owner: bool) -> int:
+    """If a group author visits the group page, the function will return the number of all posts
+     regardless of flag 'is_published'"""
     try:
-        posts_number = group.group_posts.filter(is_published=True).count()
+        if owner:
+            posts_number = group.group_posts.all().count()
+        else:
+            posts_number = group.group_posts.filter(is_published=True).count()
     except Exception as exc:
         LOGGER.error(exc)
         posts_number = 0

@@ -67,7 +67,7 @@ def _collect_all_context_data(
 ) -> dict:
     return {
         'user_obj': user_obj,
-        'posts_number': read.get_user_posts_number_from_user_obj(user_obj),
+        'posts_number': read.get_user_posts_number_from_user_obj(user_obj, owner=is_owner),
         'user_posts': relevant_posts,
         'followers': read.get_followers_number_from_user_obj(user_obj),
         'following': read.get_following_number_from_user_obj(user_obj),

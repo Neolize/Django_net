@@ -24,7 +24,9 @@ def form_group_context_data(
 
     page = int(request.GET.get('page', 1))
     creator_pk = group.creator.pk
-    group_posts = read.get_related_group_posts(group, owner=request.user.pk == creator_pk)
+    is_owner = request.user.pk == creator_pk
+
+    group_posts = read.get_related_group_posts(group, owner=is_owner)
 
     relevant_posts = get_posts_for_current_page(
         page=page,
@@ -44,6 +46,7 @@ def form_group_context_data(
         group_posts=group_posts,
         paginate_by=paginate_by,
         page=page,
+        owner=is_owner,
     )
 
 
@@ -55,6 +58,7 @@ def _collect_context_data(
         group_posts: QuerySet[GroupPost],
         paginate_by: int,
         page: int,
+        owner: bool,
 ) -> dict:
     return {
         'group': group,
@@ -64,7 +68,7 @@ def _collect_context_data(
             visitor=request.user,
         ),
         'is_group_owner': group.creator.pk == request.user.pk,
-        'posts_number': read.get_group_posts_number_from_group(group),
+        'posts_number': read.get_group_posts_number_from_group(group=group, owner=owner),
         'followers': read.get_group_members_number_from_group(group),
         'today_date': today.date(),
         'yesterday_date': (today - timedelta(days=1)).date(),

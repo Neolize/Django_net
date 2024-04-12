@@ -197,9 +197,13 @@ def fetch_all_user_followings(user: models.CustomUser) -> QuerySet[models.Custom
     )
 
 
-def get_user_posts_number_from_user_obj(user_obj: models.CustomUser) -> int:
+def get_user_posts_number_from_user_obj(user_obj: models.CustomUser, owner: bool) -> int:
+    """If owner visits his page, the function will return the number of all posts regardless of flag 'is_published'"""
     try:
-        posts_number = user_obj.user_posts.filter(is_published=True).count()
+        if owner:
+            posts_number = user_obj.user_posts.all().count()
+        else:
+            posts_number = user_obj.user_posts.filter(is_published=True).count()
     except Exception as exc:
         LOGGER.error(exc)
         posts_number = 0
