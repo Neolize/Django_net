@@ -5,6 +5,7 @@ from django.core.handlers.wsgi import WSGIRequest
 from applications.abstract_activities.services.crud.update import update_posts_view_count
 from applications.frontend.services.pagination import get_page_object, get_posts_for_current_page
 from applications.user_profiles.models import CustomUser
+from applications.user_profiles.services.crud import read
 from applications.user_wall.services.crud.read import get_related_posts
 from applications.groups.services.crud.read import is_user_allowed_to_create_group
 
@@ -42,13 +43,13 @@ def form_user_profile_context_data(
     today = datetime.today()
     return {
         'user_obj': user_obj,
-        'posts_number': user_obj.user_posts.count(),
+        'posts_number': read.get_user_posts_number_from_user_obj(user_obj),
         'user_posts': relevant_posts,
-        'followers': user_obj.followers.count(),
-        'following': user_obj.owner.count(),
+        'followers': read.get_followers_number_from_user_obj(user_obj),
+        'following': read.get_following_number_from_user_obj(user_obj),
         'is_followed': is_followed(current_user=user_obj, visitor=request.user),
         'allowed_to_create_group': is_user_allowed_to_create_group(user_obj),
-        'groups': user_obj.user_groups.all(),
+        'groups': read.get_all_groups_from_user_obj(user_obj),
         'today_date': today.date(),
         'yesterday_date': (today - timedelta(days=1)).date(),
         'is_owner': request.user.pk == user_obj.pk,

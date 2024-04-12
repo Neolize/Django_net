@@ -3,6 +3,7 @@ import logging
 from django.db.models import QuerySet, F, Q
 
 from applications.user_profiles import models
+from applications.groups.models import Group
 
 
 LOGGER = logging.getLogger('main_logger')
@@ -194,3 +195,43 @@ def fetch_all_user_followings(user: models.CustomUser) -> QuerySet[models.Custom
             'user__user_groups',
         )
     )
+
+
+def get_user_posts_number_from_user_obj(user_obj: models.CustomUser) -> int:
+    try:
+        posts_number = user_obj.user_posts.filter(is_published=True).count()
+    except Exception as exc:
+        LOGGER.error(exc)
+        posts_number = 0
+
+    return posts_number
+
+
+def get_followers_number_from_user_obj(user_obj: models.CustomUser) -> int:
+    try:
+        followers = user_obj.followers.count()
+    except Exception as exc:
+        LOGGER.error(exc)
+        followers = 0
+
+    return followers
+
+
+def get_following_number_from_user_obj(user_obj: models.CustomUser) -> int:
+    try:
+        following = user_obj.owner.count()
+    except Exception as exc:
+        LOGGER.error(exc)
+        following = 0
+
+    return following
+
+
+def get_all_groups_from_user_obj(user_obj: models.CustomUser) -> QuerySet[Group] | list:
+    try:
+        groups = user_obj.user_groups.all()
+    except Exception as exc:
+        LOGGER.error(exc)
+        groups = []
+
+    return groups

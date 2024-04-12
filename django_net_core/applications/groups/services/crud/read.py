@@ -69,3 +69,23 @@ def get_group_post_for_editing(group_post_slug: str) -> models.GroupPost | bool:
         group_post = False
 
     return group_post
+
+
+def get_group_posts_number_from_group(group: models.Group) -> int:
+    try:
+        posts_number = group.group_posts.filter(is_published=True).count()
+    except Exception as exc:
+        LOGGER.error(exc)
+        posts_number = 0
+
+    return posts_number
+
+
+def get_group_members_number_from_group(group: models.Group) -> int:
+    try:
+        members = group.group_members.count()
+    except Exception as exc:
+        LOGGER.error(exc)
+        members = 0
+
+    return members
