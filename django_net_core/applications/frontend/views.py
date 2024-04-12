@@ -13,6 +13,7 @@ from django_net_core.settings import USER_POSTS_PAGINATE_BY, GROUP_POSTS_PAGINAT
 from applications.frontend.permissions import is_user_post_author
 
 from applications.abstract_activities.services import utils as aa_utils
+from applications.abstract_activities.services.crud.delete import delete_post
 
 from applications.user_profiles import forms as up_forms
 from applications.user_profiles.permissions import UserPermissionMixin, FORBIDDEN_MESSAGE
@@ -21,8 +22,7 @@ from applications.user_profiles.services.crud import (read as up_read, update as
 from applications.user_profiles.services.utils import form_utils as up_form_utils, common_utils as up_common_utils
 
 from applications.user_wall import forms as uw_forms, models as uw_models
-from applications.user_wall.services.crud import (create as uw_create, read as uw_read,
-                                                  update as uw_update, delete as uw_delete)
+from applications.user_wall.services.crud import create as uw_create, read as uw_read, update as uw_update
 
 from applications.groups import forms as g_forms, models as g_models, permissions as g_permissions
 from applications.groups.services import utils as g_utils
@@ -275,7 +275,7 @@ def delete_user_post(request: WSGIRequest, user_post_slug: str):
     ):
         return HttpResponseForbidden(FORBIDDEN_MESSAGE)
 
-    uw_delete.delete_user_post(user_post)
+    delete_post(user_post)
     return redirect(to='user_profile', pk=request.user.pk)
 
 
@@ -542,7 +542,7 @@ def delete_group_post(request: WSGIRequest, group_post_slug: str):
     ):
         return HttpResponseForbidden(FORBIDDEN_MESSAGE)
 
-    g_delete.delete_group_post(group_post)
+    delete_post(group_post)
     return redirect(to='group', group_slug=group_post.group.slug)
 
 

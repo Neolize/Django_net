@@ -17,10 +17,3 @@ def delete_group_follower(group: models.Group, member: CustomUser) -> None:
         LOGGER.warning(f'Group instance with member - {member} and group - {group} was not found. {exc}')
     except Exception as exc:
         LOGGER.error(exc)
-
-
-def delete_group_post(group_post: models.GroupPost) -> None:
-    try:
-        group_post.delete()
-    except Exception as exc:
-        LOGGER.error(exc)
