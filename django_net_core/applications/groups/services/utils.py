@@ -2,11 +2,11 @@ from datetime import datetime, timedelta
 
 from django.core.handlers.wsgi import WSGIRequest
 
+from applications.abstract_activities.services.crud.update import update_posts_view_count
 from applications.frontend.services.pagination import get_page_object, get_posts_for_current_page
 from applications.user_profiles.models import CustomUser
 from applications.groups.models import Group
 from applications.groups.services.crud.read import get_related_group_posts
-from applications.groups.services.crud.update import update_group_posts_view_count
 
 
 def is_user_subscribed_to_group(group: Group, visitor: CustomUser) -> bool:
@@ -29,8 +29,8 @@ def form_group_context_data(
         paginate_by=paginate_by,
         posts=group_posts,
     )
-    update_group_posts_view_count(
-        group=group,
+    update_posts_view_count(
+        creator_pk=group.creator.pk,
         visitor_pk=request.user.pk,
         posts=relevant_posts,
     )

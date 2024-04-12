@@ -2,10 +2,10 @@ from datetime import date, datetime, timedelta
 
 from django.core.handlers.wsgi import WSGIRequest
 
+from applications.abstract_activities.services.crud.update import update_posts_view_count
 from applications.frontend.services.pagination import get_page_object, get_posts_for_current_page
 from applications.user_profiles.models import CustomUser
 from applications.user_wall.services.crud.read import get_related_posts
-from applications.user_wall.services.crud.update import update_user_posts_view_count
 from applications.groups.services.crud.read import is_user_allowed_to_create_group
 
 
@@ -34,8 +34,8 @@ def form_user_profile_context_data(
         paginate_by=paginate_by,
         posts=user_posts,
     )
-    update_user_posts_view_count(
-        user_pk=user_obj.pk,
+    update_posts_view_count(
+        creator_pk=user_obj.pk,
         visitor_pk=request.user.pk,
         posts=relevant_posts,
     )
