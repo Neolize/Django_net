@@ -35,10 +35,10 @@ def calculate_post_page(
         paginate_by: int,
         author_id: int,
         model: ModelBase,
-        post: UserPost | GroupPost
+        post: UserPost | GroupPost,
 ) -> int:
     posts = (
-        model.objects.filter(author_id=author_id, is_published=True).
+        model.objects.filter(author_id=author_id).
         order_by('-publication_date').values_list('pk', flat=True)
     )
     page = 0

@@ -28,7 +28,14 @@ def is_user_allowed_to_create_group(user: CustomUser) -> bool:
     return user.user_groups.count() < 5  # user can't own more than 5 groups
 
 
-def get_related_group_posts(group: models.Group) -> QuerySet[models.GroupPost]:
+def get_related_group_posts(group: models.Group, owner: bool = False) -> QuerySet[models.GroupPost]:
+    """If owner of the group visits this page, it'll be shown all posts regardless of flag 'is_published'"""
+    if owner:
+        return (
+            group.group_posts.all().order_by('-publication_date').
+            select_related('author').prefetch_related('tags').
+            annotate(comments_number=Count('comments'))
+        )
     return (
         group.group_posts.filter(is_published=True).order_by('-publication_date').
         select_related('author').prefetch_related('tags').

@@ -10,7 +10,12 @@ from applications.user_profiles.models import CustomUser
 LOGGER = logging.getLogger('main_logger')
 
 
-def get_related_posts(user: CustomUser) -> QuerySet[models.UserPost]:
+def get_related_posts(user: CustomUser, owner: bool = False) -> QuerySet[models.UserPost]:
+    """If owner visits his page, it'll be shown all posts regardless of flag 'is_published'"""
+    if owner:
+        return user.user_posts.all().order_by('-publication_date'). \
+            prefetch_related('tags').annotate(comments_number=Count('comments'))
+
     return user.user_posts.filter(is_published=True).order_by('-publication_date').\
         prefetch_related('tags').annotate(comments_number=Count('comments'))
 

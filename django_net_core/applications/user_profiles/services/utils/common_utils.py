@@ -1,10 +1,12 @@
 from datetime import date, datetime, timedelta
 
+from django.db.models import QuerySet
 from django.core.handlers.wsgi import WSGIRequest
 
 from applications.abstract_activities.services.crud.update import update_posts_view_count
 from applications.frontend.services.pagination import get_page_object, get_posts_for_current_page
 from applications.user_profiles.models import CustomUser
+from applications.user_wall.models import UserPost
 from applications.user_profiles.services.crud import read
 from applications.user_wall.services.crud.read import get_related_posts
 from applications.groups.services.crud.read import is_user_allowed_to_create_group
@@ -28,7 +30,8 @@ def form_user_profile_context_data(
 ) -> dict:
 
     page = int(request.GET.get('page', 1))
-    user_posts = get_related_posts(user=user_obj)
+    is_owner = request.user.pk == user_obj.pk
+    user_posts = get_related_posts(user=user_obj, owner=is_owner)
 
     relevant_posts = get_posts_for_current_page(
         page=page,
@@ -40,7 +43,28 @@ def form_user_profile_context_data(
         visitor_pk=request.user.pk,
         posts=relevant_posts,
     )
-    today = datetime.today()
+    return _collect_all_context_data(
+        user_obj=user_obj,
+        relevant_posts=relevant_posts,
+        request=request,
+        today=datetime.today(),
+        user_posts=user_posts,
+        paginate_by=paginate_by,
+        page=page,
+        is_owner=is_owner,
+    )
+
+
+def _collect_all_context_data(
+        user_obj: CustomUser,
+        relevant_posts: QuerySet,
+        request: WSGIRequest,
+        today: datetime,
+        user_posts: QuerySet[UserPost],
+        paginate_by: int,
+        page: int,
+        is_owner: bool,
+) -> dict:
     return {
         'user_obj': user_obj,
         'posts_number': read.get_user_posts_number_from_user_obj(user_obj),
@@ -52,7 +76,7 @@ def form_user_profile_context_data(
         'groups': read.get_all_groups_from_user_obj(user_obj),
         'today_date': today.date(),
         'yesterday_date': (today - timedelta(days=1)).date(),
-        'is_owner': request.user.pk == user_obj.pk,
+        'is_owner': is_owner,
         'page_obj': get_page_object(
             object_list=user_posts,
             paginate_by=paginate_by,
