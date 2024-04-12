@@ -275,8 +275,15 @@ def delete_user_post(request: WSGIRequest, user_post_slug: str):
     ):
         return HttpResponseForbidden(FORBIDDEN_MESSAGE)
 
+    base_url = reverse('user_profile', kwargs={'pk': request.user.pk})
+    page = aa_utils.calculate_post_page(
+        paginate_by=USER_POSTS_PAGINATE_BY,
+        author_id=user_post.author_id,
+        model=uw_models.UserPost,
+        post=user_post,
+    )
     delete_post(user_post)
-    return redirect(to='user_profile', pk=request.user.pk)
+    return redirect(to=f'{base_url}?page={page}')   # redirect user to a new page after a post was deleted
 
 
 class UserFollowersView(View):
@@ -542,8 +549,15 @@ def delete_group_post(request: WSGIRequest, group_post_slug: str):
     ):
         return HttpResponseForbidden(FORBIDDEN_MESSAGE)
 
+    base_url = reverse('group', kwargs={'group_slug': group_post.group.slug})
+    page = aa_utils.calculate_post_page(
+        paginate_by=GROUP_POSTS_PAGINATE_BY,
+        author_id=group_post.author_id,
+        model=g_models.GroupPost,
+        post=group_post,
+    )
     delete_post(group_post)
-    return redirect(to='group', group_slug=group_post.group.slug)
+    return redirect(to=f'{base_url}?page={page}')   # redirect user to a new page after a group post was deleted
 
 
 class GroupFollowersView(View):
