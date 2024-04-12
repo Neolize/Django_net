@@ -59,3 +59,13 @@ def fetch_group_post(group_post_slug: str) -> models.GroupPost | bool:
         group_post = False
 
     return group_post
+
+
+def get_group_post_for_editing(group_post_slug: str) -> models.GroupPost | bool:
+    try:
+        group_post = models.GroupPost.objects.filter(slug=group_post_slug).prefetch_related('tags')[0]
+    except IndexError as exc:
+        LOGGER.warning(f'Group post with slug - {group_post_slug} does not exist. {exc}')
+        group_post = False
+
+    return group_post

@@ -24,10 +24,10 @@ from applications.user_wall import forms as uw_forms, models as uw_models
 from applications.user_wall.services.crud import (create as uw_create, read as uw_read,
                                                   update as uw_update, delete as uw_delete)
 
-from applications.groups import forms as g_forms
-from applications.groups import permissions as g_permissions
+from applications.groups import forms as g_forms, models as g_models, permissions as g_permissions
 from applications.groups.services import utils as g_utils
-from applications.groups.services.crud import create as g_create, read as g_read, delete as g_delete
+from applications.groups.services.crud import (create as g_create, read as g_read,
+                                               delete as g_delete, update as g_update)
 
 
 class UsersView(ListView):
@@ -242,7 +242,7 @@ class EditUserPostView(LoginRequiredMixin, View):
                 model=uw_models.UserPost,
                 post=user_post,
             )
-            return redirect(to=f'{base_url}?page={page}')  # redirect user to a post page
+            return redirect(to=f'{base_url}?page={page}')  # redirect user to an updated post page
 
         context = self.get_context_data(pk=request.user.pk, post_slug=slug)
         context['form'] = form
@@ -476,6 +476,54 @@ class CreateGroupPostView(LoginRequiredMixin, View):
         context = {
             'group': group,
             'form': form,
+        }
+        return render(request, self.template_name, context=context)
+
+
+class EditGroupPostView(LoginRequiredMixin, View):
+    template_name = 'groups/detail/edit_group_post.html'
+    form_class = g_forms.GroupPostForm
+    login_url = reverse_lazy('login')
+
+    def get(self, request: WSGIRequest, group_post_slug: str):
+        group_post = g_read.get_group_post_for_editing(group_post_slug)
+        if not group_post:
+            raise Http404
+
+        if group_post.author_id != request.user.pk:
+            return HttpResponseForbidden(FORBIDDEN_MESSAGE)
+
+        context = {
+            'form': self.form_class(),
+            'group': g_read.get_group_by_slug(group_post.group.slug),
+            'group_post_slug': group_post_slug,
+        }
+        aa_utils.fill_edit_post_form(form=context['form'], post=group_post)
+        return render(request, self.template_name, context=context)
+
+    def post(self, request: WSGIRequest, group_post_slug: str):
+        group_post = g_read.get_group_post_for_editing(group_post_slug)
+        if not group_post:
+            raise Http404
+
+        if group_post.author_id != request.user.pk:
+            return HttpResponseForbidden(FORBIDDEN_MESSAGE)
+
+        form = self.form_class(request.POST)
+        if form.is_valid() and g_update.update_group_post(data=form.cleaned_data, group_post=group_post):
+            base_url = reverse('group', kwargs={'group_slug': group_post.group.slug})
+            page = aa_utils.calculate_post_page(
+                paginate_by=GROUP_POSTS_PAGINATE_BY,
+                author_id=group_post.author_id,
+                model=g_models.GroupPost,
+                post=group_post,
+            )
+            return redirect(to=f'{base_url}?page={page}')  # redirect user to an updated group post page
+
+        context = {
+            'form': form,
+            'group': g_read.get_group_by_slug(group_post.group.slug),
+            'group_post_slug': group_post_slug,
         }
         return render(request, self.template_name, context=context)
 

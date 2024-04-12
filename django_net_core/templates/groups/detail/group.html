@@ -174,7 +174,7 @@
                                                     {{ post.title }}
                                                 </h4>
                                                  <p class="mt-4">
-                                                    {{ post.content }}
+                                                    {{ post.content|linebreaks }}
                                                  </p>
                                               </div>
                                               <div class="timeline-likes">
@@ -203,7 +203,7 @@
                                                  <a href="javascript:;" class="m-r-15 text-inverse-lighter"><i class="fa fa-share fa-fw fa-lg m-r-3"></i> Share</a>
                                                  {% if is_group_owner %}
                                                     <a href="{% url 'delete_group_post' group_post_slug=post.slug %}" class="m-r-15 text-inverse-danger link-delete_post">Delete post</a>
-                                                    <a href="{% url 'edit_user_post' slug=post.slug %}" class="m-r-15 text-inverse-lighter link-edit_post">Edit post</a>
+                                                    <a href="{% url 'edit_group_post' group_post_slug=post.slug %}" class="m-r-15 text-inverse-lighter link-edit_post">Edit post</a>
                                                  {% endif %}
                                               </div>
                                               <div class="timeline-comment-box">
