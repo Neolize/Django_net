@@ -79,27 +79,33 @@
                 {% block group_content %}
                     <div class="col-md-8">
                         <div class="row">
-                            <div class="col-sm-5 group-head-block">
+                            <div class="col-sm-{% if is_owner and unpublished_posts_number %}6{% else %}5{% endif %} group-head-block">
                                 <div class="card card-edit">
                                     <div class="card-body">
 
                                         <div class="user-head-information">
-                                            {% if posts_number != 0 %}
-                                                <span id="user-posts-id" class="user-head-information__clickable">
-                                                    {% if posts_number == 1 %}
-                                                        {{ posts_number }} post
-                                                    {% else %}
-                                                        {{ posts_number }} posts
-                                                    {% endif %}
-                                                </span>
+                                            {% if is_owner and unpublished_posts_number %}
+                                                <span class="user-head-information__clickable posts_number">Published posts: {{ published_posts_number }}</span>
+                                                <span class="user-head-information__clickable posts_number">Unpublished posts: {{ unpublished_posts_number }}</span>
                                             {% else %}
-                                                <span>{{ posts_number }} posts</span>
+                                                {% if published_posts_number != 0 %}
+                                                    <span id="user-posts-id" class="user-head-information__clickable posts_number">
+                                                        {% if published_posts_number == 1 %}
+                                                            {{ published_posts_number }} post
+                                                        {% else %}
+                                                            {{ published_posts_number }} posts
+                                                        {% endif %}
+                                                    </span>
+                                                {% else %}
+                                                    <span>{{ published_posts_number }} posts</span>
+                                                {% endif %}
                                             {% endif %}
                                         </div>
 
                                         <div class="user-head-information">
                                             {% if followers != 0 %}
-                                                <a class="user-head-information__clickable" href="{{ group.get_absolute_url_for_followers }}">
+                                                <a class="user-head-information__clickable {% if is_owner and unpublished_posts_number %}adjusted_items{% endif %}"
+                                                   href="{{ group.get_absolute_url_for_followers }}">
                                                     {% if followers == 1 %}
                                                         {{ followers }} follower
                                                     {% else %}
@@ -107,7 +113,7 @@
                                                     {% endif %}
                                                 </a>
                                             {% else %}
-                                                <span>{{ followers }} followers</span>
+                                                <span {% if is_owner and unpublished_posts_number %}class="adjusted_items"{% endif %}>{{ followers }} followers</span>
                                             {% endif %}
                                         </div>
                                     </div>

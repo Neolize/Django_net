@@ -84,7 +84,7 @@ def _collect_all_context_data(
             page=page,
         ),
     }
-    include_unpublished_posts_number_to_context_data(
+    _include_unpublished_posts_number_to_context_data(
         owner=is_owner,
         data=context_data,
         user_obj=user_obj,
@@ -99,7 +99,7 @@ def is_followed(current_user: CustomUser, visitor: CustomUser) -> bool:
     return current_user.pk in visitor.owner.values_list('user__pk', flat=True)
 
 
-def include_unpublished_posts_number_to_context_data(
+def _include_unpublished_posts_number_to_context_data(
         owner: bool,
         data: dict,
         user_obj: CustomUser,

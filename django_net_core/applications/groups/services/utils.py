@@ -60,7 +60,8 @@ def _collect_context_data(
         page: int,
         owner: bool,
 ) -> dict:
-    return {
+    published_posts_number = read.get_published_group_posts_number(group)
+    context_data = {
         'group': group,
         'group_posts': relevant_posts,
         'is_subscribed_to_group': is_user_subscribed_to_group(
@@ -68,8 +69,10 @@ def _collect_context_data(
             visitor=request.user,
         ),
         'is_group_owner': group.creator.pk == request.user.pk,
-        'posts_number': read.get_group_posts_number_from_group(group=group, owner=owner),
+        # 'posts_number': read.get_group_posts_number_from_group(group=group, owner=owner),
+        'published_posts_number': published_posts_number,
         'followers': read.get_group_members_number_from_group(group),
+        'is_owner': owner,
         'today_date': today.date(),
         'yesterday_date': (today - timedelta(days=1)).date(),
         'page_obj': get_page_object(
@@ -78,3 +81,25 @@ def _collect_context_data(
             page=page,
         ),
     }
+    _include_unpublished_group_posts_number_to_context_data(
+        data=context_data,
+        owner=owner,
+        group=group,
+        published_posts_number=published_posts_number,
+    )
+    return context_data
+
+
+def _include_unpublished_group_posts_number_to_context_data(
+        data: dict,
+        owner: bool,
+        published_posts_number: int,
+        group: Group,
+) -> None:
+    """If group creator visits the page and there's unpublished posts, they'll be added to the data dict."""
+    all_posts_number = read.get_all_group_posts_number(group)
+    if owner:
+        if all_posts_number > published_posts_number:
+            data['unpublished_posts_number'] = all_posts_number - published_posts_number
+        else:
+            data['unpublished_posts_number'] = 0

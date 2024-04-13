@@ -109,7 +109,8 @@
 
                         <div class="user-head-information">
                             {% if followers != 0 %}
-                                <a class="user-head-information__clickable {% if is_owner and unpublished_posts_number %}adjusted_items{% endif %}" href="{{ user_obj.get_absolute_url_for_followers }}">
+                                <a class="user-head-information__clickable {% if is_owner and unpublished_posts_number %}adjusted_items{% endif %}"
+                                   href="{{ user_obj.get_absolute_url_for_followers }}">
                                     {% if followers == 1 %}
                                         {{ followers }} follower
                                     {% else %}
@@ -123,7 +124,8 @@
 
                         <div class="user-head-information">
                             {% if following != 0 %}
-                                <a class="user-head-information__clickable {% if is_owner and unpublished_posts_number %}adjusted_items{% endif %}" href="{{ user_obj.get_absolute_url_for_following }}">
+                                <a class="user-head-information__clickable {% if is_owner and unpublished_posts_number %}adjusted_items{% endif %}"
+                                   href="{{ user_obj.get_absolute_url_for_following }}">
                                     {{ following }} following
                                 </a>
                             {% else %}
