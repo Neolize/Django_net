@@ -122,3 +122,8 @@ body {
 .group-head-block {
     margin-left: 120px;
 }
+
+.adjusted_items {
+    position: relative;
+    bottom: 11px;
+}

@@ -65,9 +65,10 @@ def _collect_all_context_data(
         page: int,
         is_owner: bool,
 ) -> dict:
-    return {
+    published_posts_number = read.get_published_user_posts_number(user_obj)
+    context_data = {
         'user_obj': user_obj,
-        'posts_number': read.get_user_posts_number_from_user_obj(user_obj, owner=is_owner),
+        'published_posts_number': published_posts_number,
         'user_posts': relevant_posts,
         'followers': read.get_followers_number_from_user_obj(user_obj),
         'following': read.get_following_number_from_user_obj(user_obj),
@@ -83,9 +84,31 @@ def _collect_all_context_data(
             page=page,
         ),
     }
+    include_unpublished_posts_number_to_context_data(
+        owner=is_owner,
+        data=context_data,
+        user_obj=user_obj,
+        published_posts_number=published_posts_number,
+    )
+    return context_data
 
 
 def is_followed(current_user: CustomUser, visitor: CustomUser) -> bool:
     if visitor.is_anonymous:
         return False
     return current_user.pk in visitor.owner.values_list('user__pk', flat=True)
+
+
+def include_unpublished_posts_number_to_context_data(
+        owner: bool,
+        data: dict,
+        user_obj: CustomUser,
+        published_posts_number: int,
+) -> None:
+    """If owner visits the page and there's unpublished posts, they'll be added to the data dict."""
+    all_posts_number = read.get_all_user_posts_number(user_obj)
+    if owner:
+        if all_posts_number > published_posts_number:
+            data['unpublished_posts_number'] = all_posts_number - published_posts_number
+        else:
+            data['unpublished_posts_number'] = 0

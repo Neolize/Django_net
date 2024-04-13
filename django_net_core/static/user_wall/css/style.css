@@ -670,3 +670,11 @@ select.form-control:not([size]):not([multiple]) {
 .pagination_class {
     margin-left: 450px;
 }
+
+
+.not_published_post {
+    display: inline-block;
+    font-style: italic;
+    color:rgba(141, 65, 65, 0.75);
+    margin-bottom: 20px;
+}
