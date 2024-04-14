@@ -20,13 +20,18 @@ def form_group_context_data(
         group: Group,
         request: WSGIRequest,
         paginate_by: int,
+        posts_to_show: str,
 ) -> dict:
 
     page = int(request.GET.get('page', 1))
     creator_pk = group.creator.pk
     is_owner = request.user.pk == creator_pk
 
-    group_posts = read.get_related_group_posts(group, owner=is_owner)
+    group_posts = read.get_related_group_posts(
+        group,
+        owner=is_owner,
+        posts_to_show=posts_to_show,
+    )
 
     relevant_posts = get_posts_for_current_page(
         page=page,

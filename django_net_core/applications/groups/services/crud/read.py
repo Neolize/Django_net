@@ -28,8 +28,18 @@ def is_user_allowed_to_create_group(user: CustomUser) -> bool:
     return user.user_groups.count() < 5  # user can't own more than 5 groups
 
 
-def get_related_group_posts(group: models.Group, owner: bool = False) -> QuerySet[models.GroupPost]:
-    """If owner of the group visits this page, it'll be shown all posts regardless of flag 'is_published'"""
+def get_related_group_posts(
+        group: models.Group,
+        posts_to_show: str,
+        owner: bool = False
+) -> QuerySet[models.GroupPost]:
+    """If owner of the group visits this page with the parameter 'posts_to_show' set,
+    the function will return posts depending on the value of this variable.
+    Without this parameter set, an owner will get all posts regardless of flag 'is_published',
+    but all visitor will get posts with flag 'is_published=True'."""
+    if posts_to_show and owner:
+        return _fetch_chosen_group_posts(posts_to_show, group)
+
     if owner:
         return (
             group.group_posts.all().order_by('-publication_date').
@@ -41,6 +51,28 @@ def get_related_group_posts(group: models.Group, owner: bool = False) -> QuerySe
         select_related('author').prefetch_related('tags').
         annotate(comments_number=Count('comments'))
     )
+
+
+def _fetch_chosen_group_posts(posts_to_show: str, group: models.Group) -> QuerySet[models.GroupPost]:
+    """Return published or unpublished group posts depending on 'posts_to_show' parameter."""
+    if posts_to_show.lower() == 'published':
+        return (
+            group.group_posts.filter(is_published=True).order_by('-publication_date').
+            select_related('author').prefetch_related('tags').
+            annotate(comments_number=Count('comments'))
+        )
+    elif posts_to_show.lower() == 'unpublished':
+        return (
+            group.group_posts.filter(is_published=False).order_by('-publication_date').
+            select_related('author').prefetch_related('tags').
+            annotate(comments_number=Count('comments'))
+        )
+    else:
+        return (
+            group.group_posts.all().order_by('-publication_date').
+            select_related('author').prefetch_related('tags').
+            annotate(comments_number=Count('comments'))
+        )
 
 
 def fetch_all_group_followers(group: models.Group) -> QuerySet[models.GroupMember]:

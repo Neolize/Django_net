@@ -27,11 +27,16 @@ def form_user_profile_context_data(
         user_obj: CustomUser,
         request: WSGIRequest,
         paginate_by: int,
+        posts_to_show: str,
 ) -> dict:
 
     page = int(request.GET.get('page', 1))
     is_owner = request.user.pk == user_obj.pk
-    user_posts = get_related_posts(user=user_obj, owner=is_owner)
+    user_posts = get_related_posts(
+        user=user_obj,
+        owner=is_owner,
+        posts_to_show=posts_to_show
+    )
 
     relevant_posts = get_posts_for_current_page(
         page=page,

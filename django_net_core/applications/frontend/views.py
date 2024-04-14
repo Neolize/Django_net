@@ -95,6 +95,7 @@ class UserProfileView(View):
             user_obj=user_obj,
             request=self.request,
             paginate_by=self.paginate_by,
+            posts_to_show=request.GET.get('posts', ''),
         )
         context['form'] = form or self.form_class()
         return render(request, self.template_name, context=context)
@@ -391,7 +392,7 @@ class GroupView(View):
     paginate_by = GROUP_POSTS_PAGINATE_BY
     form_class = g_forms.GroupCommentForm
 
-    def get(self, request, group_slug: str, form: g_forms.GroupCommentForm | None = None):
+    def get(self, request: WSGIRequest, group_slug: str, form: g_forms.GroupCommentForm | None = None):
         group = g_read.get_group_by_slug(group_slug)
         if not group:
             raise Http404
@@ -400,6 +401,7 @@ class GroupView(View):
             group=group,
             request=request,
             paginate_by=self.paginate_by,
+            posts_to_show=request.GET.get('posts', ''),
         )
         context['form'] = form or self.form_class()
         return render(request, self.template_name, context=context)

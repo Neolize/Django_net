@@ -10,14 +10,39 @@ from applications.user_profiles.models import CustomUser
 LOGGER = logging.getLogger('main_logger')
 
 
-def get_related_posts(user: CustomUser, owner: bool = False) -> QuerySet[models.UserPost]:
-    """If owner visits his page, it'll be shown all posts regardless of flag 'is_published'"""
+def get_related_posts(
+        user: CustomUser,
+        posts_to_show: str,
+        owner: bool = False
+) -> QuerySet[models.UserPost]:
+    """If owners visit their page with the parameter 'posts_to_show' set,
+    the function will return posts depending on the value this variable.
+    Without this parameter set, owners will get all posts regardless of flag 'is_published',
+    but all visitor will get posts with flag 'is_published=True'."""
+    if posts_to_show and owner:
+        return _fetch_chosen_posts(posts_to_show, user)
+
     if owner:
         return user.user_posts.all().order_by('-publication_date'). \
             prefetch_related('tags').annotate(comments_number=Count('comments'))
 
     return user.user_posts.filter(is_published=True).order_by('-publication_date').\
         prefetch_related('tags').annotate(comments_number=Count('comments'))
+
+
+def _fetch_chosen_posts(posts_to_show: str, user: CustomUser) -> QuerySet[models.UserPost]:
+    """Return published or unpublished posts depending on 'posts_to_show' parameter."""
+    if posts_to_show.lower() == 'published':
+        return user.user_posts.filter(is_published=True).order_by('-publication_date'). \
+            prefetch_related('tags').annotate(comments_number=Count('comments'))
+
+    elif posts_to_show.lower() == 'unpublished':
+        return user.user_posts.filter(is_published=False).order_by('-publication_date'). \
+            prefetch_related('tags').annotate(comments_number=Count('comments'))
+
+    else:
+        return user.user_posts.all().order_by('-publication_date'). \
+            prefetch_related('tags').annotate(comments_number=Count('comments'))
 
 
 def get_user_post(slug: str) -> models.UserPost | bool:

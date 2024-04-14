@@ -85,11 +85,11 @@
 
                                         <div class="user-head-information">
                                             {% if is_owner and unpublished_posts_number %}
-                                                <span class="user-head-information__clickable posts_number">Published posts: {{ published_posts_number }}</span>
-                                                <span class="user-head-information__clickable posts_number">Unpublished posts: {{ unpublished_posts_number }}</span>
+                                                <span><a href="{{ group.get_absolute_url }}?posts=published" class="user-head-information__clickable">Published posts: {{ published_posts_number }}</a></span>
+                                                <span><a href="{{ group.get_absolute_url }}?posts=unpublished" class="user-head-information__clickable">Unpublished posts: {{ unpublished_posts_number }}</a></span>
                                             {% else %}
                                                 {% if published_posts_number != 0 %}
-                                                    <span id="user-posts-id" class="user-head-information__clickable posts_number">
+                                                    <span id="user-posts-id" class="user-head-information__clickable">
                                                         {% if published_posts_number == 1 %}
                                                             {{ published_posts_number }} post
                                                         {% else %}

@@ -16,18 +16,16 @@ function addChildReview(name, parent_id) {
 
 
 function scrollToPosts() {
-    const postElements = document.querySelectorAll('.posts_number');
-    for (const postElement of postElements) {
-        if (postElement) {
-            const userPostItem = document.getElementById('user-post-item');
-    
-            const userPostRect = userPostItem.getBoundingClientRect();
-            const bodyRect = document.body.getBoundingClientRect();
-            
-            postElement.addEventListener('click', () => {
-                window.scrollTo(0, userPostRect.y - bodyRect.y);
-            });
-        }
+    const queryString = window.location.search;
+    const urlParams = new URLSearchParams(queryString);
+    const postsToShow = urlParams.get('posts');
+
+    if(postsToShow) {
+        const userPostItem = document.getElementById('user-post-item');
+        const userPostRect = userPostItem.getBoundingClientRect();
+        const bodyRect = document.body.getBoundingClientRect();
+
+        window.scrollTo(0, userPostRect.y - bodyRect.y);
     }
 }
 
