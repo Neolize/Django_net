@@ -7,18 +7,18 @@
                         <ul class="pagination d-flex justify-content-center flex-wrap pagination-rounded-flat pagination-success">
                             {% if page_obj.has_previous %}
                                 <li class="pagination-page-item">
-                                    <a class="page-link" href="?page={{ page_obj.number|add:'-1' }}" data-abc="true">Previous</a>
+                                    <a class="page-link" data-posts href="?page={{ page_obj.number|add:'-1' }}" data-abc="true">Previous</a>
                                 </li>
 
                                 {% if page_obj.number|add:'-2' > 1 %}
                                     <li class="pagination-page-item">
-                                        <a class="page-link" href="?page=1">1</a>
+                                        <a class="page-link" data-posts href="?page=1">1</a>
                                     </li>
                                 {% endif %}
 
                                 {% if page_obj.number|add:'-2' > 2 %}
                                     <li class="pagination-page-item">
-                                        <a class="page-link" href="?page={{ page_obj.number|add:'-3' }}">&hellip;</a>
+                                        <a class="page-link" data-posts href="?page={{ page_obj.number|add:'-3' }}">&hellip;</a>
                                     </li>
                                 {% endif %}
                             {% else %}
@@ -35,7 +35,7 @@
 
                                     {% elif page > page_obj.number|add:'-3' and page < page_obj.number|add:'3' %}
                                         <li class="pagination-page-item">
-                                            <a class="page-link" href="?page={{ page }}" data-abc="true">{{ page }}</a>
+                                            <a class="page-link" data-posts href="?page={{ page }}" data-abc="true">{{ page }}</a>
                                         </li>
                                     {% endif %}
 
@@ -45,18 +45,18 @@
                             {% if page_obj.has_next %}
                                 {% if page_obj.number|add:'3' < page_obj.paginator.num_pages %}
                                     <li class="pagination-page-item">
-                                        <a class="page-link" href="?page={{ page_obj.number|add:'3' }}">&hellip;</a>
+                                        <a class="page-link" data-posts href="?page={{ page_obj.number|add:'3' }}">&hellip;</a>
                                     </li>
                                 {% endif %}
 
                                 {% if page_obj.number|add:'2' < page_obj.paginator.num_pages %}
                                     <li class="pagination-page-item">
-                                        <a class="page-link" href="?page={{ page_obj.paginator.num_pages }}">{{ page_obj.paginator.num_pages }}</a>
+                                        <a class="page-link" data-posts href="?page={{ page_obj.paginator.num_pages }}">{{ page_obj.paginator.num_pages }}</a>
                                     </li>
                                 {% endif %}
 
                                 <li class="pagination-page-item">
-                                    <a class="page-link" href="?page={{ page_obj.number|add:'1' }}" data-abc="true">Next</a>
+                                    <a class="page-link" data-posts href="?page={{ page_obj.number|add:'1' }}" data-abc="true">Next</a>
                                 </li>
                             {% else %}
                                 <li class="pagination-page-item disabled"><a class="page-link" href="#" data-abc="true">Next</a></li>
