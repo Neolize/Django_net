@@ -24,6 +24,7 @@
 
                 <form action="{% block user_post_action %} {% url 'create_user_post' %} {% endblock user_post_action %}" method="post" id="post_form">
                     {% csrf_token %}
+                    <input type="hidden" id="edit-post-input" name="posts">
 
                     {% if form.non_field_errors %}
                         <div class="alert alert-danger">{{ form.non_field_errors }}</div>
@@ -87,7 +88,7 @@
                     <div class="row mt-5">
                         <div class="col-sm-3"></div>
                         <div class="col-sm-9 text-secondary">
-                            <button class="btn btn-primary px-4">{% block post_button %} Create post {% endblock post_button %}</button>
+                            <button class="btn btn-primary px-4" {% block edit_button_data %}{% endblock edit_button_data %}>{% block post_button %} Create post {% endblock post_button %}</button>
                         </div>
                     </div>
                 </form>
@@ -100,4 +101,5 @@
 {% block script %}
     <script src="{% static 'utils/js/textarea_field.js' %}"></script>
     <script src="{% static 'utils/js/tags.js' %}"></script>
+    <script src="{% static 'utils/js/url_params.js' %}"></script>
 {% endblock script %}

@@ -36,11 +36,24 @@ def calculate_post_page(
         author_id: int,
         model: ModelBase,
         post: UserPost | GroupPost,
+        posts_to_show: str,
 ) -> int:
-    posts = (
-        model.objects.filter(author_id=author_id).
-        order_by('-publication_date').values_list('pk', flat=True)
-    )
+    """The function returns a number of the current page according to 'paginate_by' and 'posts_to_show' parameters."""
+    if posts_to_show.lower() == 'published':
+        posts = (
+            model.objects.filter(author_id=author_id, is_published=True).
+            order_by('-publication_date').values_list('pk', flat=True)
+        )
+    elif posts_to_show.lower() == 'unpublished':
+        posts = (
+            model.objects.filter(author_id=author_id, is_published=False).
+            order_by('-publication_date').values_list('pk', flat=True)
+        )
+    else:
+        posts = (
+            model.objects.filter(author_id=author_id).
+            order_by('-publication_date').values_list('pk', flat=True)
+        )
     page = 0
     counter = 0
     for post_pk in posts:

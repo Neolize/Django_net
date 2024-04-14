@@ -3,7 +3,6 @@
 
 function main() {
     scrollToPosts();
-    addURLParametersToPagination();
 }
 
 
@@ -35,22 +34,6 @@ function deletePost(event) {
     const answer = confirm('Are you sure you want to delete this post?');
     if (answer === false) {
         event.preventDefault();
-    }
-}
-
-/**
- *  Function adds 'posts' parameter to a URL query string for all pagination pages
- *  if  this page has 'posts' parameter set in a URL querystring.
- */
-function addURLParametersToPagination() {
-    const urlParams = new URLSearchParams(window.location.search);
-    const postsToShow = urlParams.get('posts');
-
-    if(postsToShow) {
-        const allLinkElements = document.querySelectorAll('[data-posts]')
-        for (let link of allLinkElements) {
-            link.href = `${link.href}&posts=${postsToShow}`;
-        }   
     }
 }
 

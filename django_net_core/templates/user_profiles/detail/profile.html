@@ -251,7 +251,7 @@
                                  {% if is_owner %}
                                     <a href="{% url 'delete_user_post' user_post_slug=post.slug %}" class="m-r-15 text-inverse-danger link-delete_post"
                                     onclick="deletePost(event)">Delete post</a>
-                                    <a href="{% url 'edit_user_post' slug=post.slug %}" class="m-r-15 text-inverse-lighter link-edit_post">Edit post</a>
+                                    <a href="{% url 'edit_user_post' slug=post.slug %}" data-posts-edit class="m-r-15 text-inverse-lighter link-edit_post">Edit post</a>
                                  {% endif %}
                               </div>
                               <div class="timeline-comment-box">
@@ -336,4 +336,5 @@
 
 {% block script %}
     <script src="{% static 'user_profiles/js/profile.js' %}"></script>
+    <script src="{% static 'utils/js/url_params.js' %}"></script>
 {% endblock script %}
