@@ -39,10 +39,10 @@ function addURLParametersToEditLink(postsToShow) {
 }
 
 
-function addURLParametersToDeleteLink() {
+function addURLParametersToDeleteLink(postsToShow) {
     const deleteLink = document.querySelector('[data-posts-delete]');
     if (deleteLink) {
-        console.log(deleteLink);
+        deleteLink.href = `${deleteLink.href}?posts=${postsToShow}`;
     }
 }
 

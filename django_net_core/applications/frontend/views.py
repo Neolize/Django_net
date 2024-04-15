@@ -282,15 +282,19 @@ def delete_user_post(request: WSGIRequest, user_post_slug: str):
     ):
         return HttpResponseForbidden(FORBIDDEN_MESSAGE)
 
+    posts_to_show = request.GET.get('posts', '')
     base_url = reverse('user_profile', kwargs={'pk': request.user.pk})
     page = aa_utils.calculate_post_page(
         paginate_by=USER_POSTS_PAGINATE_BY,
         author_id=user_post.author_id,
         model=uw_models.UserPost,
         post=user_post,
-        posts_to_show='',
+        posts_to_show=posts_to_show,
     )
     delete_post(user_post)
+    if posts_to_show:
+        # if a parameter 'posts' was given, it'll be added to a new URL
+        return redirect(to=f'{base_url}?page={page}&posts={posts_to_show}')
     return redirect(to=f'{base_url}?page={page}')   # redirect user to a new page after a post was deleted
 
 
@@ -564,15 +568,19 @@ def delete_group_post(request: WSGIRequest, group_post_slug: str):
     ):
         return HttpResponseForbidden(FORBIDDEN_MESSAGE)
 
+    posts_to_show = request.GET.get('posts', '')
     base_url = reverse('group', kwargs={'group_slug': group_post.group.slug})
     page = aa_utils.calculate_post_page(
         paginate_by=GROUP_POSTS_PAGINATE_BY,
         author_id=group_post.author_id,
         model=g_models.GroupPost,
         post=group_post,
-        posts_to_show='',
+        posts_to_show=posts_to_show,
     )
     delete_post(group_post)
+    if posts_to_show:
+        # if a parameter 'posts' was given, it'll be added to a new URL
+        return redirect(to=f'{base_url}?page={page}&posts={posts_to_show}')
     return redirect(to=f'{base_url}?page={page}')   # redirect user to a new page after a group post was deleted
 
 
