@@ -10,7 +10,7 @@ from django.views.generic import ListView, CreateView, View
 
 from django_net_core.settings import USER_POSTS_PAGINATE_BY, GROUP_POSTS_PAGINATE_BY
 
-from applications.frontend.permissions import is_user_post_author
+from applications.frontend.permissions import is_user_post_author, is_user_comment_author
 
 from applications.abstract_activities.services import utils as aa_utils
 from applications.abstract_activities.services.crud.delete import delete_post
@@ -109,7 +109,18 @@ class UserProfileView(View):
             raise Http404
 
         form = self.form_class(request.POST)
-        if form.is_valid() and uw_create.create_comment_for_user_post(
+        is_edited = True if request.POST.get('edit', False) else False
+
+        if form.is_valid() and is_edited:
+            uw_update.update_user_comment(
+                data=form.cleaned_data,
+                request=request,
+                user_pk=request.user.pk,
+                comment_pk=int(request.POST.get('comment_id', 0))
+            )
+            return self.get(request=request, pk=pk)
+
+        elif uw_create.create_comment_for_user_post(
             data=form.cleaned_data,
             request=request,
             user_pk=request.user.pk,

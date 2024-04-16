@@ -264,9 +264,11 @@
                                        <div class="input-group">
                                            <input type="hidden" name="post_id" value="{{ post.id }}">
                                            <input type="hidden" name="parent_id" value="" id="parentcomment">
+                                           <input type="hidden" name="edit" value="" id="editinput">
+                                           <input type="hidden" name="comment_id" value="" id="comment_id">
                                            {{ form.comment }}
                                           <span class="input-group-btn p-l-10">
-                                          <button class="btn btn-primary f-s-12 rounded-corner" type="submit">Comment</button>
+                                            <button class="btn btn-primary f-s-12 rounded-corner" id="submit_comment" type="submit">Comment</button>
                                           </span>
                                        </div>
                                     </form>
@@ -290,8 +292,15 @@
                                                    <p class="usercomment_content">
                                                        {{ comment.content }}
                                                    </p>
-                                                   <a href="#usercomment-input" class="comment_reply"
-                                                      onclick="addChildReview('{{ comment.author.username }}', '{{ comment.pk }}')">Reply</a>
+                                                   <a href="#" class="comment_reply"
+                                                      onclick="addChildReview(event, '{{ comment.author.username }}', '{{ comment.pk }}')">Reply
+                                                   </a>
+
+                                                   {% if comment.author_id == request.user.pk %}
+                                                       <a href="#" class="edit_user_comment"
+                                                          onclick='editUserComment(event, "{{ comment.pk }}", "{{ comment.content }}")'>Edit
+                                                       </a>
+                                                   {% endif %}
                                                 </div>
                                            </li>
 

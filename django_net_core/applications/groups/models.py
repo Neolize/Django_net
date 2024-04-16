@@ -92,4 +92,4 @@ class GroupComment(abstract_models.AbstractComment, MPTTModel):
         db_table = 'group_comment'
 
     def __str__(self):
-        return f'{self.author} - {self.post}'
+        return f'{self.author} - {self.post} - {self.content}'

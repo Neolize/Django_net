@@ -6,10 +6,14 @@ function main() {
 }
 
 
-function addChildReview(name, parent_id) {
-    let userCommentInput = document.getElementById('usercomment-input');
+function addChildReview(event, name, parent_id) {
+    event.preventDefault();
+    const userCommentInput = document.getElementById('usercomment-input');
+    scrollToComment(userCommentInput);
+
     userCommentInput.innerHTML = `${name}, `;
     userCommentInput.setSelectionRange(userCommentInput.value.length, userCommentInput.value.length, 'forward');
+    userCommentInput.focus();
 
     document.getElementById('parentcomment').value = parent_id;
 }
@@ -30,11 +34,70 @@ function scrollToPosts() {
 }
 
 
+function scrollToComment(commentInput) {
+    const inputRect = commentInput.getBoundingClientRect();
+    const bodyRect = document.body.getBoundingClientRect();
+    window.scrollTo(0, (inputRect.y - bodyRect.y - 37));  // scroll to comment input section
+}
+
+
 function deletePost(event) {
     const answer = confirm('Are you sure you want to delete this post?');
     if (answer === false) {
         event.preventDefault();
     }
+}
+
+
+function editUserComment(event, commentID, comment) {
+    event.preventDefault();
+
+    const userCommentInput = document.getElementById('usercomment-input');
+    const editInput = document.getElementById('editinput');
+    const commentIDInput = document.getElementById('comment_id');
+    const submitButton = document.getElementById('submit_comment');
+
+    scrollToComment(userCommentInput);
+
+    userCommentInput.innerHTML = comment;
+    userCommentInput.setSelectionRange(comment.length, comment.length, 'forward');
+    userCommentInput.focus();
+
+    submitButton.innerHTML = 'Edit';
+    editInput.value = 'edited';
+    commentIDInput.value = commentID;
+
+    if (!document.getElementById('cancel_edit')) {
+        const cancelButton = createCancelButton();
+
+        cancelButton.addEventListener('click', cancelCommentEditing.bind(
+            cancelButton, submitButton, cancelButton, editInput,
+            ));
+        submitButton.after(cancelButton);
+    }
+}
+
+
+function createCancelButton() {
+    const newButton = document.createElement('button');
+    newButton.classList.add('btn', 'btn-primary', 'f-s-12', 'rounded-corner', 'cancel_button');
+    newButton.innerHTML = 'Cancel';
+    newButton.id = 'cancel_edit';
+
+    return newButton;
+}
+
+
+function cancelCommentEditing(submitButton, cancelButton, editInput, event) {
+    // Cancel all changes which occurred during comment editing.
+    event.preventDefault();
+
+    const commentInput = document.getElementById('usercomment-input');
+    commentInput.innerHTML = ''; 
+
+    submitButton.innerHTML = 'Comment';
+    editInput.value = '';
+    cancelButton.remove();
 }
 
 

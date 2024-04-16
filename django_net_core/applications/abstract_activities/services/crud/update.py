@@ -1,9 +1,15 @@
+import logging
+
 from django.db.models import QuerySet
+from django.db.models.base import ModelBase
 
 from applications.abstract_activities.models import AbstractPost
-from applications.groups.models import GroupPost
-from applications.user_wall.models import UserPost
+from applications.groups.models import GroupPost, GroupComment
+from applications.user_wall.models import UserPost, UserComment
 from applications.user_wall.services.crud.delete import delete_tag_from_post
+
+
+LOGGER = logging.getLogger('main_logger')
 
 
 def update_posts_view_count(
@@ -59,3 +65,26 @@ def return_new_tag_list(
         return new_tags
 
     return added_tags_list
+
+
+def update_comment(
+        comment: UserComment | GroupComment,
+        content: str,
+        author_id: int,
+        post_id: int,
+        parent_id: int | None,
+) -> bool:
+    try:
+        comment.content = content
+        comment.author_id = author_id
+        comment.post_id = post_id
+        comment.parend_id = parent_id
+        comment.is_edited = True
+        comment.save()
+
+        is_updated = True
+    except Exception as exc:
+        LOGGER.error(exc)
+        is_updated = False
+
+    return is_updated

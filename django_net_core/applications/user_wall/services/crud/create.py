@@ -79,6 +79,9 @@ def create_comment_for_user_post(
         user_pk: int
 ) -> bool:
     content = data.get('comment', '')
+    if not content:
+        return False
+
     post_id = int(request.POST.get('post_id'))
 
     if request.POST.get('parent_id'):

@@ -73,3 +73,13 @@ def get_tag_by_title(tag: str) -> models.Tag | bool:
         tag = False
 
     return tag
+
+
+def get_user_comment_by_pk(comment_pk: int) -> models.UserComment | bool:
+    try:
+        comment = models.UserComment.objects.get(pk=comment_pk)
+    except ObjectDoesNotExist as exc:
+        LOGGER.error(f'User comment with pk - {comment_pk} does not exist. {exc}')
+        comment = False
+
+    return comment

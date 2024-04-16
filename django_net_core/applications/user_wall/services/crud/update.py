@@ -2,10 +2,12 @@ import logging
 import pytz
 from datetime import datetime
 
+from django.core.handlers.wsgi import WSGIRequest
+
 from django_net_core.settings import TIME_ZONE
 from applications.abstract_activities.services.crud import update
 from applications.user_wall import models
-from applications.user_wall.services.crud import crud_utils, create
+from applications.user_wall.services.crud import crud_utils, create, read
 
 
 LOGGER = logging.getLogger('main_logger')
@@ -59,3 +61,33 @@ def update_user_post(data: dict, post: models.UserPost) -> bool:
         is_edited = False
 
     return is_edited
+
+
+def update_user_comment(
+        data: dict,
+        request: WSGIRequest,
+        user_pk: int,
+        comment_pk: int,
+) -> bool:
+    content = data.get('comment', '')
+    if not content:
+        return False
+
+    comment = read.get_user_comment_by_pk(comment_pk)
+    if not comment:
+        return False
+
+    post_id = int(request.POST.get('post_id'))
+
+    if request.POST.get('parent_id'):
+        parent_id = int(request.POST.get('parent_id'))
+    else:
+        parent_id = None
+
+    return update.update_comment(
+        comment=comment,
+        content=content,
+        author_id=user_pk,
+        post_id=post_id,
+        parent_id=parent_id,
+    )
