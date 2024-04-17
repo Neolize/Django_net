@@ -505,6 +505,10 @@ select.form-control:not([size]):not([multiple]) {
     font-size: 12px;
 }
 
+.usercomment_content_edited {
+    margin-top: -25px;
+}
+
 .commentline {
     padding-bottom: 10px;
     border-bottom: 1px solid #999b9d;
@@ -557,6 +561,14 @@ select.form-control:not([size]):not([multiple]) {
 .cancel_button {
     margin-left: 5px;
     margin-right: -15px;
+}
+
+.edited_comment {
+    position: relative;
+    left: 145px;
+    bottom: 42px;
+    font-size: 12px;
+    display: inline-block;
 }
 
 .timeline img {

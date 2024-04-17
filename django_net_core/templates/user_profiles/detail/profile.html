@@ -289,16 +289,24 @@
                                                        <span class="userimage"><img src="{% static 'user_profiles/images/anonymous.png' %}" alt="avatar"></span>
                                                    {% endif %}
                                                    <span class="usercomment_name"><a href="{% url 'user_profile' pk=comment.author.pk %}">{{ comment.author.get_full_name }}</a> <small></small></span>
-                                                   <p class="usercomment_content">
-                                                       {{ comment.content }}
-                                                   </p>
+
+                                                   {% if comment.is_edited %}
+                                                       <span class="edited_comment">(edited)</span>
+                                                       <p class="usercomment_content usercomment_content_edited">
+                                                           {{ comment.content }}
+                                                      </p>
+                                                   {% else %}
+                                                       <p class="usercomment_content">
+                                                           {{ comment.content }}
+                                                       </p>
+                                                   {% endif %}
+
                                                    <a href="#" class="comment_reply"
                                                       onclick="addChildReview(event, '{{ comment.author.username }}', '{{ comment.pk }}')">Reply
                                                    </a>
-
                                                    {% if comment.author_id == request.user.pk %}
                                                        <a href="#" class="edit_user_comment"
-                                                          onclick='editUserComment(event, "{{ comment.pk }}", "{{ comment.content }}")'>Edit
+                                                          onclick='editUserComment(event, "{{ comment.pk }}", "{{ comment.content|iriencode }}")'>Edit
                                                        </a>
                                                    {% endif %}
                                                 </div>

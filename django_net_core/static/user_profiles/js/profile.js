@@ -35,9 +35,18 @@ function scrollToPosts() {
 
 
 function scrollToComment(commentInput) {
+    // scroll to comment input section
     const inputRect = commentInput.getBoundingClientRect();
     const bodyRect = document.body.getBoundingClientRect();
-    window.scrollTo(0, (inputRect.y - bodyRect.y - 37));  // scroll to comment input section
+    
+    if (inputRect.y < 5 && inputRect.y > -31) {
+        setTimeout( () => {
+            window.scrollTo(0, inputRect.y - bodyRect.y - 100);
+        }, 2);
+    }
+    else{
+        window.scrollTo(0, (inputRect.y - bodyRect.y - 37));
+    }
 }
 
 
@@ -59,7 +68,8 @@ function editUserComment(event, commentID, comment) {
 
     scrollToComment(userCommentInput);
 
-    userCommentInput.innerHTML = comment;
+    // The "comment" variable is given in encoded form is order to avoid error if user string contains symbols: ' ".
+    userCommentInput.value = decodeURI(comment); 
     userCommentInput.setSelectionRange(comment.length, comment.length, 'forward');
     userCommentInput.focus();
 
@@ -93,7 +103,7 @@ function cancelCommentEditing(submitButton, cancelButton, editInput, event) {
     event.preventDefault();
 
     const commentInput = document.getElementById('usercomment-input');
-    commentInput.innerHTML = ''; 
+    commentInput.value = '';
 
     submitButton.innerHTML = 'Comment';
     editInput.value = '';
