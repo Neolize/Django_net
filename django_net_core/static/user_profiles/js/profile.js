@@ -3,6 +3,9 @@
 
 function main() {
     scrollToPosts();
+
+    const commentInput = document.getElementById('usercomment-input');
+    commentInput.addEventListener('input', changeTextarea);  // Changes comment section every time it gets bigger or smaller.
 }
 
 
@@ -38,7 +41,7 @@ function scrollToComment(commentInput) {
     // scroll to comment input section
     const inputRect = commentInput.getBoundingClientRect();
     const bodyRect = document.body.getBoundingClientRect();
-    
+
     if (inputRect.y < 5 && inputRect.y > -31) {
         setTimeout( () => {
             window.scrollTo(0, inputRect.y - bodyRect.y - 100);
@@ -108,6 +111,12 @@ function cancelCommentEditing(submitButton, cancelButton, editInput, event) {
     submitButton.innerHTML = 'Comment';
     editInput.value = '';
     cancelButton.remove();
+}
+
+
+function changeTextarea(event) {
+    event.target.style.height = 'auto';
+    event.target.style.height = `${event.target.scrollHeight}px`;
 }
 
 
