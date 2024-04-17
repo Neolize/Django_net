@@ -112,13 +112,13 @@ class UserProfileView(View):
         is_edited = True if request.POST.get('edit', False) else False
 
         if form.is_valid() and is_edited:
-            uw_update.update_user_comment(
+            if uw_update.update_user_comment(
                 data=form.cleaned_data,
                 request=request,
                 user_pk=request.user.pk,
                 comment_pk=int(request.POST.get('comment_id', 0))
-            )
-            return self.get(request=request, pk=pk)
+            ):
+                return self.get(request=request, pk=pk)
 
         elif uw_create.create_comment_for_user_post(
             data=form.cleaned_data,

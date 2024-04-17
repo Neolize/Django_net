@@ -69,13 +69,13 @@ def update_user_comment(
         user_pk: int,
         comment_pk: int,
 ) -> bool:
-    content = data.get('comment', '')
-    if not content:
-        return False
-
     comment = read.get_user_comment_by_pk(comment_pk)
     if not comment:
         return False
+
+    content = data.get('comment', '')
+    if not content or content == comment.content:
+        return False    # comment hasn't changed or doesn't have a 'content' field
 
     post_id = int(request.POST.get('post_id'))
 
