@@ -9,6 +9,7 @@ urlpatterns = [
     path('user/', views.UserWallView.as_view(), name='user_wall'),
     path('user/profile/<int:pk>/', views.UserProfileView.as_view(), name='user_profile'),
     path('user/profile/edit_profile/<int:pk>/', views.EditUserProfileView.as_view(), name='edit_user_profile'),
+    path('user/profile/<int:pk>/user_comment/', views.handle_user_comment, name='handle_user_comment'),
     path('user/profile/create_post/', views.CreateUserPostView.as_view(), name='create_user_post'),
     path('user/profile/edit_post/<slug:slug>/', views.EditUserPostView.as_view(), name='edit_user_post'),
     path('user/profile/follow/<int:pk>/', views.follow_user, name='follow_user'),

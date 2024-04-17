@@ -93,41 +93,42 @@ class UserProfileView(View):
 
         context = up_common_utils.form_user_profile_context_data(
             user_obj=user_obj,
-            request=self.request,
+            request=request,
             paginate_by=self.paginate_by,
             posts_to_show=request.GET.get('posts', ''),
         )
         context['form'] = form or self.form_class()
         return render(request, self.template_name, context=context)
 
-    def post(self, request: WSGIRequest, pk: int):
-        if request.user.is_anonymous:
-            return HttpResponseForbidden(FORBIDDEN_MESSAGE)
 
-        user_obj = up_read.get_user_for_profile(user_pk=pk)
-        if not user_obj:
-            raise Http404
+def handle_user_comment(request: WSGIRequest, pk):
+    if request.user.is_anonymous:
+        return redirect(to='login')
 
-        form = self.form_class(request.POST)
-        is_edited = True if request.POST.get('edit', False) else False
+    user_obj = up_read.get_user_for_profile(user_pk=pk)
+    if not user_obj:
+        raise Http404
 
-        if form.is_valid() and is_edited:
-            if uw_update.update_user_comment(
+    form = uw_forms.UserCommentForm(request.POST)
+    is_edited = True if request.POST.get('edit', False) else False
+
+    if form.is_valid() and is_edited:
+        if uw_update.update_user_comment(
                 data=form.cleaned_data,
                 request=request,
                 user_pk=request.user.pk,
                 comment_pk=int(request.POST.get('comment_id', 0))
-            ):
-                return self.get(request=request, pk=pk)
+        ):
+            return redirect(to='user_profile', pk=pk)
 
-        elif uw_create.create_comment_for_user_post(
+    elif uw_create.create_comment_for_user_post(
             data=form.cleaned_data,
             request=request,
             user_pk=request.user.pk,
-        ):
-            return self.get(request=request, pk=pk)
+    ):
+        return redirect(to='user_profile', pk=pk)
 
-        return self.get(request=request, pk=pk, form=form)
+    return UserProfileView().get(request=request, pk=pk, form=form)
 
 
 def follow_user(request: WSGIRequest, pk: int):
