@@ -5,7 +5,10 @@ function main() {
     scrollToPosts();
 
     const commentInput = document.getElementById('usercomment-input');
-    commentInput.addEventListener('input', changeTextarea);  // Changes comment section every time it gets bigger or smaller.
+    
+    // Changes comment section every time it gets bigger or smaller.
+    commentInput.addEventListener('input', changeTextarea);
+    commentInput.addEventListener('focus', changeTextarea);
 }
 
 
