@@ -19,6 +19,7 @@ urlpatterns = [
     path('group/<slug:group_slug>/create_group_post/', views.CreateGroupPostView.as_view(), name='create_group_post'),
     path('group/edit_group_post/<slug:group_post_slug>/', views.EditGroupPostView.as_view(), name='edit_group_post'),
     path('group/<slug:group_slug>/', views.GroupView.as_view(), name='group'),
+    path('group/<slug:group_slug>/group_comment/', views.handle_group_comment, name='handle_group_comment'),
     path('user/<int:pk>/create_group/', views.GroupCreationView.as_view(), name='create_group'),
     path('group/<slug:group_slug>/follow/', views.follow_group, name='follow_group'),
     path('group/<slug:group_slug>/unfollow/', views.unfollow_group, name='unfollow_group'),

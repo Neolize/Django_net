@@ -1,8 +1,12 @@
 from datetime import datetime, timedelta
 
+from django.shortcuts import reverse, redirect
+from django.http import HttpResponseRedirect
 from django.db.models import QuerySet
 from django.core.handlers.wsgi import WSGIRequest
 
+from django_net_core.settings import GROUP_POSTS_PAGINATE_BY
+from applications.abstract_activities.services.utils import calculate_post_page
 from applications.abstract_activities.services.crud.update import update_posts_view_count
 from applications.frontend.services.pagination import get_page_object, get_posts_for_current_page
 from applications.user_profiles.models import CustomUser
@@ -108,3 +112,39 @@ def _include_unpublished_group_posts_number_to_context_data(
             data['unpublished_posts_number'] = all_posts_number - published_posts_number
         else:
             data['unpublished_posts_number'] = 0
+
+
+def redirect_to_the_current_post_page(request: WSGIRequest, group: Group) -> HttpResponseRedirect:
+    # visitors can see only published posts
+    posts_to_show = request.POST.get('posts', '') if request.user.pk == group.creator_id else 'published'
+
+    base_url = reverse('group', kwargs={'group_slug': group.slug})
+    page = calculate_post_page_from_group_comment(
+        request=request,
+        group=group,
+        posts_to_show=posts_to_show,
+    )
+    if posts_to_show:
+        # if a parameter 'posts' was given, it'll be added to a new URL
+        return redirect(to=f'{base_url}?page={page}&posts={posts_to_show}')
+    return redirect(to=f'{base_url}?page={page}')
+
+
+def calculate_post_page_from_group_comment(
+        request: WSGIRequest,
+        group: Group,
+        posts_to_show: str,
+) -> int:
+    """The function calculates and returns a number of the current page according to parameters in request."""
+    post_id = int(request.POST.get('post_id', 0))
+    post = read.get_group_post_by_pk(post_pk=post_id)
+    if not post:
+        return 1    # if post with given 'pk' does not exist, the function will return the first page number.
+
+    return calculate_post_page(
+        paginate_by=GROUP_POSTS_PAGINATE_BY,
+        author_id=group.creator_id,
+        model=GroupPost,
+        post=post,
+        posts_to_show=posts_to_show,
+    )

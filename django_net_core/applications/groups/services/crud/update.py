@@ -2,9 +2,13 @@ import logging
 import pytz
 from datetime import datetime
 
+from django.core.handlers.wsgi import WSGIRequest
+
 from django_net_core.settings import TIME_ZONE
 from applications.abstract_activities.services.crud import update as aa_update
+from applications.frontend.permissions import is_user_comment_author
 from applications.groups import models
+from applications.groups.services.crud.read import get_group_comment_by_pk
 from applications.user_wall.services.crud import crud_utils
 from applications.user_wall.services.crud import create as uw_create
 
@@ -60,3 +64,28 @@ def update_group_post(data: dict, group_post: models.GroupPost) -> bool:
         is_edited = False
 
     return is_edited
+
+
+def update_group_comment(
+        data: dict,
+        request: WSGIRequest,
+        comment_pk: int,
+) -> bool:
+    comment = get_group_comment_by_pk(comment_pk)
+    if not comment or not is_user_comment_author(visitor=request.user, comment=comment):
+        return False
+
+    content = data.get('comment', '')
+    if not content or content == comment.content:
+        return False    # comment hasn't changed or doesn't have a 'content' field
+
+    post_id = int(request.POST.get('post_id'))
+    parent_id = int(request.POST.get('parent_id')) if request.POST.get('parent_id') else None
+
+    return aa_update.update_comment(
+        comment=comment,
+        content=content,
+        author_id=request.user.pk,
+        post_id=post_id,
+        parent_id=parent_id,
+    )

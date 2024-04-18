@@ -110,12 +110,11 @@ def create_comment_for_group_post(
         user_pk: int,
 ) -> bool:
     content = data.get('comment', '')
-    post_id = int(request.POST.get('post_id'))
+    if not content:
+        return False
 
-    if request.POST.get('parent_id'):
-        parent_id = int(request.POST.get('parent_id'))
-    else:
-        parent_id = None
+    post_id = int(request.POST.get('post_id'))
+    parent_id = int(request.POST.get('parent_id')) if request.POST.get('parent_id') else None
 
     return create_comment(
         content=content,

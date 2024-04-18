@@ -149,8 +149,17 @@
                                            <!-- end timeline-icon -->
                                            <!-- begin timeline-body -->
                                            <div class="timeline-body">
+                                               {% if not post.is_published %}
+                                                   <span class="not_published_post">This post is not published</span>
+                                               {% endif %}
                                               <div class="timeline-header">
-                                                 <span class="userimage"><img src="{{ post.author.avatar.url }}" alt="avatar"></span>
+
+                                                  {% if post.author.avatar %}
+                                                      <img src="{{ post.author.avatar.url }}" alt="avatar" class="userimage" width="128">
+                                                  {% else %}
+                                                      <img src="{% static 'user_profiles/images/anonymous.png' %}" alt="avatar" class="userimage" width="128">
+                                                  {% endif %}
+
                                                  <span class="username"><a href="{% url 'user_profile' pk=post.author.pk %}">{{ post.author.get_full_name }}</a> <small></small></span>
                                                  {% if post.last_edit %}
                                                     <span class="pull-right text-muted" style="margin-left: 5px;">(edited)</span>
@@ -219,14 +228,16 @@
                                               <div class="timeline-comment-box">
                                                  <div class="input">
 
-                                                    <form action="" method="post" id="formComment">
+                                                    <form action="{% url 'handle_group_comment' group_slug=group.slug %}" method="post" id="formComment">
                                                        {% csrf_token %}
                                                        <div class="input-group">
                                                            <input type="hidden" name="post_id" value="{{ post.id }}">
                                                            <input type="hidden" name="parent_id" value="" id="parentcomment">
+                                                           <input type="hidden" name="edit" value="" id="editinput">
+                                                           <input type="hidden" name="comment_id" value="" id="comment_id">
                                                            {{ form.comment }}
                                                           <span class="input-group-btn p-l-10">
-                                                          <button class="btn btn-primary f-s-12 rounded-corner" type="submit">Comment</button>
+                                                          <button class="btn btn-primary f-s-12 rounded-corner" id="submit_comment" type="submit">Comment</button>
                                                           </span>
                                                        </div>
                                                     </form>
@@ -247,11 +258,27 @@
                                                                        <span class="userimage"><img src="{% static 'user_profiles/images/anonymous.png' %}" alt="avatar"></span>
                                                                    {% endif %}
                                                                    <span class="usercomment_name"><a href="{% url 'user_profile' pk=comment.author.pk %}">{{ comment.author.get_full_name }}</a> <small></small></span>
-                                                                   <p class="usercomment_content">
-                                                                       {{ comment.content }}
-                                                                   </p>
-                                                                   <a href="#usercomment-input" class="comment_reply"
-                                                                      onclick="addChildReview('{{ comment.author.username }}', '{{ comment.pk }}')">Reply</a>
+
+                                                                   {% if comment.is_edited %}
+                                                                       <span class="edited_comment">(edited)</span>
+                                                                       <p class="usercomment_content usercomment_content_edited">
+                                                                           {{ comment.content }}
+                                                                      </p>
+                                                                   {% else %}
+                                                                       <p class="usercomment_content">
+                                                                           {{ comment.content }}
+                                                                       </p>
+                                                                   {% endif %}
+
+                                                                   <a href="#" class="comment_reply"
+                                                                      onclick="addChildReview(event, '{{ comment.author.username }}', '{{ comment.pk }}')">Reply
+                                                                   </a>
+
+                                                                   {% if comment.author_id == request.user.pk %}
+                                                                       <a href="#" class="edit_user_comment"
+                                                                          onclick='editUserComment(event, "{{ comment.pk }}", "{{ comment.content|iriencode }}")'>Edit
+                                                                       </a>
+                                                                   {% endif %}
                                                                 </div>
                                                            </li>
 

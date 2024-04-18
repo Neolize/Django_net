@@ -10,7 +10,7 @@ from django.views.generic import ListView, CreateView, View
 
 from django_net_core.settings import USER_POSTS_PAGINATE_BY, GROUP_POSTS_PAGINATE_BY
 
-from applications.frontend.permissions import is_user_post_author, is_user_comment_author
+from applications.frontend.permissions import is_user_post_author
 
 from applications.abstract_activities.services import utils as aa_utils
 from applications.abstract_activities.services.crud.delete import delete_post
@@ -232,7 +232,7 @@ class EditUserPostView(LoginRequiredMixin, View):
         user_post = uw_read.get_user_post(slug=slug)
         self.check_request(user_post=user_post)
 
-        if user_post.author_id != request.user.pk:
+        if not is_user_post_author(visitor=request.user, post=user_post):
             return HttpResponseForbidden(FORBIDDEN_MESSAGE)
 
         context = self.get_context_data(pk=request.user.pk, post_slug=slug)
@@ -243,7 +243,7 @@ class EditUserPostView(LoginRequiredMixin, View):
         user_post = uw_read.get_user_post(slug=slug)
         self.check_request(user_post=user_post)
 
-        if user_post.author_id != request.user.pk:
+        if not is_user_post_author(visitor=request.user, post=user_post):
             return HttpResponseForbidden(FORBIDDEN_MESSAGE)
 
         form = self.form_class(request.POST)
@@ -288,10 +288,7 @@ def delete_user_post(request: WSGIRequest, user_post_slug: str):
     if not user_post:
         raise Http404
 
-    if not is_user_post_author(
-        visitor=request.user,
-        post=user_post,
-    ):
+    if not is_user_post_author(visitor=request.user, post=user_post):
         return HttpResponseForbidden(FORBIDDEN_MESSAGE)
 
     posts_to_show = request.GET.get('posts', '')
@@ -429,23 +426,34 @@ class GroupView(View):
         context['form'] = form or self.form_class()
         return render(request, self.template_name, context=context)
 
-    def post(self, request: WSGIRequest, group_slug: str):
-        if request.user.is_anonymous:
-            return HttpResponseForbidden(FORBIDDEN_MESSAGE)
 
-        group = g_read.get_group_by_slug(group_slug)
-        if not group:
-            raise Http404
+def handle_group_comment(request: WSGIRequest, group_slug: str):
+    if request.user.is_anonymous:
+        return redirect(to='login')
 
-        form = self.form_class(request.POST)
-        if form.is_valid() and g_create.create_comment_for_group_post(
+    group = g_read.get_group_by_slug(group_slug)
+    if not group:
+        raise Http404
+
+    form = g_forms.GroupCommentForm(request.POST)
+    is_edited = True if request.POST.get('edit', False) else False
+
+    if form.is_valid() and is_edited:
+        if g_update.update_group_comment(
+                data=form.cleaned_data,
+                request=request,
+                comment_pk=int(request.POST.get('comment_id', 0)),
+        ):
+            return g_utils.redirect_to_the_current_post_page(request, group)
+
+    elif g_create.create_comment_for_group_post(
             data=form.cleaned_data,
             request=request,
             user_pk=request.user.pk,
-        ):
-            return self.get(request=request, group_slug=group_slug)
+    ):
+        return g_utils.redirect_to_the_current_post_page(request, group)
 
-        return self.get(request=request, group_slug=group_slug, form=form)
+    return GroupView().get(request=request, group_slug=group_slug, form=form)
 
 
 def follow_group(request: WSGIRequest, group_slug: str):
@@ -522,7 +530,7 @@ class EditGroupPostView(LoginRequiredMixin, View):
         if not group_post:
             raise Http404
 
-        if group_post.author_id != request.user.pk:
+        if not is_user_post_author(visitor=request.user, post=group_post):
             return HttpResponseForbidden(FORBIDDEN_MESSAGE)
 
         context = {
@@ -538,7 +546,7 @@ class EditGroupPostView(LoginRequiredMixin, View):
         if not group_post:
             raise Http404
 
-        if group_post.author_id != request.user.pk:
+        if not is_user_post_author(visitor=request.user, post=group_post):
             return HttpResponseForbidden(FORBIDDEN_MESSAGE)
 
         form = self.form_class(request.POST)
@@ -574,10 +582,7 @@ def delete_group_post(request: WSGIRequest, group_post_slug: str):
     if not group_post:
         raise Http404
 
-    if not is_user_post_author(
-        visitor=request.user,
-        post=group_post,
-    ):
+    if not is_user_post_author(visitor=request.user, post=group_post):
         return HttpResponseForbidden(FORBIDDEN_MESSAGE)
 
     posts_to_show = request.GET.get('posts', '')
