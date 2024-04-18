@@ -107,7 +107,6 @@ def _create_group_post(
 def create_comment_for_group_post(
         data: dict,
         request: WSGIRequest,
-        user_pk: int,
 ) -> bool:
     content = data.get('comment', '')
     if not content:
@@ -118,7 +117,7 @@ def create_comment_for_group_post(
 
     return create_comment(
         content=content,
-        author_id=user_pk,
+        author_id=request.user.pk,
         post_id=post_id,
         parent_id=parent_id,
         model=models.GroupComment,

@@ -83,3 +83,13 @@ def get_user_comment_by_pk(comment_pk: int) -> models.UserComment | bool:
         comment = False
 
     return comment
+
+
+def get_user_post_by_pk(post_pk: int) -> models.UserPost | bool:
+    try:
+        post = models.UserPost.objects.get(pk=post_pk)
+    except ObjectDoesNotExist as exc:
+        LOGGER.error(f'Group post with pk - {post_pk} does not exist. {exc}')
+        post = False
+
+    return post

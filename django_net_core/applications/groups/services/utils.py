@@ -114,12 +114,12 @@ def _include_unpublished_group_posts_number_to_context_data(
             data['unpublished_posts_number'] = 0
 
 
-def redirect_to_the_current_post_page(request: WSGIRequest, group: Group) -> HttpResponseRedirect:
+def redirect_to_the_current_group_post_page(request: WSGIRequest, group: Group) -> HttpResponseRedirect:
     # visitors can see only published posts
     posts_to_show = request.POST.get('posts', '') if request.user.pk == group.creator_id else 'published'
 
     base_url = reverse('group', kwargs={'group_slug': group.slug})
-    page = calculate_post_page_from_group_comment(
+    page = _calculate_post_page_from_group_comment(
         request=request,
         group=group,
         posts_to_show=posts_to_show,
@@ -130,7 +130,7 @@ def redirect_to_the_current_post_page(request: WSGIRequest, group: Group) -> Htt
     return redirect(to=f'{base_url}?page={page}')
 
 
-def calculate_post_page_from_group_comment(
+def _calculate_post_page_from_group_comment(
         request: WSGIRequest,
         group: Group,
         posts_to_show: str,

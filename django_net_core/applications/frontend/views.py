@@ -22,6 +22,7 @@ from applications.user_profiles.services.crud import (read as up_read, update as
 from applications.user_profiles.services.utils import form_utils as up_form_utils, common_utils as up_common_utils
 
 from applications.user_wall import forms as uw_forms, models as uw_models
+from applications.user_wall.services.utils import redirect_to_the_current_post_page
 from applications.user_wall.services.crud import create as uw_create, read as uw_read, update as uw_update
 
 from applications.groups import forms as g_forms, models as g_models, permissions as g_permissions
@@ -116,17 +117,15 @@ def handle_user_comment(request: WSGIRequest, pk):
         if uw_update.update_user_comment(
                 data=form.cleaned_data,
                 request=request,
-                user_pk=request.user.pk,
                 comment_pk=int(request.POST.get('comment_id', 0))
         ):
-            return redirect(to='user_profile', pk=pk)
+            return redirect_to_the_current_post_page(request, user_obj)
 
     elif uw_create.create_comment_for_user_post(
             data=form.cleaned_data,
             request=request,
-            user_pk=request.user.pk,
     ):
-        return redirect(to='user_profile', pk=pk)
+        return redirect_to_the_current_post_page(request, user_obj)
 
     return UserProfileView().get(request=request, pk=pk, form=form)
 
@@ -444,14 +443,13 @@ def handle_group_comment(request: WSGIRequest, group_slug: str):
                 request=request,
                 comment_pk=int(request.POST.get('comment_id', 0)),
         ):
-            return g_utils.redirect_to_the_current_post_page(request, group)
+            return g_utils.redirect_to_the_current_group_post_page(request, group)
 
     elif g_create.create_comment_for_group_post(
             data=form.cleaned_data,
             request=request,
-            user_pk=request.user.pk,
     ):
-        return g_utils.redirect_to_the_current_post_page(request, group)
+        return g_utils.redirect_to_the_current_group_post_page(request, group)
 
     return GroupView().get(request=request, group_slug=group_slug, form=form)
 

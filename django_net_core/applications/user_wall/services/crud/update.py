@@ -6,6 +6,7 @@ from django.core.handlers.wsgi import WSGIRequest
 
 from django_net_core.settings import TIME_ZONE
 from applications.abstract_activities.services.crud import update
+from applications.frontend.permissions import is_user_comment_author
 from applications.user_wall import models
 from applications.user_wall.services.crud import crud_utils, create, read
 
@@ -66,11 +67,10 @@ def update_user_post(data: dict, post: models.UserPost) -> bool:
 def update_user_comment(
         data: dict,
         request: WSGIRequest,
-        user_pk: int,
         comment_pk: int,
 ) -> bool:
     comment = read.get_user_comment_by_pk(comment_pk)
-    if not comment:
+    if not comment or not is_user_comment_author(visitor=request.user, comment=comment):
         return False
 
     content = data.get('comment', '')
@@ -78,16 +78,12 @@ def update_user_comment(
         return False    # comment hasn't changed or doesn't have a 'content' field
 
     post_id = int(request.POST.get('post_id'))
-
-    if request.POST.get('parent_id'):
-        parent_id = int(request.POST.get('parent_id'))
-    else:
-        parent_id = None
+    parent_id = int(request.POST.get('parent_id')) if request.POST.get('parent_id') else None
 
     return update.update_comment(
         comment=comment,
         content=content,
-        author_id=user_pk,
+        author_id=request.user.pk,
         post_id=post_id,
         parent_id=parent_id,
     )

@@ -76,22 +76,17 @@ def add_tags_to_post(tags: list[models.Tag], post: models.UserPost | GroupPost) 
 def create_comment_for_user_post(
         data: dict,
         request: WSGIRequest,
-        user_pk: int
 ) -> bool:
     content = data.get('comment', '')
     if not content:
         return False
 
     post_id = int(request.POST.get('post_id'))
-
-    if request.POST.get('parent_id'):
-        parent_id = int(request.POST.get('parent_id'))
-    else:
-        parent_id = None
+    parent_id = int(request.POST.get('parent_id')) if request.POST.get('parent_id') else None
 
     return create_comment(
         content=content,
-        author_id=user_pk,
+        author_id=request.user.pk,
         post_id=post_id,
         parent_id=parent_id,
         model=models.UserComment,
