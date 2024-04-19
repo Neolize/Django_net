@@ -541,7 +541,7 @@ select.form-control:not([size]):not([multiple]) {
     display: inline-block;
     position: relative;
     bottom: 25px;
-    left: 60px;
+    left: 50px;
     font-size: 12px;
     font-weight: 700;
     color: #415d7f;
@@ -569,6 +569,18 @@ select.form-control:not([size]):not([multiple]) {
     bottom: 42px;
     font-size: 12px;
     display: inline-block;
+}
+
+.comment-block {
+    width: 359px;
+    margin-right: 10px;
+}
+
+.comment-error {
+    display: inline-block;
+    margin: 10px 0px -5px 0px;
+    padding: 10px;
+
 }
 
 .timeline img {

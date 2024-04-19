@@ -115,9 +115,9 @@ def handle_user_comment(request: WSGIRequest, pk):
 
     if form.is_valid() and is_edited:
         if uw_update.update_user_comment(
-                data=form.cleaned_data,
+                form=form,
                 request=request,
-                comment_pk=int(request.POST.get('comment_id', 0))
+                comment_pk=int(request.POST.get('comment_id', 0)),
         ):
             return redirect_to_the_current_post_page(request, user_obj)
 
