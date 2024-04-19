@@ -43,3 +43,18 @@ def _calculate_post_page_from_user_comment(
         post=post,
         posts_to_show=posts_to_show,
     )
+
+
+def add_new_params_to_request(request: WSGIRequest, user_obj: CustomUser) -> None:
+    # visitors can see only published posts
+    posts_to_show = request.POST.get('posts', '') if request.user.pk == user_obj.pk else 'published'
+    page = _calculate_post_page_from_user_comment(
+        request=request,
+        user_obj=user_obj,
+        posts_to_show=posts_to_show,
+    )
+    request.GET._mutable = True
+    request.GET['page'] = page
+    if posts_to_show:
+        # if a parameter 'posts' was given, it'll be added to the request
+        request.GET['posts'] = posts_to_show

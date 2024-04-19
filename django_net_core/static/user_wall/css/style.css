@@ -576,6 +576,11 @@ select.form-control:not([size]):not([multiple]) {
     margin-right: 10px;
 }
 
+.comment-block-edited {
+    width: 335px;
+    margin-right: 10px;
+}
+
 .comment-error {
     display: inline-block;
     margin: 10px 0px -5px 0px;

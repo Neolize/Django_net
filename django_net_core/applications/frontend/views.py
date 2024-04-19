@@ -22,7 +22,7 @@ from applications.user_profiles.services.crud import (read as up_read, update as
 from applications.user_profiles.services.utils import form_utils as up_form_utils, common_utils as up_common_utils
 
 from applications.user_wall import forms as uw_forms, models as uw_models
-from applications.user_wall.services.utils import redirect_to_the_current_post_page
+from applications.user_wall.services.utils import redirect_to_the_current_post_page, add_new_params_to_request
 from applications.user_wall.services.crud import create as uw_create, read as uw_read, update as uw_update
 
 from applications.groups import forms as g_forms, models as g_models, permissions as g_permissions
@@ -127,6 +127,8 @@ def handle_user_comment(request: WSGIRequest, pk):
     ):
         return redirect_to_the_current_post_page(request, user_obj)
 
+    add_new_params_to_request(request, user_obj)
+    # add parameters: page and posts_to_show in order to show user an appropriate page
     return UserProfileView().get(request=request, pk=pk, form=form)
 
 

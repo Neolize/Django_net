@@ -66,6 +66,7 @@ function deletePost(event) {
 
 function editUserComment(event, commentID, comment) {
     event.preventDefault();
+    changeCommentBlockClass();
 
     const userCommentInput = document.getElementById('usercomment-input');
     const editInput = document.getElementById('editinput');
@@ -107,6 +108,7 @@ function createCancelButton() {
 function cancelCommentEditing(submitButton, cancelButton, editInput, event) {
     // Cancel all changes which occurred during comment editing.
     event.preventDefault();
+    changeCommentBlockClass();
 
     const commentInput = document.getElementById('usercomment-input');
     commentInput.value = '';
@@ -120,6 +122,20 @@ function cancelCommentEditing(submitButton, cancelButton, editInput, event) {
 function changeTextarea(event) {
     event.target.style.height = 'auto';
     event.target.style.height = `${event.target.scrollHeight}px`;
+}
+
+
+function changeCommentBlockClass() {
+    const commentBlock = document.getElementById('comment-block');
+
+    if (commentBlock.classList.contains('comment-block')) {
+        commentBlock.classList.remove('comment-block');
+        commentBlock.classList.add('comment-block-edited');
+    }
+    else {
+        commentBlock.classList.remove('comment-block-edited');
+        commentBlock.classList.add('comment-block');
+    }
 }
 
 
