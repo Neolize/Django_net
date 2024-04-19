@@ -89,7 +89,7 @@ def get_user_post_by_pk(post_pk: int) -> models.UserPost | bool:
     try:
         post = models.UserPost.objects.get(pk=post_pk)
     except ObjectDoesNotExist as exc:
-        LOGGER.error(f'Group post with pk - {post_pk} does not exist. {exc}')
+        LOGGER.error(f'User post with pk - {post_pk} does not exist. {exc}')
         post = False
 
     return post

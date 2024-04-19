@@ -122,7 +122,7 @@ def handle_user_comment(request: WSGIRequest, pk):
             return redirect_to_the_current_post_page(request, user_obj)
 
     elif uw_create.create_comment_for_user_post(
-            data=form.cleaned_data,
+            form=form,
             request=request,
     ):
         return redirect_to_the_current_post_page(request, user_obj)

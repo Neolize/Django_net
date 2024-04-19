@@ -7,33 +7,9 @@
   "lineno": 114
 }
 {
-  "message": "Cannot assign \"6\": \"Follower.user\" must be a \"CustomUser\" instance.",
-  "levelname": "ERROR",
-  "asctime": "2024-03-02 14:28:24,677",
-  "pathname": "/home/neolize/Neolize/Python/Django projects/Django Net/django_net_core/applications/user_profiles/services/crud/create.py",
-  "funcName": "create_new_follower",
-  "lineno": 114
-}
-{
   "message": "Group with slug - create_post does not exist. Group matching query does not exist.",
   "levelname": "WARNING",
   "asctime": "2024-03-14 14:44:19,248",
-  "pathname": "/home/neolize/Neolize/Python/Django projects/Django Net/django_net_core/applications/groups/services/crud/read.py",
-  "funcName": "get_group_by_slug",
-  "lineno": 16
-}
-{
-  "message": "Group with slug - create_post does not exist. Group matching query does not exist.",
-  "levelname": "WARNING",
-  "asctime": "2024-03-14 14:46:03,192",
-  "pathname": "/home/neolize/Neolize/Python/Django projects/Django Net/django_net_core/applications/groups/services/crud/read.py",
-  "funcName": "get_group_by_slug",
-  "lineno": 16
-}
-{
-  "message": "Group with slug - create_post does not exist. Group matching query does not exist.",
-  "levelname": "WARNING",
-  "asctime": "2024-03-14 14:46:28,958",
   "pathname": "/home/neolize/Neolize/Python/Django projects/Django Net/django_net_core/applications/groups/services/crud/read.py",
   "funcName": "get_group_by_slug",
   "lineno": 16
@@ -63,25 +39,9 @@
   "lineno": 16
 }
 {
-  "message": "Group with slug - create_group_post does not exist. Group matching query does not exist.",
-  "levelname": "WARNING",
-  "asctime": "2024-03-30 14:49:28,657",
-  "pathname": "/home/neolize/Neolize/Python/Django projects/Django Net/django_net_core/applications/groups/services/crud/read.py",
-  "funcName": "get_group_by_slug",
-  "lineno": 16
-}
-{
   "message": "duplicate key value violates unique constraint \"tag_title_key\"\nDETAIL:  Key (title)=(news) already exists.\n",
   "levelname": "ERROR",
   "asctime": "2024-04-06 14:43:36,670",
-  "pathname": "/home/neolize/Neolize/Python/Django projects/Django Net/django_net_core/applications/groups/services/crud/create.py",
-  "funcName": "_create_group_post",
-  "lineno": 99
-}
-{
-  "message": "duplicate key value violates unique constraint \"tag_title_key\"\nDETAIL:  Key (title)=(news) already exists.\n",
-  "levelname": "ERROR",
-  "asctime": "2024-04-06 14:43:40,303",
   "pathname": "/home/neolize/Neolize/Python/Django projects/Django Net/django_net_core/applications/groups/services/crud/create.py",
   "funcName": "_create_group_post",
   "lineno": 99
@@ -109,4 +69,20 @@
   "pathname": "/home/neolize/Neolize/Python/Django projects/Django Net/django_net_core/applications/abstract_activities/services/crud/create.py",
   "funcName": "create_comment",
   "lineno": 32
+}
+{
+  "message": "Group post with pk - 0 does not exist. UserPost matching query does not exist.",
+  "levelname": "ERROR",
+  "asctime": "2024-04-19 17:44:22,194",
+  "pathname": "/home/neolize/Neolize/Python/Django projects/Django Net/django_net_core/applications/user_wall/services/crud/read.py",
+  "funcName": "get_user_post_by_pk",
+  "lineno": 92
+}
+{
+  "message": "User comment with pk - None does not exist. UserComment matching query does not exist.",
+  "levelname": "ERROR",
+  "asctime": "2024-04-19 18:08:35,239",
+  "pathname": "/home/neolize/Neolize/Python/Django projects/Django Net/django_net_core/applications/user_wall/services/crud/read.py",
+  "funcName": "get_user_comment_by_pk",
+  "lineno": 82
 }

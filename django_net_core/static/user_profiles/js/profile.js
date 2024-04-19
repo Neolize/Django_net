@@ -17,7 +17,7 @@ function addChildReview(event, name, parent_id) {
     const userCommentInput = document.getElementById('usercomment-input');
     scrollToComment(userCommentInput);
 
-    userCommentInput.innerHTML = `${name}, `;
+    userCommentInput.value = `${name}, `;
     userCommentInput.setSelectionRange(userCommentInput.value.length, userCommentInput.value.length, 'forward');
     userCommentInput.focus();
 

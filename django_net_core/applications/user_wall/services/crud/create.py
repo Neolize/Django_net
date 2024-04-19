@@ -3,10 +3,11 @@ import logging
 from django.core.handlers.wsgi import WSGIRequest
 from django.db.utils import DataError
 
-from applications.user_wall import models
+from applications.user_profiles.models import CustomUser
+from applications.user_wall import models, forms
 from applications.groups.models import GroupPost
 from applications.user_wall.services.crud import crud_utils
-from applications.user_wall.services.crud.read import get_tag_by_title
+from applications.user_wall.services.crud.read import get_tag_by_title, get_user_comment_by_pk
 from applications.abstract_activities.services.crud.create import create_comment
 
 LOGGER = logging.getLogger('main_logger')
@@ -74,23 +75,33 @@ def add_tags_to_post(tags: list[models.Tag], post: models.UserPost | GroupPost) 
 
 
 def create_comment_for_user_post(
-        data: dict,
+        form: forms.UserCommentForm,
         request: WSGIRequest,
 ) -> bool:
-    content = data.get('comment', '')
-    if not content:
-        return False
 
+    content = form.cleaned_data.get('comment', '')
     post_id = int(request.POST.get('post_id'))
     parent_id = int(request.POST.get('parent_id')) if request.POST.get('parent_id') else None
 
-    return create_comment(
+    if not _is_new_user_comment_valid(
+        content=content,
+        form=form,
+        user=request.user,
+        parent_pk=parent_id,
+    ):
+        return False
+
+    is_created = create_comment(
         content=content,
         author_id=request.user.pk,
         post_id=post_id,
         parent_id=parent_id,
         model=models.UserComment,
     )
+    if not is_created:
+        form.add_error(None, 'An error occurred during a comment creation. Try one more time.')
+
+    return is_created
 
 
 def return_tag_objects_from_list(tag_list: list[str]) -> list[models.Tag]:
@@ -104,3 +115,27 @@ def return_tag_objects_from_list(tag_list: list[str]) -> list[models.Tag]:
             tags.append(new_tag)
 
     return tags
+
+
+def _is_new_user_comment_valid(
+        content: str,
+        user: CustomUser,
+        form: forms.UserCommentForm,
+        parent_pk: int,
+) -> bool:
+    """If the function will find any errors, they'll be added to a given form."""
+    if not content:
+        form.add_error('comment', 'A comment field is empty.')
+        return False
+
+    if parent_pk is not None:   # parameter 'parent_pk' was given
+        parent_comment = get_user_comment_by_pk(parent_pk)
+        if parent_comment:
+            form.add_error(None, f'Parent comment with pk: "{parent_pk}" does not exist.')
+            return False
+
+        if parent_comment.author_id == user.pk:
+            form.add_error(None, "You can't reply to your own comment.")
+            return False
+
+    return True
