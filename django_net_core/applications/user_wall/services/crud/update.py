@@ -6,8 +6,6 @@ from django.core.handlers.wsgi import WSGIRequest
 
 from django_net_core.settings import TIME_ZONE
 from applications.abstract_activities.services.crud import update
-from applications.frontend.permissions import is_user_comment_author
-from applications.user_profiles.models import CustomUser
 from applications.user_wall import models, forms
 from applications.user_wall.services.crud import crud_utils, create, read
 
@@ -76,9 +74,10 @@ def update_user_comment(
     post_id = int(request.POST.get('post_id'))
     parent_id = int(request.POST.get('parent_id')) if request.POST.get('parent_id') else None
 
-    if not _is_edited_user_comment_valid(
-        content=content,
+    if not update.is_edited_comment_valid(
+        new_content=content,
         comment=comment,
+        comment_pk=comment_pk,
         form=form,
         user=request.user,
         parent_pk=parent_id,
@@ -96,39 +95,3 @@ def update_user_comment(
         form.add_error(None, 'An error occurred during a comment creation. Try one more time.')
 
     return is_updated
-
-
-def _is_edited_user_comment_valid(
-        content: str,
-        comment: models.UserComment | bool,
-        user: CustomUser,
-        form: forms.UserCommentForm,
-        parent_pk: int,
-) -> bool:
-    """If the function will find any errors, they'll be added to a given form."""
-    if not comment:
-        form.add_error(None, f'A comment with pk: "{comment.pk}" does not exist.')
-        return False
-
-    if not is_user_comment_author(visitor=user, comment=comment):
-        form.add_error(None, 'You are not the author of this comment.')
-        return False
-
-    if not content:
-        form.add_error('comment', 'A comment field is empty.')
-        return False
-
-    if content == comment.content:
-        form.add_error('comment', "The comment hasn't changed.")
-        return False
-
-    parent_comment = read.get_user_comment_by_pk(parent_pk)
-    if not parent_comment:
-        form.add_error(None, f'Parent comment with pk: "{parent_pk}" does not exist.')
-        return False
-
-    if parent_comment.author_id == comment.author_id:
-        form.add_error(None, "You can't reply to your own comment.")
-        return False
-
-    return True

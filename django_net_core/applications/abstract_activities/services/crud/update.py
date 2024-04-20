@@ -1,11 +1,19 @@
 import logging
 
 from django.db.models import QuerySet
-from django.db.models.base import ModelBase
 
 from applications.abstract_activities.models import AbstractPost
+from applications.abstract_activities.services.utils import get_parent_comment
+
+from applications.frontend.permissions import is_user_comment_author
+
 from applications.groups.models import GroupPost, GroupComment
+from applications.groups.forms import GroupCommentForm
+
+from applications.user_profiles.models import CustomUser
+
 from applications.user_wall.models import UserPost, UserComment
+from applications.user_wall.forms import UserCommentForm
 from applications.user_wall.services.crud.delete import delete_tag_from_post
 
 
@@ -88,3 +96,42 @@ def update_comment(
         is_updated = False
 
     return is_updated
+
+
+def is_edited_comment_valid(
+        new_content: str,
+        comment: UserComment | GroupComment | bool,
+        comment_pk: int,
+        user: CustomUser,
+        form: UserCommentForm | GroupCommentForm,
+        parent_pk: int | None,
+) -> bool:
+    """If the function will find any errors, they'll be added to a given form."""
+    if not comment:
+        form.add_error(None, f'A comment with pk: "{comment_pk}" does not exist.')
+        return False
+
+    if not is_user_comment_author(visitor=user, comment=comment):
+        form.add_error(None, 'You are not an author of this comment.')
+        return False
+
+    if not new_content:
+        form.add_error('comment', 'A "comment" field is empty.')
+        return False
+
+    if new_content == comment.content:
+        form.add_error('comment', "The comment hasn't changed.")
+        return False
+
+    if parent_pk is not None:
+        # parameter 'parent_pk' was given
+        parent_comment = get_parent_comment(parent_pk=parent_pk, form=form)
+        if not parent_comment:
+            form.add_error(None, f'Parent comment with pk: "{parent_pk}" does not exist.')
+            return False
+
+        if parent_comment.author_id == user.pk:
+            form.add_error(None, "You can't reply to your own comment.")
+            return False
+
+    return True

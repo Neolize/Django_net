@@ -441,7 +441,7 @@ def handle_group_comment(request: WSGIRequest, group_slug: str):
 
     if form.is_valid() and is_edited:
         if g_update.update_group_comment(
-                data=form.cleaned_data,
+                form=form,
                 request=request,
                 comment_pk=int(request.POST.get('comment_id', 0)),
         ):
@@ -452,7 +452,8 @@ def handle_group_comment(request: WSGIRequest, group_slug: str):
             request=request,
     ):
         return g_utils.redirect_to_the_current_group_post_page(request, group)
-
+    add_new_params_to_request(request, group)
+    # add parameters: page and posts_to_show in order to show user an appropriate page
     return GroupView().get(request=request, group_slug=group_slug, form=form)
 
 

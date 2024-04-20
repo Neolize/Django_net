@@ -3,12 +3,13 @@ import logging
 from django.core.handlers.wsgi import WSGIRequest
 from django.db.utils import DataError
 
-from applications.user_profiles.models import CustomUser
-from applications.user_wall import models, forms
+from applications.abstract_activities.services.crud.create import create_comment, is_new_comment_valid
+
 from applications.groups.models import GroupPost
+
+from applications.user_wall import models, forms
 from applications.user_wall.services.crud import crud_utils
-from applications.user_wall.services.crud.read import get_tag_by_title, get_user_comment_by_pk
-from applications.abstract_activities.services.crud.create import create_comment
+from applications.user_wall.services.crud.read import get_tag_by_title
 
 LOGGER = logging.getLogger('main_logger')
 
@@ -83,7 +84,7 @@ def create_comment_for_user_post(
     post_id = int(request.POST.get('post_id'))
     parent_id = int(request.POST.get('parent_id')) if request.POST.get('parent_id') else None
 
-    if not _is_new_user_comment_valid(
+    if not is_new_comment_valid(
         content=content,
         form=form,
         user=request.user,
@@ -115,27 +116,3 @@ def return_tag_objects_from_list(tag_list: list[str]) -> list[models.Tag]:
             tags.append(new_tag)
 
     return tags
-
-
-def _is_new_user_comment_valid(
-        content: str,
-        user: CustomUser,
-        form: forms.UserCommentForm,
-        parent_pk: int,
-) -> bool:
-    """If the function will find any errors, they'll be added to a given form."""
-    if not content:
-        form.add_error('comment', 'A comment field is empty.')
-        return False
-
-    if parent_pk is not None:   # parameter 'parent_pk' was given
-        parent_comment = get_user_comment_by_pk(parent_pk)
-        if parent_comment:
-            form.add_error(None, f'Parent comment with pk: "{parent_pk}" does not exist.')
-            return False
-
-        if parent_comment.author_id == user.pk:
-            form.add_error(None, "You can't reply to your own comment.")
-            return False
-
-    return True

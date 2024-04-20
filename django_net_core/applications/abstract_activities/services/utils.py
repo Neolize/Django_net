@@ -1,11 +1,13 @@
 from django.db.models import QuerySet
 from django.db.models.base import ModelBase
 
-from applications.groups.models import GroupPost
-from applications.groups.forms import GroupPostForm
+from applications.groups.models import GroupPost, GroupComment
+from applications.groups.forms import GroupPostForm, GroupCommentForm
+from applications.groups.services.crud.read import get_group_comment_by_pk
 
-from applications.user_wall.models import Tag, UserPost
-from applications.user_wall.forms import UserPostForm
+from applications.user_wall.models import Tag, UserPost, UserComment
+from applications.user_wall.forms import UserPostForm, UserCommentForm
+from applications.user_wall.services.crud.read import get_user_comment_by_pk
 
 
 def fill_edit_post_form(
@@ -65,3 +67,14 @@ def calculate_post_page(
         counter += 1
 
     return page
+
+
+def get_parent_comment(parent_pk: int, form: GroupCommentForm | UserCommentForm) -> GroupComment | UserComment | bool:
+    """The function will return a user's parent comment or a group parent comment depending on
+     an instance of the given comment"""
+    if isinstance(form, UserCommentForm):
+        parent_comment = get_user_comment_by_pk(parent_pk)
+    else:
+        parent_comment = get_group_comment_by_pk(parent_pk)
+
+    return parent_comment
