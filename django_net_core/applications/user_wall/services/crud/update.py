@@ -66,12 +66,13 @@ def update_user_post(data: dict, post: models.UserPost) -> bool:
 def update_user_comment(
         form: forms.UserCommentForm,
         request: WSGIRequest,
-        comment_pk: int,
 ) -> bool:
 
+    comment_pk = int(request.POST.get('comment_id', 0))
     comment = read.get_user_comment_by_pk(comment_pk)
+
     content = form.cleaned_data.get('comment', '')
-    post_id = int(request.POST.get('post_id'))
+    post_id = int(request.POST.get('post_id', 0))
     parent_id = int(request.POST.get('parent_id')) if request.POST.get('parent_id') else None
 
     if not update.is_edited_comment_valid(
@@ -92,6 +93,6 @@ def update_user_comment(
         parent_id=parent_id,
     )
     if not is_updated:
-        form.add_error(None, 'An error occurred during a comment creation. Try one more time.')
+        form.add_error(None, 'An error occurred during a comment editing. Try one more time.')
 
     return is_updated

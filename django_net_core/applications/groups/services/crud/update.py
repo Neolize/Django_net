@@ -6,10 +6,8 @@ from django.core.handlers.wsgi import WSGIRequest
 
 from django_net_core.settings import TIME_ZONE
 from applications.abstract_activities.services.crud import update as aa_update
-from applications.frontend.permissions import is_user_comment_author
 from applications.groups import models, forms
 from applications.groups.services.crud.read import get_group_comment_by_pk
-from applications.user_profiles.models import CustomUser
 from applications.user_wall.services.crud import crud_utils
 from applications.user_wall.services.crud import create as uw_create
 
@@ -70,97 +68,33 @@ def update_group_post(data: dict, group_post: models.GroupPost) -> bool:
 def update_group_comment(
         form: forms.GroupCommentForm,
         request: WSGIRequest,
-        comment_pk: int,
 ) -> bool:
+
+    comment_pk = int(request.POST.get('comment_id', 0))
     comment = get_group_comment_by_pk(comment_pk)
+
     content = form.cleaned_data.get('comment', '')
-    post_id = int(request.POST.get('post_id'))
+    post_id = int(request.POST.get('post_id', 0))
     parent_id = int(request.POST.get('parent_id')) if request.POST.get('parent_id') else None
 
-    # if not comment or not is_user_comment_author(visitor=request.user, comment=comment):
-    #     return False
-    #
-    # if not content or content == comment.content:
-    #     return False    # comment hasn't changed or doesn't have a 'content' field
+    if not aa_update.is_edited_comment_valid(
+        new_content=content,
+        comment=comment,
+        comment_pk=comment_pk,
+        form=form,
+        user=request.user,
+        parent_pk=parent_id,
+    ):
+        return False
 
-    # post_id = int(request.POST.get('post_id'))
-    # parent_id = int(request.POST.get('parent_id')) if request.POST.get('parent_id') else None
-
-    return aa_update.update_comment(
+    is_updated = aa_update.update_comment(
         comment=comment,
         content=content,
         author_id=request.user.pk,
         post_id=post_id,
         parent_id=parent_id,
     )
-#
-#     if not _is_edited_user_comment_valid(
-#         content=content,
-#         comment=comment,
-#         form=form,
-#         user=request.user,
-#         parent_pk=parent_id,
-#     ):
-#         return False
-#
-#     is_updated = update.update_comment(
-#         comment=comment,
-#         content=content,
-#         author_id=request.user.pk,
-#         post_id=post_id,
-#         parent_id=parent_id,
-#     )
-#     if not is_updated:
-#         form.add_error(None, 'An error occurred during a comment creation. Try one more time.')
-#
-#     return is_updated
+    if not is_updated:
+        form.add_error(None, 'An error occurred during a comment editing. Try one more time.')
 
-
-def _is_edited_group_comment_valid(
-        new_content: str,
-        comment: models.GroupComment | bool,
-        comment_pk: int,
-        user: CustomUser,
-        form: forms.GroupCommentForm,
-        parent_pk: int,
-) -> bool:
-    """If the function will find any errors, they'll be added to a given form."""
-    if not comment:
-        form.add_error(None, f'A comment with pk: "{comment_pk}" does not exist.')
-        return False
-
-    if not is_user_comment_author(visitor=user, comment=comment):
-        form.add_error(None, 'You are not an author of this comment.')
-        return False
-
-    if not new_content:
-        form.add_error('comment', 'A comment field is empty.')
-        return False
-
-    if new_content == comment.content:
-        form.add_error('comment', "The comment hasn't changed.")
-        return False
-
-    parent_comment = get_group_comment_by_pk(parent_pk)
-    if not parent_comment:
-        form.add_error(None, f'Parent comment with pk: "{parent_pk}" does not exist.')
-
-# def _is_edited_user_comment_valid(
-#         content: str,
-#         comment: models.UserComment | bool,
-#         user: CustomUser,
-#         form: forms.UserCommentForm,
-#         parent_pk: int,
-# ) -> bool:
-#     """If the function will find any errors, they'll be added to a given form."""
-#
-#     parent_comment = read.get_user_comment_by_pk(parent_pk)
-#     if not parent_comment:
-#         form.add_error(None, f'Parent comment with pk: "{parent_pk}" does not exist.')
-#         return False
-#
-#     if parent_comment.author_id == comment.author_id:
-#         form.add_error(None, "You can't reply to your own comment.")
-#         return False
-#
-#     return True
+    return is_updated

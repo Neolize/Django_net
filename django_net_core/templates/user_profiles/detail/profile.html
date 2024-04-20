@@ -268,21 +268,21 @@
                                     <form action="{% url 'handle_user_comment' pk=user_obj.pk %}" method="post" id="formComment">
                                        {% csrf_token %}
                                        <div class="input-group">
-
-                                           {% if form.non_field_errors %}
-                                                <div class="alert alert-danger comment-error" style="margin-bottom: 25px;">{{ form.non_field_errors }}</div>
-                                            {% endif %}
-
                                            <input type="hidden" name="post_id" value="{{ post.id }}">
                                            <input type="hidden" name="parent_id" value="" id="parentcomment">
                                            <input type="hidden" name="edit" value="" id="editinput">
                                            <input type="hidden" name="comment_id" value="" id="comment_id">
 
+                                           {% if form.non_field_errors %}
+                                               <div class="alert alert-danger comment-error" style="margin-bottom: 25px;">{{ form.non_field_errors }}</div>
+                                           {% endif %}
+
                                            <div class="comment-block" id="comment-block">
                                                {{ form.comment }}
                                            </div>
+
                                           <span class="input-group-btn p-l-10">
-                                            <button class="btn btn-primary f-s-12 rounded-corner" id="submit_comment" type="submit">Comment</button>
+                                              <button class="btn btn-primary f-s-12 rounded-corner" id="submit_comment" type="submit">Comment</button>
                                           </span>
                                        </div>
                                        {% if form.comment.errors %}
@@ -322,9 +322,7 @@
                                                        <a href="#" class="comment_reply"
                                                            onclick="addChildReview(event, '{{ comment.author.username }}', '{{ comment.pk }}')">Reply
                                                        </a>
-                                                   {% endif %}
-
-                                                   {% if comment.author_id == request.user.pk %}
+                                                   {% else %}
                                                        <a href="#" class="edit_user_comment"
                                                           onclick='editUserComment(event, "{{ comment.pk }}", "{{ comment.content|iriencode }}")'>Edit
                                                        </a>

@@ -45,7 +45,7 @@ def _calculate_post_page_from_user_comment(
     )
 
 
-def add_new_params_to_request(request: WSGIRequest, user_obj: CustomUser) -> None:
+def add_new_params_to_request_from_user_comment(request: WSGIRequest, user_obj: CustomUser) -> None:
     # visitors can see only published posts
     posts_to_show = request.POST.get('posts', '') if request.user.pk == user_obj.pk else 'published'
     page = _calculate_post_page_from_user_comment(

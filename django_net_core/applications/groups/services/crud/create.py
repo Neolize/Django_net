@@ -4,11 +4,11 @@ from datetime import date
 from django.core.handlers.wsgi import WSGIRequest
 from django.core.files.uploadedfile import InMemoryUploadedFile
 
-from applications.groups import models
+from applications.groups import models, forms
 from applications.user_profiles.models import CustomUser
 from applications.user_wall.services.crud import crud_utils
 from applications.user_wall.services.crud.create import return_tag_objects_from_list, add_tags_to_post
-from applications.abstract_activities.services.crud.create import create_comment
+from applications.abstract_activities.services.crud.create import create_comment, is_new_comment_valid
 
 
 LOGGER = logging.getLogger('main_logger')
@@ -105,20 +105,30 @@ def _create_group_post(
 
 
 def create_comment_for_group_post(
-        data: dict,
+        form: forms.GroupCommentForm,
         request: WSGIRequest,
 ) -> bool:
-    content = data.get('comment', '')
-    if not content:
-        return False
 
+    content = form.cleaned_data.get('comment', '')
     post_id = int(request.POST.get('post_id'))
     parent_id = int(request.POST.get('parent_id')) if request.POST.get('parent_id') else None
 
-    return create_comment(
+    if not is_new_comment_valid(
+        content=content,
+        form=form,
+        user=request.user,
+        parent_pk=parent_id,
+    ):
+        return False
+
+    is_created = create_comment(
         content=content,
         author_id=request.user.pk,
         post_id=post_id,
         parent_id=parent_id,
         model=models.GroupComment,
     )
+    if not is_created:
+        form.add_error(None, 'An error occurred during a comment creation. Try one more time.')
+
+    return is_created

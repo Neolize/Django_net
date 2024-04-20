@@ -148,3 +148,18 @@ def _calculate_post_page_from_group_comment(
         post=post,
         posts_to_show=posts_to_show,
     )
+
+
+def add_new_params_to_request_from_group_comment(request: WSGIRequest, group: Group) -> None:
+    # visitors can see only published posts
+    posts_to_show = request.POST.get('posts', '') if request.user.pk == group.creator_id else 'published'
+    page = _calculate_post_page_from_group_comment(
+        request=request,
+        group=group,
+        posts_to_show=posts_to_show,
+    )
+    request.GET._mutable = True
+    request.GET['page'] = page
+    if posts_to_show:
+        # if a parameter 'posts' was given, it'll be added to the request
+        request.GET['posts'] = posts_to_show

@@ -81,7 +81,7 @@ def create_comment_for_user_post(
 ) -> bool:
 
     content = form.cleaned_data.get('comment', '')
-    post_id = int(request.POST.get('post_id'))
+    post_id = int(request.POST.get('post_id', 0))
     parent_id = int(request.POST.get('parent_id')) if request.POST.get('parent_id') else None
 
     if not is_new_comment_valid(
