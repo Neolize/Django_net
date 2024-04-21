@@ -9,6 +9,11 @@ function main() {
     // Changes comment section every time it gets bigger or smaller.
     commentInput.addEventListener('input', changeTextarea);
     commentInput.addEventListener('focus', changeTextarea);
+
+    const editedElement = document.getElementById('edited_comment')
+    if (editedElement) {
+        modifyEditedMessage(editedElement);
+    }
 }
 
 
@@ -137,6 +142,27 @@ function changeCommentBlockClass() {
         commentBlock.classList.add('comment-block');
     }
 }
+
+
+function modifyEditedMessage(editedElement) {
+    const userNameElement = document.getElementById('usercomment_name');
+    const userNameWidth = getTextWidth(userNameElement.innerHTML, getComputedStyle(userNameElement).font);
+    console.log(userNameWidth);
+
+    let leftValue = getComputedStyle(editedElement).getPropertyValue('left');
+    leftValue = Number(leftValue.substring(0, leftValue.length - 2));
+    editedElement.style.left = `${leftValue + userNameWidth}px`;
+}
+
+
+function getTextWidth(text, font) {
+    const canvas = document.createElement('canvas');
+    const context = canvas.getContext('2d');
+  
+    context.font = font || getComputedStyle(document.body).font;
+  
+    return context.measureText(text).width;
+  }
 
 
 document.addEventListener('DOMContentLoaded', main);

@@ -565,7 +565,9 @@ select.form-control:not([size]):not([multiple]) {
 
 .edited_comment {
     position: relative;
-    left: 145px;
+    /* left: 145px; */
+    /* left: 55px; */
+    left: 55px;
     bottom: 42px;
     font-size: 12px;
     display: inline-block;

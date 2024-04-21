@@ -305,10 +305,10 @@
                                                    {% else %}
                                                        <span class="userimage"><img src="{% static 'user_profiles/images/anonymous.png' %}" alt="avatar"></span>
                                                    {% endif %}
-                                                   <span class="usercomment_name"><a href="{% url 'user_profile' pk=comment.author.pk %}">{{ comment.author.get_full_name }}</a> <small></small></span>
+                                                   <span class="usercomment_name"><a href="{% url 'user_profile' pk=comment.author.pk %}" id="usercomment_name">{{ comment.author.get_full_name }}</a></span>
 
                                                    {% if comment.is_edited %}
-                                                       <span class="edited_comment">(edited)</span>
+                                                       <span class="edited_comment" id="edited_comment">(edited)</span>
                                                        <p class="usercomment_content usercomment_content_edited">
                                                            {{ comment.content }}
                                                       </p>
