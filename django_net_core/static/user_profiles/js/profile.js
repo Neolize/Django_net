@@ -10,10 +10,7 @@ function main() {
     commentInput.addEventListener('input', changeTextarea);
     commentInput.addEventListener('focus', changeTextarea);
 
-    const editedElement = document.getElementById('edited_comment')
-    if (editedElement) {
-        modifyEditedMessage(editedElement);
-    }
+    modifyEditedComments();
 }
 
 
@@ -144,10 +141,22 @@ function changeCommentBlockClass() {
 }
 
 
-function modifyEditedMessage(editedElement) {
-    const userNameElement = document.getElementById('usercomment_name');
+function modifyEditedComments() {
+    // If there are comments that have been edited, 
+    // the function will modify 'edited' message depending on the length of a user's name.
+    const editedComments = document.querySelectorAll('.edited_comment');
+    if (editedComments.length > 0) {
+        const userNameElements = document.querySelectorAll('.usercomment_name>a');
+
+        for (let counter = 0; counter < editedComments.length; counter++) {
+            setNewLeftValue(editedComments[counter], userNameElements[counter]);
+        }
+    }
+}
+
+
+function setNewLeftValue(editedElement, userNameElement) {
     const userNameWidth = getTextWidth(userNameElement.innerHTML, getComputedStyle(userNameElement).font);
-    console.log(userNameWidth);
 
     let leftValue = getComputedStyle(editedElement).getPropertyValue('left');
     leftValue = Number(leftValue.substring(0, leftValue.length - 2));
