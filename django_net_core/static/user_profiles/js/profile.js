@@ -16,6 +16,8 @@ function main() {
 
 function addChildReview(event, name, parent_id) {
     event.preventDefault();
+    changeCommentBlockClass(false);
+
     const userCommentInput = document.getElementById('usercomment-input');
     scrollToComment(userCommentInput);
 
@@ -24,6 +26,18 @@ function addChildReview(event, name, parent_id) {
     userCommentInput.focus();
 
     document.getElementById('parentcomment').value = parent_id;
+
+    const submitButton = document.getElementById('submit_comment');
+    const editInput = document.getElementById('editinput');
+
+    if (!document.getElementById('cancel_edit')) {
+        const cancelButton = createCancelButton();
+
+        cancelButton.addEventListener('click', cancelCommentChanges.bind(
+            cancelButton, submitButton, cancelButton, editInput, false,
+        ));
+        submitButton.after(cancelButton);
+    }
 }
 
 
@@ -68,7 +82,7 @@ function deletePost(event) {
 
 function editUserComment(event, commentID, comment) {
     event.preventDefault();
-    changeCommentBlockClass();
+    changeCommentBlockClass(true);
 
     const userCommentInput = document.getElementById('usercomment-input');
     const editInput = document.getElementById('editinput');
@@ -89,8 +103,8 @@ function editUserComment(event, commentID, comment) {
     if (!document.getElementById('cancel_edit')) {
         const cancelButton = createCancelButton();
 
-        cancelButton.addEventListener('click', cancelCommentEditing.bind(
-            cancelButton, submitButton, cancelButton, editInput,
+        cancelButton.addEventListener('click', cancelCommentChanges.bind(
+            cancelButton, submitButton, cancelButton, editInput, true,
             ));
         submitButton.after(cancelButton);
     }
@@ -107,17 +121,19 @@ function createCancelButton() {
 }
 
 
-function cancelCommentEditing(submitButton, cancelButton, editInput, event) {
+function cancelCommentChanges(submitButton, cancelButton, editInput, editing, event) {
     // Cancel all changes which occurred during comment editing.
     event.preventDefault();
-    changeCommentBlockClass();
+    changeCommentBlockClass(editing);
 
     const commentInput = document.getElementById('usercomment-input');
     commentInput.value = '';
-
-    submitButton.innerHTML = 'Comment';
-    editInput.value = '';
     cancelButton.remove();
+
+    if (editing) {
+        submitButton.innerHTML = 'Comment';
+        editInput.value = '';
+    }
 }
 
 
@@ -127,14 +143,22 @@ function changeTextarea(event) {
 }
 
 
-function changeCommentBlockClass() {
+function changeCommentBlockClass(editing) {
     const commentBlock = document.getElementById('comment-block');
-
-    if (commentBlock.classList.contains('comment-block')) {
+    
+    if (commentBlock.classList.contains('comment-block') && editing === true) {
         commentBlock.classList.remove('comment-block');
         commentBlock.classList.add('comment-block-edited');
     }
-    else {
+    else if (commentBlock.classList.contains('comment-block') && editing === false) {
+        commentBlock.classList.remove('comment-block');
+        commentBlock.classList.add('comment-block-replied');
+    }
+    else if (commentBlock.classList.contains('comment-block-replied')) {
+        commentBlock.classList.remove('comment-block-replied');
+        commentBlock.classList.add('comment-block');
+    }
+    else if (commentBlock.classList.contains('comment-block-edited')) {
         commentBlock.classList.remove('comment-block-edited');
         commentBlock.classList.add('comment-block');
     }

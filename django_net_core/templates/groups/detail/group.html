@@ -281,14 +281,16 @@
                                                                        </p>
                                                                    {% endif %}
 
-                                                                   {% if comment.author_id != request.user.pk %}
-                                                                       <a href="#" class="comment_reply"
-                                                                          onclick="addChildReview(event, '{{ comment.author.username }}', '{{ comment.pk }}')">Reply
-                                                                       </a>
-                                                                   {% else %}
-                                                                       <a href="#" class="edit_user_comment"
-                                                                         onclick='editUserComment(event, "{{ comment.pk }}", "{{ comment.content|iriencode }}")'>Edit
-                                                                       </a>
+                                                                   {% if user.is_authenticated %}
+                                                                       {% if comment.author_id != request.user.pk %}
+                                                                           <a href="#" class="comment_reply"
+                                                                              onclick="addChildReview(event, '{{ comment.author.username }}', '{{ comment.pk }}')">Reply
+                                                                           </a>
+                                                                       {% else %}
+                                                                           <a href="#" class="edit_user_comment"
+                                                                             onclick='editUserComment(event, "{{ comment.pk }}", "{{ comment.content|iriencode }}")'>Edit
+                                                                           </a>
+                                                                       {% endif %}
                                                                    {% endif %}
                                                                </div>
                                                            </li>
