@@ -1,9 +1,11 @@
 import logging
+import pytz
 from datetime import datetime, date
 
 from django.db.models import QuerySet
 from django.db.utils import DataError
 
+from django_net_core.settings import TIME_ZONE
 from applications.user_profiles import models
 
 
@@ -12,7 +14,10 @@ LOGGER = logging.getLogger('main_logger')
 
 def update_first_login_record(user: models.CustomUser) -> None:
     if not user.first_login:
-        user.first_login = datetime.today()
+        dt = datetime.now()
+        time_zone = pytz.timezone(TIME_ZONE)
+
+        user.first_login = time_zone.localize(dt)
         user.save()
 
 
@@ -41,6 +46,7 @@ def create_new_user(
     try:
         is_created = models.CustomUser.objects.create_user(
             username=username,
+            first_name=username,
             email=email,
             password=password,
         )

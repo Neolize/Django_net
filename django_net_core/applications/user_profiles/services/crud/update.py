@@ -62,11 +62,12 @@ def update_custom_user_model(
         user: models.CustomUser,
 ) -> bool:
 
-    user.first_name = form.cleaned_data.get('first_name')
-    user.middle_name = form.cleaned_data.get('middle_name')
-    user.last_name = form.cleaned_data.get('last_name')
-    user.email = form.cleaned_data.get('email')
-    user.gender = form.cleaned_data.get('gender')
+    user.username = form.cleaned_data.get('first_name', '')
+    user.first_name = form.cleaned_data.get('first_name', '')
+    user.middle_name = form.cleaned_data.get('middle_name', '')
+    user.last_name = form.cleaned_data.get('last_name', '')
+    user.email = form.cleaned_data.get('email', '')
+    user.gender = form.cleaned_data.get('gender', '')
     
     if form.cleaned_data.get('avatar'):
         user.avatar = form.cleaned_data.get('avatar')

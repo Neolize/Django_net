@@ -7,7 +7,10 @@ def fill_edit_user_profile_form(form: forms.EditUserProfileForm, user_data: dict
 
     for field in form.fields:
         if field not in special_fields:
-            current_value = user_data.get(field) or ''
+            if field == 'first_name' and not user_data.get(field):
+                current_value = user_data.get('username') or ''
+            else:
+                current_value = user_data.get(field) or ''
             form.fields.get(field).widget.attrs.update({'value': current_value})
 
     # filling data-gender attribute in gender field for editing form
