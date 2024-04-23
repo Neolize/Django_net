@@ -7,10 +7,13 @@ function main() {
     const commentInput = document.getElementById('usercomment-input');
     
     // Changes comment section every time it gets bigger or smaller.
-    commentInput.addEventListener('input', changeTextarea);
-    commentInput.addEventListener('focus', changeTextarea);
-
-    modifyEditedComments();
+    if (commentInput !== null) {
+        const actions = ['input', 'focus', 'blur'];
+        for (const action of actions) {
+            commentInput.addEventListener(action, changeTextarea.bind(commentInput, commentInput));
+        }
+        modifyEditedComments();
+    }
 }
 
 
@@ -129,6 +132,7 @@ function cancelCommentChanges(submitButton, cancelButton, editInput, editing, ev
     const commentInput = document.getElementById('usercomment-input');
     commentInput.value = '';
     cancelButton.remove();
+    changeTextarea(commentInput);
 
     if (editing) {
         submitButton.innerHTML = 'Comment';
@@ -137,9 +141,9 @@ function cancelCommentChanges(submitButton, cancelButton, editInput, editing, ev
 }
 
 
-function changeTextarea(event) {
-    event.target.style.height = 'auto';
-    event.target.style.height = `${event.target.scrollHeight}px`;
+function changeTextarea(commentInput) {
+    commentInput.style.height = 'auto';
+    commentInput.style.height = `${commentInput.scrollHeight}px`;
 }
 
 

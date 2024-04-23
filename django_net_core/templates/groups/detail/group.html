@@ -268,7 +268,9 @@
                                                                    {% else %}
                                                                        <span class="userimage"><img src="{% static 'user_profiles/images/anonymous.png' %}" alt="avatar"></span>
                                                                    {% endif %}
-                                                                   <span class="usercomment_name"><a href="{% url 'user_profile' pk=comment.author.pk %}">{{ comment.author.get_full_name }}</a></span>
+                                                                   <span class="usercomment_name">
+                                                                       <a href="{% url 'user_profile' pk=comment.author.pk %}">{{ comment.author.get_full_name }}</a>
+                                                                   </span>
 
                                                                    {% if comment.is_edited %}
                                                                        <span class="edited_comment">(edited)</span>
@@ -284,11 +286,11 @@
                                                                    {% if user.is_authenticated %}
                                                                        {% if comment.author_id != request.user.pk %}
                                                                            <a href="#" class="comment_reply"
-                                                                              onclick="addChildReview(event, '{{ comment.author.username }}', '{{ comment.pk }}')">Reply
+                                                                              onclick="addChildReview(event, '{{ comment.author.get_full_name|addslashes }}', '{{ comment.pk }}')">Reply
                                                                            </a>
                                                                        {% else %}
                                                                            <a href="#" class="edit_user_comment"
-                                                                             onclick='editUserComment(event, "{{ comment.pk }}", "{{ comment.content|iriencode }}")'>Edit
+                                                                             onclick='editUserComment(event, "{{ comment.pk }}", "{{ comment.content|addslashes }}")'>Edit
                                                                            </a>
                                                                        {% endif %}
                                                                    {% endif %}
@@ -303,10 +305,32 @@
                                                                        {% else %}
                                                                            <span class="userimage"><img src="{% static 'user_profiles/images/anonymous.png' %}" alt="avatar"></span>
                                                                        {% endif %}
-                                                                       <span class="usercomment_name"><a href="{% url 'user_profile' pk=child.author.pk %}">{{ child.author.get_full_name }}</a> <small></small></span>
-                                                                       <p class="usercomment_content">
-                                                                           {{ child.content }}
-                                                                       </p>
+                                                                       <span class="usercomment_name">
+                                                                           <a href="{% url 'user_profile' pk=child.author.pk %}">{{ child.author.get_full_name }}</a>
+                                                                       </span>
+
+                                                                       {% if child.is_edited %}
+                                                                           <span class="edited_comment">(edited)</span>
+                                                                           <p class="usercomment_content usercomment_content_edited">
+                                                                               {{ child.content }}
+                                                                          </p>
+                                                                       {% else %}
+                                                                           <p class="usercomment_content">
+                                                                               {{ child.content }}
+                                                                           </p>
+                                                                       {% endif %}
+
+                                                                       {% if user.is_authenticated %}
+                                                                           {% if child.author_id != request.user.pk %}
+                                                                               <a href="#" class="comment_reply"
+                                                                                   onclick="addChildReview(event, '{{ child.author.get_full_name|addslashes }}', '{{ child.pk }}')">Reply
+                                                                               </a>
+                                                                           {% else %}
+                                                                               <a href="#" class="edit_user_comment"
+                                                                                  onclick='editUserComment(event, "{{ child.pk }}", "{{ child.content|addslashes }}")'>Edit
+                                                                               </a>
+                                                                           {% endif %}
+                                                                       {% endif %}
                                                                    </div>
                                                                </li>
                                                            {% endfor %}

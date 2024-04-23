@@ -39,12 +39,7 @@
                                     {% endif %}
                                 </div>
 
-                                {% if follower.member.get_full_name %}
-                                    <h5><a class="user_link" href="{{ follower.member.get_absolute_url }}">{{ follower.member.get_full_name }}</a></h5>
-                                {% else %}
-                                    <h5><a class="user_link" href="{{ follower.member.get_absolute_url }}">{{ follower.member.username }}</a></h5>
-                                {% endif %}
-
+                                <h5><a class="user_link" href="{{ follower.member.get_absolute_url }}">{{ follower.member.get_full_name }}</a></h5>
                                 <p class="text-muted">
                                     {% if follower.member.gender != 'not specified' %}
                                         {{ follower.member.gender|title }} |

@@ -23,8 +23,7 @@ class CustomUser(AbstractUser):
         db_table = 'custom_user'
 
     def __str__(self):
-        name = self.username or self.first_name or self.middle_name or self.last_name
-        return name
+        return self.get_full_name()
 
     def get_absolute_url(self):
         return reverse_lazy('user_profile', kwargs={'pk': self.pk})
@@ -40,6 +39,12 @@ class CustomUser(AbstractUser):
 
     def get_absolute_url_for_following(self):
         return reverse_lazy('user_following', kwargs={'pk': self.pk})
+
+    def get_full_name(self):
+        full_name = super().get_full_name()
+        if full_name == '':
+            full_name = self.username
+        return full_name
 
 
 class UserPersonalData(models.Model):
