@@ -313,11 +313,11 @@
 
                                                    {% if comment.is_edited %}
                                                        <span class="edited_comment">(edited)</span>
-                                                       <p class="usercomment_content usercomment_content_edited">
+                                                       <p class="usercomment_content usercomment_content_edited" data-parent-comment="{{ comment.author.get_absolute_url }}">
                                                            {{ comment.content }}
                                                       </p>
                                                    {% else %}
-                                                       <p class="usercomment_content">
+                                                       <p class="usercomment_content" data-parent-comment="{{ comment.author.get_absolute_url }}">
                                                            {{ comment.content }}
                                                        </p>
                                                    {% endif %}
@@ -402,4 +402,5 @@
 {% block script %}
     <script src="{% static 'user_profiles/js/profile.js' %}"></script>
     <script src="{% static 'utils/js/url_params.js' %}"></script>
+    <script src="{% static 'user_wall/js/user_wall.js' %}"></script>
 {% endblock script %}
