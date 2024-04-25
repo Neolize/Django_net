@@ -313,11 +313,11 @@
 
                                                    {% if comment.is_edited %}
                                                        <span class="edited_comment">(edited)</span>
-                                                       <p class="usercomment_content usercomment_content_edited" data-parent-comment="{{ comment.author.get_absolute_url }}">
+                                                       <p class="usercomment_content usercomment_content_edited" data-parent-comment-url="{{ comment.author.get_absolute_url }}" data-parent-comment-pk="{{ comment.pk }}">
                                                            {{ comment.content }}
                                                       </p>
                                                    {% else %}
-                                                       <p class="usercomment_content" data-parent-comment="{{ comment.author.get_absolute_url }}">
+                                                       <p class="usercomment_content" data-parent-comment-url="{{ comment.author.get_absolute_url }}" data-parent-comment-pk="{{ comment.pk }}">
                                                            {{ comment.content }}
                                                        </p>
                                                    {% endif %}
@@ -350,11 +350,11 @@
 
                                                        {% if child.is_edited %}
                                                            <span class="edited_comment">(edited)</span>
-                                                           <p class="usercomment_content usercomment_content_edited">
+                                                           <p class="usercomment_content usercomment_content_edited" data-child-comment="{{ comment.pk }}">
                                                                {{ child.content }}
                                                           </p>
                                                        {% else %}
-                                                           <p class="usercomment_content">
+                                                           <p class="usercomment_content" data-child-comment="{{ comment.pk }}">
                                                                {{ child.content }}
                                                            </p>
                                                        {% endif %}
