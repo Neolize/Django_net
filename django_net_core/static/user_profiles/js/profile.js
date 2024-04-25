@@ -19,7 +19,7 @@ function main() {
 
 function addChildReview(event, name, parent_id) {
     event.preventDefault();
-    changeCommentBlockClass(false);
+    changeCommentBlockClass('reply');
 
     const userCommentInput = document.getElementById('usercomment-input');
     scrollToComment(userCommentInput);
@@ -31,16 +31,19 @@ function addChildReview(event, name, parent_id) {
     document.getElementById('parentcomment').value = parent_id;
 
     const submitButton = document.getElementById('submit_comment');
+    submitButton.innerHTML = 'Reply';
     const editInput = document.getElementById('editinput');
 
-    if (!document.getElementById('cancel_edit')) {
-        const cancelButton = createCancelButton();
-
-        cancelButton.addEventListener('click', cancelCommentChanges.bind(
-            cancelButton, submitButton, cancelButton, editInput, false,
-        ));
-        submitButton.after(cancelButton);
+    let cancelButton = document.getElementById('cancel_button');
+    if (cancelButton) {
+        // if cancel button exist the function will delete it and create with new arguments
+        cancelButton.remove();
     }
+    cancelButton = createCancelButton();
+    cancelButton.addEventListener('click', cancelCommentChanges.bind(
+        cancelButton, submitButton, cancelButton, editInput, 'reply',
+    ));
+    submitButton.after(cancelButton);
 }
 
 
@@ -85,7 +88,7 @@ function deletePost(event) {
 
 function editUserComment(event, commentID, comment) {
     event.preventDefault();
-    changeCommentBlockClass(true);
+    changeCommentBlockClass('edit');
 
     const userCommentInput = document.getElementById('usercomment-input');
     const editInput = document.getElementById('editinput');
@@ -103,14 +106,16 @@ function editUserComment(event, commentID, comment) {
     editInput.value = 'edited';
     commentIDInput.value = commentID;
 
-    if (!document.getElementById('cancel_edit')) {
-        const cancelButton = createCancelButton();
-
-        cancelButton.addEventListener('click', cancelCommentChanges.bind(
-            cancelButton, submitButton, cancelButton, editInput, true,
-            ));
-        submitButton.after(cancelButton);
+    let cancelButton = document.getElementById('cancel_button');
+    if (cancelButton) {
+        // if cancel button exist the function will delete it and create with new arguments
+        cancelButton.remove();
     }
+    cancelButton = createCancelButton();
+    cancelButton.addEventListener('click', cancelCommentChanges.bind(
+        cancelButton, submitButton, cancelButton, editInput, 'edit',
+        ));
+    submitButton.after(cancelButton);
 }
 
 
@@ -118,26 +123,23 @@ function createCancelButton() {
     const newButton = document.createElement('button');
     newButton.classList.add('btn', 'btn-primary', 'f-s-12', 'rounded-corner', 'cancel_button');
     newButton.innerHTML = 'Cancel';
-    newButton.id = 'cancel_edit';
+    newButton.id = 'cancel_button';
 
     return newButton;
 }
 
 
-function cancelCommentChanges(submitButton, cancelButton, editInput, editing, event) {
+function cancelCommentChanges(submitButton, cancelButton, editInput, flag, event) {
     // Cancel all changes which occurred during comment editing.
     event.preventDefault();
-    changeCommentBlockClass(editing);
+    changeCommentBlockClass(flag, true);
 
     const commentInput = document.getElementById('usercomment-input');
     commentInput.value = '';
     cancelButton.remove();
     changeTextarea(commentInput);
-
-    if (editing) {
-        submitButton.innerHTML = 'Comment';
-        editInput.value = '';
-    }
+    submitButton.innerHTML = 'Comment';
+    editInput.value = '';
 }
 
 
@@ -147,24 +149,49 @@ function changeTextarea(commentInput) {
 }
 
 
-function changeCommentBlockClass(editing) {
+function changeCommentBlockClass(flag, cancel=false) {
     const commentBlock = document.getElementById('comment-block');
-    
-    if (commentBlock.classList.contains('comment-block') && editing === true) {
-        commentBlock.classList.remove('comment-block');
-        commentBlock.classList.add('comment-block-edited');
+
+    if (flag === 'reply') {
+        if (commentBlock.classList.contains('comment-block-replied')) {
+            if (cancel === true) {
+                commentBlock.classList.remove('comment-block-replied');
+                commentBlock.classList.add('comment-block');
+                // comment block switches its class from 'comment-block-replied' into 'comment-block'
+            }
+            else return null;   // comment block doesn't change
+        }
+        else if (commentBlock.classList.contains('comment-block')) {
+            commentBlock.classList.remove('comment-block');
+            commentBlock.classList.add('comment-block-replied');
+            // comment block switches its class from 'comment-block' into 'comment-block-replied'
+        }
+        else if (commentBlock.classList.contains('comment-block-edited')) {
+            commentBlock.classList.remove('comment-block-edited');
+            commentBlock.classList.add('comment-block-replied');
+            // comment block switches its class from 'comment-block-edited' into 'comment-block-replied'
+        }
     }
-    else if (commentBlock.classList.contains('comment-block') && editing === false) {
-        commentBlock.classList.remove('comment-block');
-        commentBlock.classList.add('comment-block-replied');
-    }
-    else if (commentBlock.classList.contains('comment-block-replied')) {
-        commentBlock.classList.remove('comment-block-replied');
-        commentBlock.classList.add('comment-block');
-    }
-    else if (commentBlock.classList.contains('comment-block-edited')) {
-        commentBlock.classList.remove('comment-block-edited');
-        commentBlock.classList.add('comment-block');
+    else if (flag === 'edit') {
+        if (commentBlock.classList.contains('comment-block-edited')) {
+            if (cancel === true) {
+                commentBlock.classList.remove('comment-block-edited');
+                commentBlock.classList.add('comment-block');
+                // comment block switches its class from 'comment-block-edited' into 'comment-block'
+            }
+            else return null;   // comment block doesn't change
+        }
+        // comment block won't change
+        else if (commentBlock.classList.contains('comment-block')) {
+            commentBlock.classList.remove('comment-block');
+            commentBlock.classList.add('comment-block-edited');
+            // comment block switches its class from 'comment-block' into 'comment-block-edited'
+        }
+        else if (commentBlock.classList.contains('comment-block-replied')) {
+            commentBlock.classList.remove('comment-block-replied');
+            commentBlock.classList.add('comment-block-edited');
+            // comment block switches its class from 'comment-block-replied' into 'comment-block-edited'
+        }
     }
 }
 
