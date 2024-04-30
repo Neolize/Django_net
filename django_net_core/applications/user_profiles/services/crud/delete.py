@@ -25,3 +25,14 @@ def delete_follower(owner: models.CustomUser, follower: models.CustomUser) -> No
         LOGGER.warning(f'Follower instance with user - {owner} and follower - {follower} was not found. {exc}')
     except Exception as exc:
         LOGGER.error(exc)
+
+
+def delete_user(user_instance: models.CustomUser) -> bool:
+    try:
+        user_instance.delete()
+        deleted = True
+    except Exception as exc:
+        LOGGER.error(exc)
+        deleted = False
+
+    return deleted

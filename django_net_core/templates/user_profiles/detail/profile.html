@@ -78,6 +78,7 @@
                             {% if allowed_to_create_group %}
                                 <a class="btn btn-success" href="{{ user.get_absolute_url_for_group_creation }}">Create a group</a>
                             {% endif %}
+                            <a class="btn btn-danger" href="{% url 'delete_user_account' pk=user.pk %}" onclick="deleteAccount(event)">Delete account</a>
                         </div>
                     </div>
                 {% endif %}
@@ -401,6 +402,7 @@
 
 {% block script %}
     <script src="{% static 'user_profiles/js/profile.js' %}"></script>
+    <script src="{% static 'user_profiles/js/delete_account.js' %}"></script>
     <script src="{% static 'utils/js/url_params.js' %}"></script>
     <script src="{% static 'user_wall/js/user_wall.js' %}"></script>
 {% endblock script %}

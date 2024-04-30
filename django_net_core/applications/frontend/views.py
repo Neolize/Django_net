@@ -1,4 +1,4 @@
-from django.contrib.auth import login
+from django.contrib.auth import login, logout
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.auth.views import LoginView, LogoutView
 from django.core.handlers.wsgi import WSGIRequest
@@ -195,6 +195,27 @@ class EditUserProfileView(LoginRequiredMixin, UserPermissionMixin, View):
             'form': form,
             'user_obj': up_read.get_user_for_profile(user_pk=pk),
         }
+
+
+def delete_user_account(request: WSGIRequest, pk: int):
+    """Delete a user's account if the request goes from the owner of this account"""
+    if not request.user.is_authenticated:
+        return redirect(to='login')
+
+    owner = up_read.get_raw_user_instance(user_pk=pk)
+    if not owner:
+        raise Http404
+
+    if owner.pk != request.user.pk:
+        return HttpResponseForbidden(FORBIDDEN_MESSAGE)
+
+    logout(request)     # log out user before deleting his/her account
+    deleted = up_delete.delete_user(owner)
+    if not deleted:
+        # if an error occurred and a user's account wasn't deleted, the function will log in user backwards
+        login(request, user=owner)
+    template = 'user_profiles/detail/deleted_profile.html'
+    return render(request, template, context={'deleted': deleted})
 
 
 class CreateUserPostView(LoginRequiredMixin, View):
