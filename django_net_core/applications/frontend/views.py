@@ -10,7 +10,7 @@ from django.views.generic import ListView, CreateView, View
 
 from django_net_core.settings import USER_POSTS_PAGINATE_BY, GROUP_POSTS_PAGINATE_BY
 
-from applications.frontend.permissions import is_user_post_author
+from applications.frontend.permissions import is_user_post_author, UnauthenticatedPermissionsMixin
 
 from applications.abstract_activities.services import utils as aa_utils
 from applications.abstract_activities.services.crud.delete import delete_post
@@ -43,7 +43,7 @@ class UsersView(ListView):
         return context
 
 
-class SignupUserView(CreateView):
+class SignupUserView(UnauthenticatedPermissionsMixin, CreateView):
     template_name = 'account/signup.html'
     form_class = up_forms.SignupUserForm
 
@@ -61,7 +61,7 @@ class SignupUserView(CreateView):
         return self.form_invalid(form=form)
 
 
-class LoginUserView(LoginView):
+class LoginUserView(UnauthenticatedPermissionsMixin, LoginView):
     template_name = 'account/login.html'
     form_class = up_forms.LoginUserForm
 
