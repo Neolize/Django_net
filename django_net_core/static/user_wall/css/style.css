@@ -740,3 +740,15 @@ select.form-control:not([size]):not([multiple]) {
     color:rgba(141, 65, 65, 0.75);
     margin-bottom: 20px;
 }
+
+.close_error_block {
+    display: block;
+    width: 24px;
+    height: 24px;
+    background-image: url('../images/exit-full-screen.png');
+    cursor: pointer;
+}
+
+.close_error_block:hover {
+    background-image: url('../images/remove.png');
+}

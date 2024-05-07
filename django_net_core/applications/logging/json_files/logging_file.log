@@ -86,3 +86,11 @@
   "funcName": "get_user_comment_by_pk",
   "lineno": 82
 }
+{
+  "message": "Group post with pk - 0 does not exist. GroupPost matching query does not exist.",
+  "levelname": "ERROR",
+  "asctime": "2024-05-02 13:25:33,766",
+  "pathname": "/home/neolize/Neolize/Python/Django projects/Django Net/django_net_core/applications/groups/services/crud/read.py",
+  "funcName": "get_group_post_by_pk",
+  "lineno": 159
+}

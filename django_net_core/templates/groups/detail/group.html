@@ -235,9 +235,10 @@
                                                            <input type="hidden" name="parent_id" value="" id="parentcomment">
                                                            <input type="hidden" name="edit" value="" id="editinput">
                                                            <input type="hidden" name="comment_id" value="" id="comment_id">
+                                                           <input type="hidden" name="error" value="" id="input_error">
 
                                                            {% if form.non_field_errors %}
-                                                               <div class="alert alert-danger comment-error" style="margin-bottom: 25px;">{{ form.non_field_errors }}</div>
+                                                               <div class="alert alert-danger comment-error" data-error style="margin-bottom: 25px;">{{ form.non_field_errors }}</div>
                                                            {% endif %}
 
                                                            <div class="comment-block" id="comment-block">
@@ -249,7 +250,7 @@
                                                           </span>
                                                        </div>
                                                        {% if form.comment.errors %}
-                                                           <div class="alert alert-danger comment-error">{{ form.comment.errors }}</div>
+                                                           <div class="alert alert-danger comment-error" data-error>{{ form.comment.errors }}</div>
                                                        {% endif %}
                                                     </form>
 

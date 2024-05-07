@@ -114,18 +114,25 @@ def handle_user_comment(request: WSGIRequest, pk):
     form = uw_forms.UserCommentForm(request.POST)
     is_edited = True if request.POST.get('edit', False) else False
 
-    if form.is_valid() and is_edited:
-        if uw_update.update_user_comment(
+    if request.POST.get('error', None):
+        # if an error window was closed, the function will open the same page with a form without any mistakes
+        add_new_params_to_request_from_user_comment(request, user_obj)
+        # add parameters: page and posts_to_show in order to show user an appropriate page
+        return UserProfileView().get(request=request, pk=pk)
+
+    if form.is_valid():
+        if is_edited:
+            if uw_update.update_user_comment(
+                    form=form,
+                    request=request,
+            ):
+                return redirect_to_the_current_post_page(request, user_obj)
+
+        elif uw_create.create_comment_for_user_post(
                 form=form,
                 request=request,
         ):
             return redirect_to_the_current_post_page(request, user_obj)
-
-    elif uw_create.create_comment_for_user_post(
-            form=form,
-            request=request,
-    ):
-        return redirect_to_the_current_post_page(request, user_obj)
 
     add_new_params_to_request_from_user_comment(request, user_obj)
     # add parameters: page and posts_to_show in order to show user an appropriate page
@@ -460,18 +467,26 @@ def handle_group_comment(request: WSGIRequest, group_slug: str):
     form = g_forms.GroupCommentForm(request.POST)
     is_edited = True if request.POST.get('edit', False) else False
 
-    if form.is_valid() and is_edited:
-        if g_update.update_group_comment(
+    if request.POST.get('error', None):
+        # if an error window was closed, the function will open the same page with a form without any mistakes
+        g_utils.add_new_params_to_request_from_group_comment(request, group)
+        # add parameters: page and posts_to_show in order to show user an appropriate page
+        return GroupView().get(request=request, group_slug=group_slug)
+
+    if form.is_valid():
+        if is_edited:
+            if g_update.update_group_comment(
+                    form=form,
+                    request=request,
+            ):
+                return g_utils.redirect_to_the_current_group_post_page(request, group)
+
+        elif g_create.create_comment_for_group_post(
                 form=form,
                 request=request,
         ):
             return g_utils.redirect_to_the_current_group_post_page(request, group)
 
-    elif g_create.create_comment_for_group_post(
-            form=form,
-            request=request,
-    ):
-        return g_utils.redirect_to_the_current_group_post_page(request, group)
     g_utils.add_new_params_to_request_from_group_comment(request, group)
     # add parameters: page and posts_to_show in order to show user an appropriate page
     return GroupView().get(request=request, group_slug=group_slug, form=form)
