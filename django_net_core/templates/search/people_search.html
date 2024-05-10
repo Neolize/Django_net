@@ -6,6 +6,7 @@
     <link rel="stylesheet" href="{% static 'user_profiles/css/friends.css' %}" type="text/css" />
     <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css" rel="stylesheet" />
     <link rel="stylesheet" href="{% static 'search/css/style.css' %}" type="text/css" />
+    <link rel="stylesheet" href="{% static 'search/css/search_pagination.css' %}" type="text/css" />
 {% endblock link %}
 
 {% block title %}Search{% endblock title %}
@@ -76,6 +77,11 @@
                     </div>
                 </div>
             {% endfor %}
+
+            {% if page_obj.has_other_pages %}
+                {% include 'include/pagination.html' %}
+            {% endif %}
+
         </div>
     </div>
 {% endblock content %}

@@ -11,6 +11,7 @@ from django.views.generic import ListView, CreateView, View
 from django_net_core.settings import USER_POSTS_PAGINATE_BY, GROUP_POSTS_PAGINATE_BY
 
 from applications.frontend.permissions import is_user_post_author, UnauthenticatedPermissionsMixin
+from applications.frontend.services.utils import form_context_data_for_search_view
 
 from applications.abstract_activities.services import utils as aa_utils
 from applications.abstract_activities.services.crud.delete import delete_post
@@ -376,17 +377,13 @@ class UserFollowingView(View):
 
 class PeopleSearchView(View):
     template_name = 'search/people_search.html'
+    paginate_by = 3
 
     def get(self, request: WSGIRequest):
-        user_input = request.GET.get('input')
-        if user_input is None:
-            users = up_read.get_all_users_with_personal_data()
-        else:
-            users = up_read.fetch_users_by_names(user_input)
-        context = {
-            'users': users,
-            'previous_page': aa_utils.get_previous_url(request),
-        }
+        context = form_context_data_for_search_view(
+            request=request,
+            paginate_by=self.paginate_by,
+        )
         return render(request, self.template_name, context=context)
 
 

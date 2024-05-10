@@ -1,0 +1,47 @@
+.pagination-body {
+    margin: -75px 0 0 -380px;
+    width: 750px;
+}
+
+.flex {
+    -webkit-box-flex: 1;
+    -ms-flex: 1 1 auto;
+    flex: 1 1 auto
+}
+
+@media (max-width:991.98px) {
+    .padding {
+        padding: 1.5rem
+    }
+}
+
+@media (max-width:767.98px) {
+    .padding {
+        padding: 1rem
+    }
+}
+
+.padding {
+    padding: 5rem
+}
+
+.pagination,
+.jsgrid .jsgrid-pager {
+    display: flex;
+    padding-left: 0;
+    list-style: none;
+    border-radius: 0.25rem
+}
+
+.pagination-page-link {
+    color: black
+}
+
+.pagination.pagination-rounded-flat .pagination-page-item {
+    margin: 0 .25rem
+}
+
+.pagination.pagination-rounded-flat .pagination-page-item .page-link {
+   border: none;
+   border-radius: 50px;
+}
