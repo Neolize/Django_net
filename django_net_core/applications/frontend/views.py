@@ -519,6 +519,26 @@ def unfollow_group(request: WSGIRequest, group_slug: str):
     return redirect(to='group', group_slug=group_slug)
 
 
+def delete_group(request: WSGIRequest, group_slug: str):
+    """Delete a group if the request goes from the owner of this group"""
+    if not request.user.is_authenticated:
+        return redirect(to='login')
+
+    group = g_read.get_group_by_slug(group_slug)
+    if not group:
+        raise Http404
+
+    if group.creator_id != request.user.pk:
+        return HttpResponseForbidden(FORBIDDEN_MESSAGE)
+
+    deleted = g_delete.delete_group_instance(group)
+    context = {'deleted': deleted}
+    if not deleted:
+        context['group'] = group
+    template = 'groups/detail/deleted_group.html'
+    return render(request, template, context=context)
+
+
 class CreateGroupPostView(LoginRequiredMixin, View):
     template_name = 'groups/detail/create_post.html'
     form_class = g_forms.GroupPostForm

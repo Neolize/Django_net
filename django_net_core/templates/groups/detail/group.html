@@ -51,6 +51,7 @@
 
                                     {% if is_group_owner %}
                                         <a class="btn btn-primary" href="{{ group.get_absolute_url_for_post_creation }}">Create a new post</a>
+                                        <a class="btn btn-danger" href="{% url 'delete_group' group_slug=group.slug %}" onclick="deleteGroup(event)">Delete group</a>
                                     {% else %}
                                         {% if is_subscribed_to_group %}
                                             <form action="{% url 'unfollow_group' group_slug=group.slug %}" method="get" style="display: inline;">
@@ -368,4 +369,5 @@
     <script src="{% static 'user_profiles/js/profile.js' %}"></script>
     <script src="{% static 'utils/js/url_params.js' %}"></script>
     <script src="{% static 'user_wall/js/user_wall.js' %}"></script>
+    <script src="{% static 'groups/js/delete_group.js' %}"></script>
 {% endblock script %}

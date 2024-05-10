@@ -1,0 +1,35 @@
+{% extends 'base.html' %}
+
+{% load static %}
+
+{% block link %}
+    <link rel="stylesheet" href="{% static 'user_profiles/css/deleted_account.css' %}" type="text/css">
+{% endblock link %}
+
+{% block title %}
+    {% if deleted %}Successful deletion{% else %}Deletion wasn't completed{% endif %}
+{% endblock title %}
+
+{% block content %}
+    <div class="container">
+        <div class="main-body">
+            {% if deleted %}
+                <div class="deleted_account_block">
+                        <span class="deleted_account__message">Your group was deleted</span>
+                        <div class="deleted_account_link__home"><a href="{% url 'home' %}">&#8678; Main page</a></div>
+                        <div class="deleted_account_link__signup">
+                            <a href="{% if request.user.is_authenticated %}{{ request.user.get_absolute_url }}{% else %}{% url 'login' %}{% endif %}">Profile &#8680;</a>
+                        </div>
+                </div>
+            {% else %}
+                <div class="deleted_account_error_block">
+                    <span class="deleted_account__error_message">An error occurred during your group deletion. Try one more time later.</span>
+                    <div class="deleted_account_link__home"><a href="{% url 'home' %}">&#8678; Main page</a></div>
+                    <div class="deleted_account_link__group_page">
+                        <a href="{{ group.get_absolute_url }}">Group page &#8680;</a>
+                    </div>
+                </div>
+            {% endif %}
+        </div>
+    </div>
+{% endblock content %}

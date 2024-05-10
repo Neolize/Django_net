@@ -63,3 +63,12 @@
     text-decoration: none;
     font-size: 18px;
 }
+
+.deleted_account_link__group_page {
+    margin: 8px 0px 35px 380px;
+}
+
+.deleted_account_link__group_page>a {
+    text-decoration: none;
+    font-size: 18px;
+}
