@@ -1,5 +1,7 @@
 from django.db.models import QuerySet
 from django.db.models.base import ModelBase
+from django.utils.http import url_has_allowed_host_and_scheme
+from django.core.handlers.wsgi import WSGIRequest
 
 from applications.groups.models import GroupPost, GroupComment
 from applications.groups.forms import GroupPostForm, GroupCommentForm
@@ -78,3 +80,11 @@ def get_parent_comment(parent_pk: int, form: GroupCommentForm | UserCommentForm)
         parent_comment = get_group_comment_by_pk(parent_pk)
 
     return parent_comment
+
+
+def get_previous_url(request: WSGIRequest):
+    """Return the previous user's url"""
+    previous_url = request.META.get("HTTP_REFERER")
+    if not url_has_allowed_host_and_scheme(url=previous_url, allowed_hosts=request.get_host()):
+        previous_url = "home"
+    return previous_url

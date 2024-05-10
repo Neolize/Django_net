@@ -5,6 +5,18 @@
     width: 550px;
 }
 
+.previous_page_block {
+    position: relative;
+    right: 200px;
+    top: 15px;
+    margin-bottom: -24px;
+    width: 150px;
+}
+
+.previous_page_block>a {
+    text-decoration: none;
+}
+
 .input_search {
     height: 50px;
 }

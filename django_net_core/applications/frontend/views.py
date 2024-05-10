@@ -385,6 +385,7 @@ class PeopleSearchView(View):
             users = up_read.fetch_users_by_names(user_input)
         context = {
             'users': users,
+            'previous_page': aa_utils.get_previous_url(request),
         }
         return render(request, self.template_name, context=context)
 
