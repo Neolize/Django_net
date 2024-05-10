@@ -2,11 +2,11 @@ from datetime import date, datetime, timedelta
 
 from django.db.models import QuerySet
 from django.core.handlers.wsgi import WSGIRequest
+from django.core.paginator import Page
 
 from applications.abstract_activities.services.crud.update import update_posts_view_count
-from applications.frontend.services.pagination import get_page_object, get_posts_for_current_page
+from applications.frontend.services.pagination import get_page_object
 from applications.user_profiles.models import CustomUser
-from applications.user_wall.models import UserPost
 from applications.user_profiles.services.crud import read
 from applications.user_wall.services.crud.read import get_related_posts
 from applications.groups.services.crud.read import is_user_allowed_to_create_group
@@ -37,12 +37,13 @@ def form_user_profile_context_data(
         owner=is_owner,
         posts_to_show=posts_to_show
     )
-
-    relevant_posts = get_posts_for_current_page(
-        page=page,
+    page_obj = get_page_object(
+        object_list=user_posts,
         paginate_by=paginate_by,
-        posts=user_posts,
+        page=page,
     )
+    relevant_posts = page_obj.object_list
+
     update_posts_view_count(
         creator_pk=user_obj.pk,
         visitor_pk=request.user.pk,
@@ -53,10 +54,8 @@ def form_user_profile_context_data(
         relevant_posts=relevant_posts,
         request=request,
         today=datetime.today(),
-        user_posts=user_posts,
-        paginate_by=paginate_by,
-        page=page,
         is_owner=is_owner,
+        page_obj=page_obj,
     )
 
 
@@ -65,11 +64,10 @@ def _collect_all_context_data(
         relevant_posts: QuerySet,
         request: WSGIRequest,
         today: datetime,
-        user_posts: QuerySet[UserPost],
-        paginate_by: int,
-        page: int,
         is_owner: bool,
+        page_obj: Page,
 ) -> dict:
+
     published_posts_number = read.get_published_user_posts_number(user_obj)
     context_data = {
         'user_obj': user_obj,
@@ -83,11 +81,7 @@ def _collect_all_context_data(
         'today_date': today.date(),
         'yesterday_date': (today - timedelta(days=1)).date(),
         'is_owner': is_owner,
-        'page_obj': get_page_object(
-            object_list=user_posts,
-            paginate_by=paginate_by,
-            page=page,
-        ),
+        'page_obj': page_obj,
     }
     _include_unpublished_posts_number_to_context_data(
         owner=is_owner,

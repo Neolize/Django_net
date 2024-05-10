@@ -4,11 +4,12 @@ from django.shortcuts import reverse, redirect
 from django.http import HttpResponseRedirect
 from django.db.models import QuerySet
 from django.core.handlers.wsgi import WSGIRequest
+from django.core.paginator import Page
 
 from django_net_core.settings import GROUP_POSTS_PAGINATE_BY
 from applications.abstract_activities.services.utils import calculate_post_page
 from applications.abstract_activities.services.crud.update import update_posts_view_count
-from applications.frontend.services.pagination import get_page_object, get_posts_for_current_page
+from applications.frontend.services.pagination import get_page_object
 from applications.user_profiles.models import CustomUser
 from applications.groups.models import Group, GroupPost
 from applications.groups.services.crud import read
@@ -30,18 +31,18 @@ def form_group_context_data(
     page = int(request.GET.get('page', 1))
     creator_pk = group.creator.pk
     is_owner = request.user.pk == creator_pk
-
     group_posts = read.get_related_group_posts(
         group,
         owner=is_owner,
         posts_to_show=posts_to_show,
     )
-
-    relevant_posts = get_posts_for_current_page(
-        page=page,
+    page_obj = get_page_object(
+        object_list=group_posts,
         paginate_by=paginate_by,
-        posts=group_posts,
+        page=page,
     )
+    relevant_posts = page_obj.object_list
+
     update_posts_view_count(
         creator_pk=creator_pk,
         visitor_pk=request.user.pk,
@@ -52,10 +53,8 @@ def form_group_context_data(
         relevant_posts=relevant_posts,
         request=request,
         today=datetime.today(),
-        group_posts=group_posts,
-        paginate_by=paginate_by,
-        page=page,
         owner=is_owner,
+        page_obj=page_obj,
     )
 
 
@@ -64,10 +63,8 @@ def _collect_context_data(
         relevant_posts: QuerySet,
         request: WSGIRequest,
         today: datetime,
-        group_posts: QuerySet[GroupPost],
-        paginate_by: int,
-        page: int,
         owner: bool,
+        page_obj: Page,
 ) -> dict:
     published_posts_number = read.get_published_group_posts_number(group)
     context_data = {
@@ -78,17 +75,12 @@ def _collect_context_data(
             visitor=request.user,
         ),
         'is_group_owner': group.creator.pk == request.user.pk,
-        # 'posts_number': read.get_group_posts_number_from_group(group=group, owner=owner),
         'published_posts_number': published_posts_number,
         'followers': read.get_group_members_number_from_group(group),
         'is_owner': owner,
         'today_date': today.date(),
         'yesterday_date': (today - timedelta(days=1)).date(),
-        'page_obj': get_page_object(
-            object_list=group_posts,
-            paginate_by=paginate_by,
-            page=page,
-        ),
+        'page_obj': page_obj,
     }
     _include_unpublished_group_posts_number_to_context_data(
         data=context_data,

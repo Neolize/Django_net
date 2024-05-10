@@ -9,15 +9,3 @@ def get_page_object(
 ) -> Page:
     paginator = Paginator(object_list, paginate_by)
     return paginator.get_page(page)
-
-
-def get_posts_for_current_page(
-        page: int,
-        paginate_by: int,
-        posts: QuerySet,
-) -> QuerySet:
-
-    end = page * paginate_by
-    start = end - paginate_by
-
-    return posts[start:end]
