@@ -17,7 +17,7 @@ function main() {
 }
 
 
-function addChildReview(event, name, parent_id) {
+function addChildReview(event, name, parentId) {
     event.preventDefault();
     changeCommentBlockClass('reply');
 
@@ -28,7 +28,7 @@ function addChildReview(event, name, parent_id) {
     userCommentInput.setSelectionRange(userCommentInput.value.length, userCommentInput.value.length, 'forward');
     userCommentInput.focus();
 
-    document.getElementById('parentcomment').value = parent_id;
+    document.getElementById('parentcomment').value = parentId;
 
     const submitButton = document.getElementById('submit_comment');
     submitButton.innerHTML = 'Reply';

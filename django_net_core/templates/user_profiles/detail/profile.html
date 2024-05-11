@@ -352,11 +352,13 @@
 
                                                        {% if child.is_edited %}
                                                            <span class="edited_comment">(edited)</span>
-                                                           <p class="usercomment_content usercomment_content_edited" data-child-comment="{{ comment.pk }}">
+                                                           <p class="usercomment_content usercomment_content_edited" data-child-comment="{{ comment.pk }}"
+                                                              data-parent-comment-url="{{ child.author.get_absolute_url }}" data-parent-comment-pk="{{ comment.pk }}">
                                                                {{ child.content }}
                                                           </p>
                                                        {% else %}
-                                                           <p class="usercomment_content" data-child-comment="{{ comment.pk }}">
+                                                           <p class="usercomment_content" data-child-comment="{{ comment.pk }}" data-parent-comment-url="{{ child.author.get_absolute_url }}"
+                                                              data-parent-comment-pk="{{ comment.pk }}">
                                                                {{ child.content }}
                                                            </p>
                                                        {% endif %}
@@ -364,7 +366,7 @@
                                                        {% if user.is_authenticated %}
                                                            {% if child.author_id != request.user.pk %}
                                                                <a href="#" class="comment_reply"
-                                                                   onclick="addChildReview(event, '{{ child.author.get_full_name|addslashes }}', '{{ child.pk }}')">Reply
+                                                                   onclick="addChildReview(event, '{{ child.author.get_full_name|addslashes }}', '{{ comment.pk }}')">Reply
                                                                </a>
                                                            {% else %}
                                                                <a href="#" class="edit_user_comment"

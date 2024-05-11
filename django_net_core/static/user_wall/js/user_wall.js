@@ -13,13 +13,42 @@ function modifyChildComments() {
     const regexp = /(,\s{1})/g;
 
     for (const child of childComments) {
-        const parent = document.querySelector(`[data-parent-comment-pk="${child.dataset.childComment}"]`);
-        const parentURL = parent.dataset.parentCommentUrl;
-
         const found = child.innerHTML.search(regexp);
+
+        const parent = findParentComment(child.dataset.childComment, child.innerHTML.slice(0, found));
+        const parentURL = parent.dataset.parentCommentUrl;
         const linkToParentComment = createLinkToParentComment(child.innerHTML.slice(0, found), parentURL);
+
         child.innerHTML = child.innerHTML.slice(found);
         child.insertAdjacentElement('afterbegin', linkToParentComment);
+    }
+}
+
+
+function findParentComment(childId, parentName) {
+    const parentComments = document.querySelectorAll(`[data-parent-comment-pk="${childId}"]`);
+    if (parentComments.length === 2) {
+        return parentComments[0];
+    }
+    else {
+        for (let commentIndex = 0; commentIndex < parentComments.length - 1; commentIndex++) {
+            const parentNameElement = findParentElementForComment(parentComments[commentIndex]);
+            if (parentNameElement.innerHTML === parentName.trim()) {
+                return parentComments[commentIndex];
+            }
+        }
+    }
+}
+
+
+function findParentElementForComment(element) {
+    let parentElement = element.previousElementSibling;
+
+    if (parentElement.querySelector('a') !== null) {
+        return parentElement.querySelector('a');
+    }
+    else {
+        return parentElement.previousElementSibling.querySelector('a');
     }
 }
 
