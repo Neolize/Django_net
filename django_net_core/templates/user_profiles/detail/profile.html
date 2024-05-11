@@ -309,7 +309,7 @@
                                                    {% else %}
                                                        <span class="userimage"><img src="{% static 'user_profiles/images/anonymous.png' %}" alt="avatar"></span>
                                                    {% endif %}
-                                                   <span class="usercomment_name">
+                                                   <span class="usercomment_name" {% if comment.is_edited %}data-comment-edited{% endif %}>
                                                        <a href="{% url 'user_profile' pk=comment.author.pk %}">{{ comment.author.get_full_name }}</a>
                                                    </span>
 
@@ -346,7 +346,7 @@
                                                        {% else %}
                                                            <span class="userimage"><img src="{% static 'user_profiles/images/anonymous.png' %}" alt="avatar"></span>
                                                        {% endif %}
-                                                       <span class="usercomment_name">
+                                                       <span class="usercomment_name" {% if child.is_edited %}data-comment-edited{% endif %}>
                                                            <a href="{% url 'user_profile' pk=child.author.pk %}">{{ child.author.get_full_name }}</a>
                                                        </span>
 

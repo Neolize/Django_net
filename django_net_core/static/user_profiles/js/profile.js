@@ -201,7 +201,7 @@ function modifyEditedComments() {
     // the function will modify 'edited' message depending on the length of a user's name.
     const editedComments = document.querySelectorAll('.edited_comment');
     if (editedComments.length > 0) {
-        const userNameElements = document.querySelectorAll('.usercomment_name>a');
+        const userNameElements = document.querySelectorAll('[data-comment-edited]>a');
 
         for (let counter = 0; counter < editedComments.length; counter++) {
             setNewLeftValue(editedComments[counter], userNameElements[counter]);
