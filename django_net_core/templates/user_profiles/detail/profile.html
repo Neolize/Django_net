@@ -315,10 +315,12 @@
 
                                                    {% if comment.is_edited %}
                                                        <span class="edited_comment">(edited)</span>
+                                                       <span class="comment_creation_date__edited">{{ comment.creation_date|date:"j F o H:i" }}</span>
                                                        <p class="usercomment_content usercomment_content_edited" data-parent-comment-url="{{ comment.author.get_absolute_url }}" data-parent-comment-pk="{{ comment.pk }}">
                                                            {{ comment.content }}
                                                       </p>
                                                    {% else %}
+                                                       <span class="comment_creation_date">{{ comment.creation_date|date:"j F o H:i" }}</span>
                                                        <p class="usercomment_content" data-parent-comment-url="{{ comment.author.get_absolute_url }}" data-parent-comment-pk="{{ comment.pk }}">
                                                            {{ comment.content }}
                                                        </p>
@@ -352,11 +354,13 @@
 
                                                        {% if child.is_edited %}
                                                            <span class="edited_comment">(edited)</span>
+                                                           <span class="comment_creation_date__edited">{{ child.creation_date|date:"j F o H:i" }}</span>
                                                            <p class="usercomment_content usercomment_content_edited" data-child-comment="{{ comment.pk }}"
                                                               data-parent-comment-url="{{ child.author.get_absolute_url }}" data-parent-comment-pk="{{ comment.pk }}">
                                                                {{ child.content }}
                                                           </p>
                                                        {% else %}
+                                                           <span class="comment_creation_date">{{ child.creation_date|date:"j F o H:i" }}</span>
                                                            <p class="usercomment_content" data-child-comment="{{ comment.pk }}" data-parent-comment-url="{{ child.author.get_absolute_url }}"
                                                               data-parent-comment-pk="{{ comment.pk }}">
                                                                {{ child.content }}

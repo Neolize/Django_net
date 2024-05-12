@@ -565,12 +565,30 @@ select.form-control:not([size]):not([multiple]) {
 
 .edited_comment {
     position: relative;
-    /* left: 145px; */
-    /* left: 55px; */
     left: 55px;
     bottom: 42px;
     font-size: 12px;
     display: inline-block;
+}
+
+.comment_creation_date__edited {
+    position: relative;
+    bottom: 22px;
+    margin: 0 -45px 15px 0px;
+    font-size: 10px;
+    font-family: Impact, Haettenschweiler, 'Arial Narrow Bold', sans-serif;
+    font-style: italic;
+    display: inline-block;
+}
+
+.comment_creation_date {
+    display: inline-block;
+    position: relative;
+    bottom: 22px;
+    left: 50px;
+    font-size: 10px;
+    font-family: Impact, Haettenschweiler, 'Arial Narrow Bold', sans-serif;
+    font-style: italic;
 }
 
 .comment-block {
