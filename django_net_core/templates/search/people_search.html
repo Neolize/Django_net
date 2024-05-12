@@ -50,7 +50,7 @@
                                     </div>
                                     <div class="col-4">
                                         <i class="fa fa-comment"></i>
-                                        <p>{{ user.user_comments.count }}</p>
+                                        <p>{{ user.user_comments.count|add:user.group_comments.count }}</p>
                                     </div>
                                     <div class="col-4">
                                         <i class="fa fa-sitemap"></i>

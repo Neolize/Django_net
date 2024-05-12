@@ -25,6 +25,7 @@ def get_all_users_with_personal_data() -> QuerySet[models.CustomUser]:
             'followers',
             'user_comments',
             'user_groups',
+            'group_comments',
         )
     )
 
@@ -46,6 +47,7 @@ def fetch_users_by_names(user_input) -> QuerySet[models.CustomUser]:
             'followers',
             'user_comments',
             'user_groups',
+            'group_comments',
         )
     )
 
@@ -158,6 +160,7 @@ def fetch_all_user_followers(user: models.CustomUser) -> QuerySet[models.Followe
             'follower__followers',
             'follower__user_comments',
             'follower__user_groups',
+            'follower__group_comments',
         )
     )
 
@@ -194,6 +197,7 @@ def fetch_all_user_followings(user: models.CustomUser) -> QuerySet[models.Custom
             'user__followers',
             'user__user_comments',
             'user__user_groups',
+            'user__group_comments',
         )
     )
 

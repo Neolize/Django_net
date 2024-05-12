@@ -86,6 +86,7 @@ def fetch_all_group_followers(group: models.Group) -> QuerySet[models.GroupMembe
             'member__followers',
             'member__user_comments',
             'member__user_groups',
+            'member__group_comments',
         )
     )
 

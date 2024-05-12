@@ -10,7 +10,7 @@ from django.views.generic import ListView, CreateView, View
 
 from django_net_core.settings import USER_POSTS_PAGINATE_BY, GROUP_POSTS_PAGINATE_BY
 
-from applications.frontend.permissions import is_user_post_author, UnauthenticatedPermissionsMixin
+from applications.frontend import permissions
 from applications.frontend.services.utils import form_context_data_for_search_view
 
 from applications.abstract_activities.services import utils as aa_utils
@@ -44,7 +44,7 @@ class UsersView(ListView):
         return context
 
 
-class SignupUserView(UnauthenticatedPermissionsMixin, CreateView):
+class SignupUserView(permissions.UnauthenticatedPermissionsMixin, CreateView):
     template_name = 'account/signup.html'
     form_class = up_forms.SignupUserForm
 
@@ -62,7 +62,7 @@ class SignupUserView(UnauthenticatedPermissionsMixin, CreateView):
         return self.form_invalid(form=form)
 
 
-class LoginUserView(UnauthenticatedPermissionsMixin, LoginView):
+class LoginUserView(permissions.UnauthenticatedPermissionsMixin, LoginView):
     template_name = 'account/login.html'
     form_class = up_forms.LoginUserForm
 
@@ -262,7 +262,7 @@ class EditUserPostView(LoginRequiredMixin, View):
         user_post = uw_read.get_user_post(slug=slug)
         self.check_request(user_post=user_post)
 
-        if not is_user_post_author(visitor=request.user, post=user_post):
+        if not permissions.is_user_post_author(visitor=request.user, post=user_post):
             return HttpResponseForbidden(FORBIDDEN_MESSAGE)
 
         context = self.get_context_data(pk=request.user.pk, post_slug=slug)
@@ -273,7 +273,7 @@ class EditUserPostView(LoginRequiredMixin, View):
         user_post = uw_read.get_user_post(slug=slug)
         self.check_request(user_post=user_post)
 
-        if not is_user_post_author(visitor=request.user, post=user_post):
+        if not permissions.is_user_post_author(visitor=request.user, post=user_post):
             return HttpResponseForbidden(FORBIDDEN_MESSAGE)
 
         form = self.form_class(request.POST)
@@ -318,7 +318,7 @@ def delete_user_post(request: WSGIRequest, user_post_slug: str):
     if not user_post:
         raise Http404
 
-    if not is_user_post_author(visitor=request.user, post=user_post):
+    if not permissions.is_user_post_author(visitor=request.user, post=user_post):
         return HttpResponseForbidden(FORBIDDEN_MESSAGE)
 
     posts_to_show = request.GET.get('posts', '')
@@ -584,7 +584,7 @@ class EditGroupPostView(LoginRequiredMixin, View):
         if not group_post:
             raise Http404
 
-        if not is_user_post_author(visitor=request.user, post=group_post):
+        if not permissions.is_user_post_author(visitor=request.user, post=group_post):
             return HttpResponseForbidden(FORBIDDEN_MESSAGE)
 
         context = {
@@ -600,7 +600,7 @@ class EditGroupPostView(LoginRequiredMixin, View):
         if not group_post:
             raise Http404
 
-        if not is_user_post_author(visitor=request.user, post=group_post):
+        if not permissions.is_user_post_author(visitor=request.user, post=group_post):
             return HttpResponseForbidden(FORBIDDEN_MESSAGE)
 
         form = self.form_class(request.POST)
@@ -636,7 +636,7 @@ def delete_group_post(request: WSGIRequest, group_post_slug: str):
     if not group_post:
         raise Http404
 
-    if not is_user_post_author(visitor=request.user, post=group_post):
+    if not permissions.is_user_post_author(visitor=request.user, post=group_post):
         return HttpResponseForbidden(FORBIDDEN_MESSAGE)
 
     posts_to_show = request.GET.get('posts', '')

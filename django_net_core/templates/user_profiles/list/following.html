@@ -57,7 +57,7 @@
                                         </div>
                                         <div class="col-4">
                                             <i class="fa fa-comment"></i>
-                                            <p>{{ following.user.user_comments.count }}</p>
+                                            <p>{{ following.user.user_comments.count|add:following.user.group_comments.count }}</p>
                                         </div>
                                         <div class="col-4">
                                             <i class="fa fa-sitemap"></i>
