@@ -7,7 +7,7 @@ from django.core.handlers.wsgi import WSGIRequest
 from django.core.paginator import Page
 
 from django_net_core.settings import GROUP_POSTS_PAGINATE_BY
-from applications.abstract_activities.services.utils import calculate_post_page
+from applications.abstract_activities.services.utils import calculate_post_page, fetch_page_from_request
 from applications.abstract_activities.services.crud.update import update_posts_view_count
 from applications.frontend.services.pagination import get_page_object
 from applications.user_profiles.models import CustomUser
@@ -111,11 +111,14 @@ def redirect_to_the_current_group_post_page(request: WSGIRequest, group: Group) 
     posts_to_show = request.POST.get('posts', '') if request.user.pk == group.creator_id else 'published'
 
     base_url = reverse('group', kwargs={'group_slug': group.slug})
-    page = _calculate_post_page_from_group_comment(
-        request=request,
-        group=group,
-        posts_to_show=posts_to_show,
-    )
+    page = (
+        fetch_page_from_request(request) or
+        _calculate_post_page_from_group_comment(
+            request=request,
+            group=group,
+            posts_to_show=posts_to_show,
+        )
+    )   # if 'fetch_page_from_request returns 0 '_calculate_post_page_from-group_comment' will be used
     if posts_to_show:
         # if a parameter 'posts' was given, it'll be added to a new URL
         return redirect(to=f'{base_url}?page={page}&posts={posts_to_show}')
@@ -145,11 +148,14 @@ def _calculate_post_page_from_group_comment(
 def add_new_params_to_request_from_group_comment(request: WSGIRequest, group: Group) -> None:
     # visitors can see only published posts
     posts_to_show = request.POST.get('posts', '') if request.user.pk == group.creator_id else 'published'
-    page = _calculate_post_page_from_group_comment(
-        request=request,
-        group=group,
-        posts_to_show=posts_to_show,
-    )
+    page = (
+        fetch_page_from_request(request) or
+        _calculate_post_page_from_group_comment(
+            request=request,
+            group=group,
+            posts_to_show=posts_to_show,
+        )
+    )   # if 'fetch_page_from_request returns 0 '_calculate_post_page_from-group_comment' will be used
     request.GET._mutable = True
     request.GET['page'] = page
     if posts_to_show:

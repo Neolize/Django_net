@@ -94,3 +94,27 @@
   "funcName": "get_group_post_by_pk",
   "lineno": 159
 }
+{
+  "message": "Group with slug - delete_group_comment does not exist. Group matching query does not exist.",
+  "levelname": "WARNING",
+  "asctime": "2024-05-12 16:53:34,169",
+  "pathname": "/home/neolize/Neolize/Python/Django projects/Django Net/django_net_core/applications/groups/services/crud/read.py",
+  "funcName": "get_group_by_slug",
+  "lineno": 17
+}
+{
+  "message": "Group comment with pk - None does not exist. GroupComment matching query does not exist.",
+  "levelname": "ERROR",
+  "asctime": "2024-05-12 17:38:24,179",
+  "pathname": "/home/neolize/Neolize/Python/Django projects/Django Net/django_net_core/applications/groups/services/crud/read.py",
+  "funcName": "get_group_comment_by_pk",
+  "lineno": 150
+}
+{
+  "message": "Group post with pk - 0 does not exist. GroupPost matching query does not exist.",
+  "levelname": "ERROR",
+  "asctime": "2024-05-13 16:12:28,213",
+  "pathname": "/home/neolize/Neolize/Python/Django projects/Django Net/django_net_core/applications/groups/services/crud/read.py",
+  "funcName": "get_group_post_by_pk",
+  "lineno": 160
+}

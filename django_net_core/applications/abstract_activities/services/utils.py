@@ -1,3 +1,5 @@
+import re
+
 from django.db.models import QuerySet
 from django.db.models.base import ModelBase
 from django.utils.http import url_has_allowed_host_and_scheme
@@ -84,7 +86,18 @@ def get_parent_comment(parent_pk: int, form: GroupCommentForm | UserCommentForm)
 
 def get_previous_url(request: WSGIRequest):
     """Return the previous user's url"""
-    previous_url = request.META.get("HTTP_REFERER")
+    previous_url = request.META.get('HTTP_REFERER')
     if not url_has_allowed_host_and_scheme(url=previous_url, allowed_hosts=request.get_host()):
-        previous_url = "home"
+        previous_url = 'home'
     return previous_url
+
+
+def fetch_page_from_request(request: WSGIRequest) -> int:
+    if request.method.lower() == 'get':
+        return int(request.GET.get('page', 0))
+    else:
+        url = get_previous_url(request)
+        match = re.findall(r'page=([^&]+)', url)
+        if match and match[-1].isdigit():
+            return int(match[-1])   # there can be several 'page' parameters: ?page=1&page=2&page=3
+        return 0

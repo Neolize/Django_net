@@ -463,16 +463,13 @@ def handle_group_comment(request: WSGIRequest, group_slug: str):
         raise Http404
 
     form = g_forms.GroupCommentForm(request.POST)
-    is_edited = True if request.POST.get('edit', False) else False
 
     if request.POST.get('error', None):
         # if an error window was closed, the function will open the same page with a form without any mistakes
-        g_utils.add_new_params_to_request_from_group_comment(request, group)
-        # add parameters: page and posts_to_show in order to show user an appropriate page
-        return GroupView().get(request=request, group_slug=group_slug)
+        return g_utils.redirect_to_the_current_group_post_page(request, group)
 
     if form.is_valid():
-        if is_edited:
+        if request.POST.get('edit', False):
             if g_update.update_group_comment(
                     form=form,
                     request=request,
@@ -484,6 +481,9 @@ def handle_group_comment(request: WSGIRequest, group_slug: str):
                 request=request,
         ):
             return g_utils.redirect_to_the_current_group_post_page(request, group)
+
+    if request.method.lower() == 'get':
+        return g_utils.redirect_to_the_current_group_post_page(request, group)
 
     g_utils.add_new_params_to_request_from_group_comment(request, group)
     # add parameters: page and posts_to_show in order to show user an appropriate page

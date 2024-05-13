@@ -48,7 +48,12 @@ function findParentElementForComment(element) {
         return parentElement.querySelector('a');
     }
     else {
-        return parentElement.previousElementSibling.querySelector('a');
+        while (true) {
+            parentElement = parentElement.previousElementSibling;
+            if (parentElement.querySelector('a') !== null) {
+                return parentElement.querySelector('a');
+            }
+        }
     }
 }
 
@@ -104,6 +109,14 @@ function closeErrorBlock() {
     const form = document.getElementById('formComment');
     input.value = 'closed';
     form.submit();
+}
+
+
+function deleteComment(event) {
+    const answer = confirm('Are you sure you want to delete this comment?');
+    if (answer === false) {
+        event.preventDefault();
+    }
 }
 
 
