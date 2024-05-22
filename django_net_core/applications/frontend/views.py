@@ -499,9 +499,17 @@ def follow_group(request: WSGIRequest, group_slug: str):
     if not group:
         raise Http404
 
+    posts_to_show = aa_utils.fetch_posts_to_show_from_previous_url(request)
+    page = aa_utils.fetch_page_from_previous_url(request)
+    base_url = reverse('group', kwargs={'group_slug': group_slug})
+
     if not g_utils.is_user_subscribed_to_group(group=group, visitor=request.user):
         g_create.create_new_group_follower(group=group, member=request.user)
-    return redirect(to='group', group_slug=group_slug)
+
+    if posts_to_show:
+        # if a parameter 'posts' was given, it'll be added to a new URL
+        return redirect(to=f'{base_url}?page={page}&posts={posts_to_show}')
+    return redirect(to=f'{base_url}?page={page}')
 
 
 def unfollow_group(request: WSGIRequest, group_slug: str):
@@ -512,9 +520,17 @@ def unfollow_group(request: WSGIRequest, group_slug: str):
     if not group:
         raise Http404
 
+    posts_to_show = aa_utils.fetch_posts_to_show_from_previous_url(request)
+    page = aa_utils.fetch_page_from_previous_url(request)
+    base_url = reverse('group', kwargs={'group_slug': group_slug})
+
     if g_utils.is_user_subscribed_to_group(group=group, visitor=request.user):
         g_delete.delete_group_follower(group=group, member=request.user)
-    return redirect(to='group', group_slug=group_slug)
+
+    if posts_to_show:
+        # if a parameter 'posts' was given, it'll be added to a new URL
+        return redirect(to=f'{base_url}?page={page}&posts={posts_to_show}')
+    return redirect(to=f'{base_url}?page={page}')
 
 
 def delete_group(request: WSGIRequest, group_slug: str):
