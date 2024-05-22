@@ -27,6 +27,7 @@ urlpatterns = [
     path('group/<slug:group_slug>/group_followers/', views.GroupFollowersView.as_view(), name='group_followers'),
     path('group/<slug:group_post_slug>/delete_group_post/', views.delete_group_post, name='delete_group_post'),
     path('group/<slug:group_slug>/delete_group/', views.delete_group, name='delete_group'),
+    path('delete_group_comment/<int:comment_pk>/', views.delete_group_comment, name='delete_group_comment'),
 
     path('user/<int:pk>/followers/', views.UserFollowersView.as_view(), name='user_followers'),
     path('user/<int:pk>/following/', views.UserFollowingView.as_view(), name='user_following'),

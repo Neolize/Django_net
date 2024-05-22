@@ -93,11 +93,25 @@ def get_previous_url(request: WSGIRequest):
 
 
 def fetch_page_from_request(request: WSGIRequest) -> int:
+    """Return the page number from the gotten request."""
     if request.method.lower() == 'get':
         return int(request.GET.get('page', 0))
-    else:
-        url = get_previous_url(request)
-        match = re.findall(r'page=([^&]+)', url)
-        if match and match[-1].isdigit():
-            return int(match[-1])   # there can be several 'page' parameters: ?page=1&page=2&page=3
-        return 0
+    return fetch_page_from_previous_url(request)
+
+
+def fetch_posts_to_show_from_previous_url(request: WSGIRequest) -> str:
+    """Retrieve 'posts_to_show' parameter from the gotten request using previous url."""
+    url = get_previous_url(request)
+    match = re.findall(r'posts=([^&]+)', url)
+    if match:
+        return match[-1]
+    return ''
+
+
+def fetch_page_from_previous_url(request: WSGIRequest) -> int:
+    """Retrieve the page number from the gotten request using previous url."""
+    url = get_previous_url(request)
+    match = re.findall(r'page=([^&]+)', url)
+    if match and match[-1].isdigit():
+        return int(match[-1])   # there can be several 'page' parameters: ?page=1&page=2&page=3
+    return 0

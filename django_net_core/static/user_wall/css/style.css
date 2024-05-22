@@ -509,6 +509,11 @@ select.form-control:not([size]):not([multiple]) {
     margin-top: -25px;
 }
 
+.deleted_comment__content {
+    font-size: 12px;
+    margin-bottom: 35px;
+}
+
 .commentline {
     padding-bottom: 10px;
     border-bottom: 1px solid #999b9d;
@@ -556,6 +561,28 @@ select.form-control:not([size]):not([multiple]) {
     padding-left: 10px;
     padding-top: 2px;
     border-radius: 15px;
+}
+
+.delete_user_comment {
+    display: inline-block;
+    position: relative;
+    bottom: 25px;
+    left: 70px;
+    font-size: 12px;
+    font-weight: 700;
+    color: #415d7f;
+    text-decoration: none;
+}
+
+.delete_user_comment:hover {
+    color: #415d7f;
+    background-color: rgba(171, 80, 80, 0.5);
+    height: 35px;
+    width: 60px;
+    padding-left: 10px;
+    padding-top: 2px;
+    border-radius: 15px;
+    border: 1px solid rgb(214, 74, 74);
 }
 
 .cancel_button {

@@ -14,7 +14,7 @@ from applications.frontend import permissions
 from applications.frontend.services.utils import form_context_data_for_search_view
 
 from applications.abstract_activities.services import utils as aa_utils
-from applications.abstract_activities.services.crud.delete import delete_post
+from applications.abstract_activities.services.crud import delete as aa_delete
 
 from applications.user_profiles import forms as up_forms
 from applications.user_profiles.permissions import UserPermissionMixin, FORBIDDEN_MESSAGE
@@ -330,7 +330,7 @@ def delete_user_post(request: WSGIRequest, user_post_slug: str):
         post=user_post,
         posts_to_show=posts_to_show,
     )
-    delete_post(user_post)
+    aa_delete.delete_post(user_post)
     if posts_to_show:
         # if a parameter 'posts' was given, it'll be added to a new URL
         return redirect(to=f'{base_url}?page={page}&posts={posts_to_show}')
@@ -648,11 +648,33 @@ def delete_group_post(request: WSGIRequest, group_post_slug: str):
         post=group_post,
         posts_to_show=posts_to_show,
     )
-    delete_post(group_post)
+    aa_delete.delete_post(group_post)
     if posts_to_show:
         # if a parameter 'posts' was given, it'll be added to a new URL
         return redirect(to=f'{base_url}?page={page}&posts={posts_to_show}')
     return redirect(to=f'{base_url}?page={page}')   # redirect user to a new page after a group post was deleted
+
+
+def delete_group_comment(request: WSGIRequest, comment_pk: int):
+    if not request.user.is_authenticated:
+        return redirect(to='login')
+
+    comment = g_read.get_group_comment_by_pk(comment_pk)
+    if not comment:
+        raise Http404
+
+    if not permissions.is_user_comment_author(visitor=request.user, comment=comment):
+        return HttpResponseForbidden(FORBIDDEN_MESSAGE)
+
+    posts_to_show = aa_utils.fetch_posts_to_show_from_previous_url(request)
+    page = aa_utils.fetch_page_from_previous_url(request)
+    base_url = reverse('group', kwargs={'group_slug': comment.post.group.slug})
+
+    aa_delete.delete_comment(comment)
+    if posts_to_show:
+        # if a parameter 'posts' was given, it'll be added to a new URL
+        return redirect(to=f'{base_url}?page={page}&posts={posts_to_show}')
+    return redirect(to=f'{base_url}?page={page}')   # redirect user to the same page after his comment was deleted
 
 
 class GroupFollowersView(View):

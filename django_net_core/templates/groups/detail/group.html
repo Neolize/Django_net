@@ -265,40 +265,48 @@
                                                        {% for comment in post.get_comments %}
                                                            <li class="usercomment_block">
                                                                <div class="timeline-header usercomment-header">
-                                                                   {% if comment.author.avatar %}
-                                                                       <span class="userimage"><img src="{{ comment.author.avatar.url }}" alt="avatar"></span>
+                                                                   {% if comment.author %}
+                                                                       {% if comment.author.avatar %}
+                                                                           <span class="userimage"><img src="{{ comment.author.avatar.url }}" alt="avatar"></span>
+                                                                       {% else %}
+                                                                           <span class="userimage"><img src="{% static 'user_profiles/images/anonymous.png' %}" alt="avatar"></span>
+                                                                       {% endif %}
+                                                                       <span class="usercomment_name" {% if comment.is_edited %}data-comment-edited{% endif %}>
+                                                                           <a href="{% url 'user_profile' pk=comment.author.pk %}">{{ comment.author.get_full_name }}</a>
+                                                                       </span>
+
+                                                                       {% if comment.is_edited %}
+                                                                           <span class="edited_comment">(edited)</span>
+                                                                           <span class="comment_creation_date__edited">{{ comment.creation_date|date:"j F o H:i" }}</span>
+                                                                           <p class="usercomment_content usercomment_content_edited" data-parent-comment-url="{{ comment.author.get_absolute_url }}"
+                                                                              data-parent-comment-pk="{{ comment.pk }}">
+                                                                               {{ comment.content }}
+                                                                          </p>
+                                                                       {% else %}
+                                                                           <span class="comment_creation_date">{{ comment.creation_date|date:"j F o H:i" }}</span>
+                                                                           <p class="usercomment_content" data-parent-comment-url="{{ comment.author.get_absolute_url }}"
+                                                                              data-parent-comment-pk="{{ comment.pk }}">
+                                                                               {{ comment.content }}
+                                                                           </p>
+                                                                       {% endif %}
+
+                                                                       {% if user.is_authenticated %}
+                                                                           {% if comment.author_id != request.user.pk %}
+                                                                               <a href="#" class="comment_reply"
+                                                                                  onclick="addChildReview(event, '{{ comment.author.get_full_name|addslashes }}', '{{ comment.pk }}')">Reply
+                                                                               </a>
+                                                                           {% else %}
+                                                                               <a href="#" class="edit_user_comment"
+                                                                                 onclick='editUserComment(event, "{{ comment.pk }}", "{{ comment.content|addslashes }}")'>Edit
+                                                                               </a>
+                                                                               <a href="{% url 'delete_group_comment' comment_pk=comment.pk %}" class="delete_user_comment"
+                                                                                  onclick='deleteComment(event)'>Delete
+                                                                               </a>
+                                                                           {% endif %}
+                                                                       {% endif %}
                                                                    {% else %}
                                                                        <span class="userimage"><img src="{% static 'user_profiles/images/anonymous.png' %}" alt="avatar"></span>
-                                                                   {% endif %}
-                                                                   <span class="usercomment_name" {% if comment.is_edited %}data-comment-edited{% endif %}>
-                                                                       <a href="{% url 'user_profile' pk=comment.author.pk %}">{{ comment.author.get_full_name }}</a>
-                                                                   </span>
-
-                                                                   {% if comment.is_edited %}
-                                                                       <span class="edited_comment">(edited)</span>
-                                                                       <span class="comment_creation_date__edited">{{ comment.creation_date|date:"j F o H:i" }}</span>
-                                                                       <p class="usercomment_content usercomment_content_edited" data-parent-comment-url="{{ comment.author.get_absolute_url }}"
-                                                                          data-parent-comment-pk="{{ comment.pk }}">
-                                                                           {{ comment.content }}
-                                                                      </p>
-                                                                   {% else %}
-                                                                       <span class="comment_creation_date">{{ comment.creation_date|date:"j F o H:i" }}</span>
-                                                                       <p class="usercomment_content" data-parent-comment-url="{{ comment.author.get_absolute_url }}"
-                                                                          data-parent-comment-pk="{{ comment.pk }}">
-                                                                           {{ comment.content }}
-                                                                       </p>
-                                                                   {% endif %}
-
-                                                                   {% if user.is_authenticated %}
-                                                                       {% if comment.author_id != request.user.pk %}
-                                                                           <a href="#" class="comment_reply"
-                                                                              onclick="addChildReview(event, '{{ comment.author.get_full_name|addslashes }}', '{{ comment.pk }}')">Reply
-                                                                           </a>
-                                                                       {% else %}
-                                                                           <a href="#" class="edit_user_comment"
-                                                                             onclick='editUserComment(event, "{{ comment.pk }}", "{{ comment.content|addslashes }}")'>Edit
-                                                                           </a>
-                                                                       {% endif %}
+                                                                       <p class="deleted_comment__content" >{{ comment.content }}</p>
                                                                    {% endif %}
                                                                </div>
                                                            </li>
@@ -306,40 +314,48 @@
                                                            {% for child in comment.children_comments %}
                                                                <li class="childcomment_block">
                                                                    <div class="timeline-header usercomment-header">
-                                                                       {% if child.author.avatar %}
-                                                                           <span class="userimage"><img src="{{ child.author.avatar.url }}" alt="avatar"></span>
+                                                                       {% if child.author %}
+                                                                           {% if child.author.avatar %}
+                                                                               <span class="userimage"><img src="{{ child.author.avatar.url }}" alt="avatar"></span>
+                                                                           {% else %}
+                                                                               <span class="userimage"><img src="{% static 'user_profiles/images/anonymous.png' %}" alt="avatar"></span>
+                                                                           {% endif %}
+                                                                           <span class="usercomment_name" {% if child.is_edited %}data-comment-edited{% endif %}>
+                                                                               <a href="{% url 'user_profile' pk=child.author.pk %}">{{ child.author.get_full_name }}</a>
+                                                                           </span>
+
+                                                                           {% if child.is_edited %}
+                                                                               <span class="edited_comment">(edited)</span>
+                                                                               <span class="comment_creation_date__edited">{{ child.creation_date|date:"j F o H:i" }}</span>
+                                                                               <p class="usercomment_content usercomment_content_edited" data-child-comment="{{ comment.pk }}"
+                                                                                  data-parent-comment-url="{{ child.author.get_absolute_url }}" data-parent-comment-pk="{{ comment.pk }}">
+                                                                                   {{ child.content }}
+                                                                              </p>
+                                                                           {% else %}
+                                                                               <span class="comment_creation_date">{{ child.creation_date|date:"j F o H:i" }}</span>
+                                                                               <p class="usercomment_content" data-child-comment="{{ comment.pk }}" data-parent-comment-url="{{ child.author.get_absolute_url }}"
+                                                                                  data-parent-comment-pk="{{ comment.pk }}">
+                                                                                   {{ child.content }}
+                                                                               </p>
+                                                                           {% endif %}
+
+                                                                           {% if user.is_authenticated %}
+                                                                               {% if child.author_id != request.user.pk %}
+                                                                                   <a href="#" class="comment_reply"
+                                                                                       onclick="addChildReview(event, '{{ child.author.get_full_name|addslashes }}', '{{ comment.pk }}')">Reply
+                                                                                   </a>
+                                                                               {% else %}
+                                                                                   <a href="#" class="edit_user_comment"
+                                                                                      onclick='editUserComment(event, "{{ child.pk }}", "{{ child.content|addslashes }}")'>Edit
+                                                                                   </a>
+                                                                                   <a href="{% url 'delete_group_comment' comment_pk=child.pk %}" class="delete_user_comment"
+                                                                                      onclick='deleteComment(event)'>Delete
+                                                                                   </a>
+                                                                               {% endif %}
+                                                                           {% endif %}
                                                                        {% else %}
                                                                            <span class="userimage"><img src="{% static 'user_profiles/images/anonymous.png' %}" alt="avatar"></span>
-                                                                       {% endif %}
-                                                                       <span class="usercomment_name" {% if child.is_edited %}data-comment-edited{% endif %}>
-                                                                           <a href="{% url 'user_profile' pk=child.author.pk %}">{{ child.author.get_full_name }}</a>
-                                                                       </span>
-
-                                                                       {% if child.is_edited %}
-                                                                           <span class="edited_comment">(edited)</span>
-                                                                           <span class="comment_creation_date__edited">{{ child.creation_date|date:"j F o H:i" }}</span>
-                                                                           <p class="usercomment_content usercomment_content_edited" data-child-comment="{{ comment.pk }}"
-                                                                              data-parent-comment-url="{{ child.author.get_absolute_url }}" data-parent-comment-pk="{{ comment.pk }}">
-                                                                               {{ child.content }}
-                                                                          </p>
-                                                                       {% else %}
-                                                                           <span class="comment_creation_date">{{ child.creation_date|date:"j F o H:i" }}</span>
-                                                                           <p class="usercomment_content" data-child-comment="{{ comment.pk }}" data-parent-comment-url="{{ child.author.get_absolute_url }}"
-                                                                              data-parent-comment-pk="{{ comment.pk }}">
-                                                                               {{ child.content }}
-                                                                           </p>
-                                                                       {% endif %}
-
-                                                                       {% if user.is_authenticated %}
-                                                                           {% if child.author_id != request.user.pk %}
-                                                                               <a href="#" class="comment_reply"
-                                                                                   onclick="addChildReview(event, '{{ child.author.get_full_name|addslashes }}', '{{ comment.pk }}')">Reply
-                                                                               </a>
-                                                                           {% else %}
-                                                                               <a href="#" class="edit_user_comment"
-                                                                                  onclick='editUserComment(event, "{{ child.pk }}", "{{ child.content|addslashes }}")'>Edit
-                                                                               </a>
-                                                                           {% endif %}
+                                                                           <p class="deleted_comment__content">{{ child.content }}</p>
                                                                        {% endif %}
                                                                    </div>
                                                                </li>

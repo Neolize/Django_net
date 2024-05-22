@@ -14,13 +14,14 @@ function modifyChildComments() {
 
     for (const child of childComments) {
         const found = child.innerHTML.search(regexp);
-
         const parent = findParentComment(child.dataset.childComment, child.innerHTML.slice(0, found));
-        const parentURL = parent.dataset.parentCommentUrl;
-        const linkToParentComment = createLinkToParentComment(child.innerHTML.slice(0, found), parentURL);
 
-        child.innerHTML = child.innerHTML.slice(found);
-        child.insertAdjacentElement('afterbegin', linkToParentComment);
+        if (parent) {
+            const parentURL = parent.dataset.parentCommentUrl;
+            const linkToParentComment = createLinkToParentComment(child.innerHTML.slice(0, found), parentURL);
+            child.innerHTML = child.innerHTML.slice(found);
+            child.insertAdjacentElement('afterbegin', linkToParentComment);
+        }
     }
 }
 
