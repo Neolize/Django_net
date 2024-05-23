@@ -16,6 +16,7 @@ urlpatterns = [
     path('user/profile/unfollow/<int:pk>/', views.unfollow_user, name='unfollow_user'),
     path('user/profile/<slug:user_post_slug>/delete_user_post/', views.delete_user_post, name='delete_user_post'),
     path('user/profile/<int:pk>/delete_account/', views.delete_user_account, name='delete_user_account'),
+    path('delete_user_comment/<int:comment_pk>/', views.delete_user_comment, name='delete_user_comment'),
 
     path('group/<slug:group_slug>/create_group_post/', views.CreateGroupPostView.as_view(), name='create_group_post'),
     path('group/edit_group_post/<slug:group_post_slug>/', views.EditGroupPostView.as_view(), name='edit_group_post'),

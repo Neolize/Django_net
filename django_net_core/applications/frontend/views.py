@@ -337,6 +337,28 @@ def delete_user_post(request: WSGIRequest, user_post_slug: str):
     return redirect(to=f'{base_url}?page={page}')   # redirect user to a new page after a post was deleted
 
 
+def delete_user_comment(request: WSGIRequest, comment_pk: int):
+    if not request.user.is_authenticated:
+        return redirect(to='login')
+
+    comment = uw_read.get_user_comment_by_pk(comment_pk)
+    if not comment:
+        raise Http404
+
+    if not permissions.is_user_comment_author(visitor=request.user, comment=comment):
+        return HttpResponseForbidden
+
+    posts_to_show = aa_utils.fetch_posts_to_show_from_previous_url(request)
+    page = aa_utils.fetch_page_from_previous_url(request)
+    base_url = reverse('user_profile', kwargs={'pk': comment.post.author_id})
+
+    aa_delete.delete_comment(comment)
+    if posts_to_show:
+        # if a parameter 'posts' was given, it'll be added to a new URL
+        return redirect(to=f'{base_url}?page={page}&posts={posts_to_show}')
+    return redirect(to=f'{base_url}?page={page}')   # redirect user to the same page after his comment was deleted
+
+
 class UserFollowersView(View):
     template_name = 'user_profiles/list/followers.html'
 
