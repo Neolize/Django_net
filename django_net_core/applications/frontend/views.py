@@ -476,14 +476,8 @@ class GroupView(View):
         return render(request, self.template_name, context=context)
 
 
-def handle_group_comment(request: WSGIRequest, group_slug: str):
-    if request.user.is_anonymous:
-        return redirect(to='login')
-
-    group = g_read.get_group_by_slug(group_slug)
-    if not group:
-        raise Http404
-
+@g_permissions.check_group_request
+def handle_group_comment(request: WSGIRequest, group_slug: str, group: g_models.Group):
     form = g_forms.GroupCommentForm(request.POST)
 
     if request.POST.get('error', None):
@@ -512,15 +506,9 @@ def handle_group_comment(request: WSGIRequest, group_slug: str):
     return GroupView().get(request=request, group_slug=group_slug, form=form)
 
 
-def follow_group(request: WSGIRequest, group_slug: str):
-    """Follow a group if the request goes from authenticated user, who isn't subscribed to this group"""
-    if not request.user.is_authenticated:
-        return redirect(to='login')
-
-    group = g_read.get_group_by_slug(group_slug)
-    if not group:
-        raise Http404
-
+@g_permissions.check_group_request
+def follow_group(request: WSGIRequest, group_slug: str, group: g_models.Group):
+    """Follow a group if the request goes from authenticated user, who isn't subscribed to the group."""
     posts_to_show = aa_utils.fetch_posts_to_show_from_previous_url(request)
     page = aa_utils.fetch_page_from_previous_url(request)
     base_url = reverse('group', kwargs={'group_slug': group_slug})
@@ -534,14 +522,9 @@ def follow_group(request: WSGIRequest, group_slug: str):
     return redirect(to=f'{base_url}?page={page}')
 
 
-def unfollow_group(request: WSGIRequest, group_slug: str):
-    if not request.user.is_authenticated:
-        return redirect(to='login')
-
-    group = g_read.get_group_by_slug(group_slug)
-    if not group:
-        raise Http404
-
+@g_permissions.check_group_request
+def unfollow_group(request: WSGIRequest, group_slug: str, group: g_models.Group):
+    """Unfollow a group if the request goes from authenticated user, who is subscribed to the group."""
     posts_to_show = aa_utils.fetch_posts_to_show_from_previous_url(request)
     page = aa_utils.fetch_page_from_previous_url(request)
     base_url = reverse('group', kwargs={'group_slug': group_slug})
@@ -555,15 +538,9 @@ def unfollow_group(request: WSGIRequest, group_slug: str):
     return redirect(to=f'{base_url}?page={page}')
 
 
-def delete_group(request: WSGIRequest, group_slug: str):
-    """Delete a group if the request goes from the owner of this group"""
-    if not request.user.is_authenticated:
-        return redirect(to='login')
-
-    group = g_read.get_group_by_slug(group_slug)
-    if not group:
-        raise Http404
-
+@g_permissions.check_group_request
+def delete_group(request: WSGIRequest, group_slug: str, group: g_models.Group):
+    """Delete a group if the request goes from the owner of the group."""
     if group.creator_id != request.user.pk:
         return HttpResponseForbidden(FORBIDDEN_MESSAGE)
 
@@ -666,17 +643,9 @@ class EditGroupPostView(LoginRequiredMixin, View):
         return render(request, self.template_name, context=context)
 
 
-def delete_group_post(request: WSGIRequest, group_post_slug: str):
-    if not request.user.is_authenticated:
-        return redirect(to='login')
-
-    group_post = g_read.fetch_group_post(group_post_slug)
-    if not group_post:
-        raise Http404
-
-    if not permissions.is_user_post_author(visitor=request.user, post=group_post):
-        return HttpResponseForbidden(FORBIDDEN_MESSAGE)
-
+@g_permissions.check_group_post_deletion_request
+def delete_group_post(request: WSGIRequest, group_post: g_models.GroupPost):
+    """Delete a group post if the request goes from the owner of the post."""
     posts_to_show = request.GET.get('posts', '')
     base_url = reverse('group', kwargs={'group_slug': group_post.group.slug})
     page = aa_utils.calculate_post_page(
@@ -693,17 +662,8 @@ def delete_group_post(request: WSGIRequest, group_post_slug: str):
     return redirect(to=f'{base_url}?page={page}')   # redirect user to a new page after a group post was deleted
 
 
-def delete_group_comment(request: WSGIRequest, comment_pk: int):
-    if not request.user.is_authenticated:
-        return redirect(to='login')
-
-    comment = g_read.get_group_comment_by_pk(comment_pk)
-    if not comment:
-        raise Http404
-
-    if not permissions.is_user_comment_author(visitor=request.user, comment=comment):
-        return HttpResponseForbidden(FORBIDDEN_MESSAGE)
-
+@g_permissions.check_group_comment_deletion_request
+def delete_group_comment(request: WSGIRequest, comment: g_models.GroupComment):
     posts_to_show = aa_utils.fetch_posts_to_show_from_previous_url(request)
     page = aa_utils.fetch_page_from_previous_url(request)
     base_url = reverse('group', kwargs={'group_slug': comment.post.group.slug})
