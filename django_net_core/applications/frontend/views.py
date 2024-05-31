@@ -16,8 +16,8 @@ from applications.frontend.services.utils import form_context_data_for_search_vi
 from applications.abstract_activities.services import utils as aa_utils
 from applications.abstract_activities.services.crud import delete as aa_delete
 
-from applications.user_profiles import forms as up_forms
-from applications.user_profiles.permissions import UserPermissionMixin, FORBIDDEN_MESSAGE
+from applications.user_profiles import forms as up_forms, models as up_models
+from applications.user_profiles import permissions as up_permissions
 from applications.user_profiles.services.crud import (read as up_read, update as up_update,
                                                       create as up_create, delete as up_delete)
 from applications.user_profiles.services.utils import form_utils as up_form_utils, common_utils as up_common_utils
@@ -104,14 +104,8 @@ class UserProfileView(View):
         return render(request, self.template_name, context=context)
 
 
-def handle_user_comment(request: WSGIRequest, pk):
-    if request.user.is_anonymous:
-        return redirect(to='login')
-
-    user_obj = up_read.get_user_for_profile(user_pk=pk)
-    if not user_obj:
-        raise Http404
-
+@up_permissions.check_user_request
+def handle_user_comment(request: WSGIRequest, pk: int, user_obj: up_models.CustomUser):
     form = uw_forms.UserCommentForm(request.POST)
     is_edited = True if request.POST.get('edit', False) else False
 
@@ -140,34 +134,23 @@ def handle_user_comment(request: WSGIRequest, pk):
     return UserProfileView().get(request=request, pk=pk, form=form)
 
 
-def follow_user(request: WSGIRequest, pk: int):
-    """Follow a user if the request goes from authenticated and unsubscribed user"""
-    if not request.user.is_authenticated:
-        return redirect(to='login')
-
-    owner = up_read.get_raw_user_instance(user_pk=pk)
-    if not owner:
-        raise Http404
-
+@up_permissions.check_user_request
+def follow_user(request: WSGIRequest, pk: int, owner: up_models.CustomUser):
+    """Follow a user if the request goes from authenticated and unsubscribed user."""
     if not up_common_utils.is_followed(current_user=owner, visitor=request.user):
         up_create.create_new_follower(owner=owner, follower=request.user)
     return redirect(to='user_profile', pk=pk)
 
 
-def unfollow_user(request: WSGIRequest, pk: int):
-    if not request.user.is_authenticated:
-        return redirect(to='login')
-
-    owner = up_read.get_raw_user_instance(user_pk=pk)
-    if not owner:
-        raise Http404
-
+@up_permissions.check_user_request
+def unfollow_user(request: WSGIRequest, pk: int, owner: up_models.CustomUser):
+    """Unfollow a user if the request goes from authenticated and subscribed user."""
     if up_common_utils.is_followed(current_user=owner, visitor=request.user):
         up_delete.delete_follower(owner=owner, follower=request.user)
     return redirect(to='user_profile', pk=pk)
 
 
-class EditUserProfileView(LoginRequiredMixin, UserPermissionMixin, View):
+class EditUserProfileView(LoginRequiredMixin, up_permissions.UserPermissionMixin, View):
     template_name = 'user_profiles/detail/edit.html'
     form_class = up_forms.EditUserProfileForm
     login_url = reverse_lazy('login')
@@ -205,17 +188,11 @@ class EditUserProfileView(LoginRequiredMixin, UserPermissionMixin, View):
         }
 
 
-def delete_user_account(request: WSGIRequest, pk: int):
+@up_permissions.check_user_request
+def delete_user_account(request: WSGIRequest, pk: int, owner: up_models.CustomUser):
     """Delete a user's account if the request goes from the owner of this account"""
-    if not request.user.is_authenticated:
-        return redirect(to='login')
-
-    owner = up_read.get_raw_user_instance(user_pk=pk)
-    if not owner:
-        raise Http404
-
-    if owner.pk != request.user.pk:
-        return HttpResponseForbidden(FORBIDDEN_MESSAGE)
+    if pk != request.user.pk:
+        return HttpResponseForbidden(up_permissions.FORBIDDEN_MESSAGE)
 
     logout(request)     # log out user before deleting his/her account
     deleted = up_delete.delete_user(owner)
@@ -263,7 +240,7 @@ class EditUserPostView(LoginRequiredMixin, View):
         self.check_request(user_post=user_post)
 
         if not permissions.is_user_post_author(visitor=request.user, post=user_post):
-            return HttpResponseForbidden(FORBIDDEN_MESSAGE)
+            return HttpResponseForbidden(up_permissions.FORBIDDEN_MESSAGE)
 
         context = self.get_context_data(pk=request.user.pk, post_slug=slug)
         aa_utils.fill_edit_post_form(form=context['form'], post=user_post)
@@ -274,7 +251,7 @@ class EditUserPostView(LoginRequiredMixin, View):
         self.check_request(user_post=user_post)
 
         if not permissions.is_user_post_author(visitor=request.user, post=user_post):
-            return HttpResponseForbidden(FORBIDDEN_MESSAGE)
+            return HttpResponseForbidden(up_permissions.FORBIDDEN_MESSAGE)
 
         form = self.form_class(request.POST)
         if form.is_valid() and uw_update.update_user_post(data=form.cleaned_data, post=user_post):
@@ -310,17 +287,8 @@ class EditUserPostView(LoginRequiredMixin, View):
             raise Http404
 
 
-def delete_user_post(request: WSGIRequest, user_post_slug: str):
-    if not request.user.is_authenticated:
-        return redirect(to='login')
-
-    user_post = uw_read.fetch_user_post(user_post_slug)
-    if not user_post:
-        raise Http404
-
-    if not permissions.is_user_post_author(visitor=request.user, post=user_post):
-        return HttpResponseForbidden(FORBIDDEN_MESSAGE)
-
+@up_permissions.check_user_post_deletion_request
+def delete_user_post(request: WSGIRequest, user_post: uw_models.UserPost):
     posts_to_show = request.GET.get('posts', '')
     base_url = reverse('user_profile', kwargs={'pk': request.user.pk})
     page = aa_utils.calculate_post_page(
@@ -337,17 +305,8 @@ def delete_user_post(request: WSGIRequest, user_post_slug: str):
     return redirect(to=f'{base_url}?page={page}')   # redirect user to a new page after a post was deleted
 
 
-def delete_user_comment(request: WSGIRequest, comment_pk: int):
-    if not request.user.is_authenticated:
-        return redirect(to='login')
-
-    comment = uw_read.get_user_comment_by_pk(comment_pk)
-    if not comment:
-        raise Http404
-
-    if not permissions.is_user_comment_author(visitor=request.user, comment=comment):
-        return HttpResponseForbidden
-
+@up_permissions.check_user_comment_deletion_request
+def delete_user_comment(request: WSGIRequest, comment: uw_models.UserComment):
     posts_to_show = aa_utils.fetch_posts_to_show_from_previous_url(request)
     page = aa_utils.fetch_page_from_previous_url(request)
     base_url = reverse('user_profile', kwargs={'pk': comment.post.author_id})
@@ -409,7 +368,7 @@ class PeopleSearchView(View):
         return render(request, self.template_name, context=context)
 
 
-class GroupCreationView(LoginRequiredMixin, UserPermissionMixin, View):
+class GroupCreationView(LoginRequiredMixin, up_permissions.UserPermissionMixin, View):
     template_name = 'groups/detail/create_group.html'
     form_class = g_forms.CreateGroup
     login_url = reverse_lazy('login')
@@ -542,7 +501,7 @@ def unfollow_group(request: WSGIRequest, group_slug: str, group: g_models.Group)
 def delete_group(request: WSGIRequest, group_slug: str, group: g_models.Group):
     """Delete a group if the request goes from the owner of the group."""
     if group.creator_id != request.user.pk:
-        return HttpResponseForbidden(FORBIDDEN_MESSAGE)
+        return HttpResponseForbidden(up_permissions.FORBIDDEN_MESSAGE)
 
     deleted = g_delete.delete_group_instance(group)
     context = {'deleted': deleted}
@@ -600,7 +559,7 @@ class EditGroupPostView(LoginRequiredMixin, View):
             raise Http404
 
         if not permissions.is_user_post_author(visitor=request.user, post=group_post):
-            return HttpResponseForbidden(FORBIDDEN_MESSAGE)
+            return HttpResponseForbidden(up_permissions.FORBIDDEN_MESSAGE)
 
         context = {
             'form': self.form_class(),
@@ -616,7 +575,7 @@ class EditGroupPostView(LoginRequiredMixin, View):
             raise Http404
 
         if not permissions.is_user_post_author(visitor=request.user, post=group_post):
-            return HttpResponseForbidden(FORBIDDEN_MESSAGE)
+            return HttpResponseForbidden(up_permissions.FORBIDDEN_MESSAGE)
 
         form = self.form_class(request.POST)
         if form.is_valid() and g_update.update_group_post(data=form.cleaned_data, group_post=group_post):

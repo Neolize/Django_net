@@ -27,7 +27,7 @@ def is_user_group_author(visitor: CustomUser, group: Group) -> bool:
 
 
 def check_group_request(func: callable):
-    """Check request for group views."""
+    """Check if the request goes from an authenticated user and if group with given 'group_slug' exists."""
     @wraps(func)
     def wrapper(request: WSGIRequest, group_slug: str):
         if request.user.is_anonymous:
@@ -43,7 +43,7 @@ def check_group_request(func: callable):
 
 
 def check_group_post_deletion_request(func: callable):
-    """Check request for 'delete_group_post' view."""
+    """Check if the request goes from an authenticated user and if group with given 'group_slug' exists."""
     @wraps(func)
     def wrapper(request: WSGIRequest, group_post_slug: str):
         if request.user.is_anonymous:
@@ -62,7 +62,7 @@ def check_group_post_deletion_request(func: callable):
 
 
 def check_group_comment_deletion_request(func: callable):
-    """Check request for 'delete_group_comment' view."""
+    """Check if the request goes from an authenticated user and if group comment with given 'comment_pk' exists."""
     @wraps(func)
     def wrapper(request: WSGIRequest, comment_pk: int):
         if request.user.is_anonymous:
