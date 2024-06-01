@@ -36,6 +36,7 @@ urlpatterns = [
     path('user/chat_list/', views.UserChatListView.as_view(), name='user_chat_list'),
 
     path('search/', views.PeopleSearchView.as_view(), name='people_search'),
+    path('group_search/', views.GroupSearchView.as_view(), name='group_search'),
 
     path('login/', views.LoginUserView.as_view(), name='login'),
     path('signup/', views.SignupUserView.as_view(), name='signup'),

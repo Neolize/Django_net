@@ -11,7 +11,8 @@ from django.views.generic import ListView, CreateView, View
 from django_net_core.settings import USER_POSTS_PAGINATE_BY, GROUP_POSTS_PAGINATE_BY
 
 from applications.frontend import permissions
-from applications.frontend.services.utils import form_context_data_for_search_view
+from applications.frontend.services.utils import (form_context_data_for_people_search_view,
+                                                  form_context_data_for_group_search_view)
 
 from applications.abstract_activities.services import utils as aa_utils
 from applications.abstract_activities.services.crud import delete as aa_delete
@@ -361,7 +362,7 @@ class PeopleSearchView(View):
     paginate_by = 3
 
     def get(self, request: WSGIRequest):
-        context = form_context_data_for_search_view(
+        context = form_context_data_for_people_search_view(
             request=request,
             paginate_by=self.paginate_by,
         )
@@ -650,6 +651,18 @@ class GroupFollowersView(View):
                 visitor=request.user,
             )
         }
+        return render(request, self.template_name, context=context)
+
+
+class GroupSearchView(View):
+    template_name = 'search/group_search.html'
+    paginate_by = 3
+
+    def get(self, request: WSGIRequest):
+        context = form_context_data_for_group_search_view(
+            request=request,
+            paginate_by=self.paginate_by,
+        )
         return render(request, self.template_name, context=context)
 
 

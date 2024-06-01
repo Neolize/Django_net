@@ -14,7 +14,7 @@ def get_all_users() -> QuerySet[models.CustomUser]:
 
 
 def get_all_users_with_personal_data() -> QuerySet[models.CustomUser]:
-    """Return all users with all needed information"""
+    """Return all users with all needed information."""
     return (
         models.CustomUser.objects.all().order_by('pk').
         select_related(
@@ -30,8 +30,8 @@ def get_all_users_with_personal_data() -> QuerySet[models.CustomUser]:
     )
 
 
-def fetch_users_by_names(user_input) -> QuerySet[models.CustomUser]:
-    """Return users selected by names with all needed information"""
+def fetch_users_by_names(user_input: str) -> QuerySet[models.CustomUser]:
+    """Return users selected by names with all needed information."""
     return (
         models.CustomUser.objects.filter(
             Q(username__icontains=user_input) |

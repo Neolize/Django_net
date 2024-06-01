@@ -9,7 +9,7 @@
     <link rel="stylesheet" href="{% static 'search/css/search_pagination.css' %}" type="text/css" />
 {% endblock link %}
 
-{% block title %}People search{% endblock title %}
+{% block title %}Groups search{% endblock title %}
 
 
 {% block content %}
@@ -21,58 +21,41 @@
         </form>
 
         <div class="row card_block">
-            {% for user in users %}
+            {% for group in groups %}
                 <div class="col-md-4">
                     <div class="card user-card">
                         <div class="card-block">
                             <div class="user-image">
-                                {% if user.avatar %}
-                                    <a href="{{ user.get_absolute_url }}"><img src="{{ user.avatar.url }}" class="img-radius" alt="avatar"></a>
+                                {% if group.logo %}
+                                    <a href="{{ group.get_absolute_url }}"><img src="{{ group.logo.url }}" class="img-radius" alt="Logo"></a>
                                 {% else %}
-                                    <a href="{{ user.get_absolute_url }}"><img src="{% static 'user_profiles/images/anonymous.png' %}" class="img-radius" alt="User-Profile-Image"></a>
+                                    <a href="{{ group.get_absolute_url }}"><img src="{% static 'user_profiles/images/anonymous.png' %}" class="img-radius" alt="Logo"></a>
                                 {% endif %}
                             </div>
-                            <h5><a class="user_link" href="{{ user.get_absolute_url }}">{{ user.get_full_name }}</a></h5>
+                            <h5><a class="user_link" href="{{ group.get_absolute_url }}">{{ group.title }}</a></h5>
                             <p class="text-muted">
-                                {% if user.gender != 'not specified' %}
-                                    {{ user.gender|title }} |
-                                {% endif %}
-                                {% if user.personal_data.birthday %}
-                                    Born {{ user.personal_data.birthday|date:"j.m.o" }}
-                                {% endif %}
+                                Created {{ group.creation_date|date:"j.m.o" }}
                             </p>
                             <hr>
                             <div class="bg-c-blue counter-block m-t-10 p-20">
                                 <div class="row">
                                     <div class="col-4">
                                         <i class="fa fa-user"></i>
-                                        <p>{{ user.followers.count }}</p>
+                                        <p>{{ group.group_members.count }}</p>
                                     </div>
                                     <div class="col-4">
                                         <i class="fa fa-comment"></i>
-                                        <p>{{ user.user_comments.count|add:user.group_comments.count }}</p>
+                                        <p>10</p>
                                     </div>
                                     <div class="col-4">
                                         <i class="fa fa-sitemap"></i>
-                                        <p>{{ user.user_groups.count }}</p>
+                                        <p>{{ group.group_posts.count }}</p>
                                     </div>
                                 </div>
                             </div>
                             <p class="m-t-15 text-muted">
-                                {{ user.personal_data.info_about_user|truncatechars:70 }}
+                                {{ group.description|truncatechars:70 }}
                             </p>
-                            <hr>
-                            <div class="row justify-content-center user-social-link">
-                                {% if user.contacts.website %}
-                                    <div class="col-auto"><a href="{{ user.contacts.website }}"><i class="fa fa-globe text-globe"></i></a></div>
-                                {% endif %}
-                                {% if user.contacts.twitter %}
-                                    <div class="col-auto"><a href="{{ user.contacts.twitter }}"><i class="fa fa-twitter text-twitter"></i></a></div>
-                                {% endif %}
-                                {% if user.contacts.github %}
-                                <div class="col-auto"><a href="{{ user.contacts.github }}"><i class="fa fa-github text-github"></i></a></div>
-                                {% endif %}
-                            </div>
                         </div>
                     </div>
                 </div>

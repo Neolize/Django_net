@@ -161,3 +161,19 @@ def get_group_post_by_pk(post_pk: int) -> models.GroupPost | bool:
         post = False
 
     return post
+
+
+def get_all_groups() -> QuerySet[models.Group]:
+    """Return all groups."""
+    return (
+        models.Group.objects.all().order_by('pk').
+        prefetch_related(
+            'group_members',
+            'group_posts',
+        )
+    )
+
+
+def fetch_groups_by_titles(user_input: str) -> QuerySet[models.Group]:
+    """Return groups selected by titles."""
+    return models.Group.objects.filter(title__icontains=user_input)
