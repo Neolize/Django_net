@@ -72,6 +72,9 @@ def check_group_comment_deletion_request(func: callable):
         if not comment:
             raise Http404
 
+        if not comment.author_id:
+            return HttpResponseForbidden(FORBIDDEN_MESSAGE)
+
         if not is_user_comment_author(visitor=request.user, comment=comment):
             return HttpResponseForbidden(FORBIDDEN_MESSAGE)
 

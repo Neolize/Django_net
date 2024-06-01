@@ -51,6 +51,10 @@ def is_new_comment_valid(
             form.add_error(None, f'Parent comment with pk: "{parent_pk}" does not exist.')
             return False
 
+        if not parent_comment.author_id:
+            form.add_error(None, f"You can't reply to this comment.")
+            return False
+
         if parent_comment.author_id == user.pk:
             form.add_error(None, "You can't reply to your own comment.")
             return False

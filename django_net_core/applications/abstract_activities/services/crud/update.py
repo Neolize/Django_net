@@ -111,6 +111,10 @@ def is_edited_comment_valid(
         form.add_error(None, f'A comment with pk: "{comment_pk}" does not exist.')
         return False
 
+    if not comment.author_id:
+        form.add_error(None, "You can't update this comment.")
+        return False
+
     if not is_user_comment_author(visitor=user, comment=comment):
         form.add_error(None, 'You are not an author of this comment.')
         return False
@@ -128,6 +132,10 @@ def is_edited_comment_valid(
         parent_comment = get_parent_comment(parent_pk=parent_pk, form=form)
         if not parent_comment:
             form.add_error(None, f'Parent comment with pk: "{parent_pk}" does not exist.')
+            return False
+
+        if not parent_comment.author_id:
+            form.add_error(None, "You can't update this comment.")
             return False
 
         if parent_comment.author_id == user.pk:
