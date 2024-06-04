@@ -1,6 +1,6 @@
 import logging
 
-from django.db.models import QuerySet, Count, Prefetch
+from django.db.models import QuerySet, Count, Q
 from django.core.exceptions import ObjectDoesNotExist
 
 from applications.groups import models
@@ -164,7 +164,7 @@ def get_group_post_by_pk(post_pk: int) -> models.GroupPost | bool:
 
 
 def get_all_groups() -> QuerySet[models.Group]:
-    """Return all groups."""
+    """Return all groups with 'group_members', 'group_posts' and amount of comment for each group."""
     return (
         models.Group.objects.all().order_by('pk').
         prefetch_related(
@@ -178,11 +178,19 @@ def get_all_groups() -> QuerySet[models.Group]:
 
 
 def fetch_groups_by_titles(user_input: str) -> QuerySet[models.Group]:
-    """Return groups selected by titles."""
+    """Return groups selected by titles, description or slug
+    with 'group_members', 'group_posts' and amount of comment for each group."""
     return (
-        models.Group.objects.filter(title__icontains=user_input).
-        perfetch_related(
+        models.Group.objects.filter(
+            Q(title__icontains=user_input) |
+            Q(description__icontains=user_input) |
+            Q(slug__icontains=user_input)
+        ).order_by('pk').
+        prefetch_related(
             'group_members',
             'group_posts',
+        ).
+        annotate(
+            comments=Count('group_posts__comments')
         )
     )
