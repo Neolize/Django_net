@@ -1,6 +1,6 @@
 import logging
 
-from django.db.models import QuerySet, Count
+from django.db.models import QuerySet, Count, Prefetch
 from django.core.exceptions import ObjectDoesNotExist
 
 from applications.groups import models
@@ -170,10 +170,19 @@ def get_all_groups() -> QuerySet[models.Group]:
         prefetch_related(
             'group_members',
             'group_posts',
+        ).
+        annotate(
+            comments=Count('group_posts__comments')
         )
     )
 
 
 def fetch_groups_by_titles(user_input: str) -> QuerySet[models.Group]:
     """Return groups selected by titles."""
-    return models.Group.objects.filter(title__icontains=user_input)
+    return (
+        models.Group.objects.filter(title__icontains=user_input).
+        perfetch_related(
+            'group_members',
+            'group_posts',
+        )
+    )
