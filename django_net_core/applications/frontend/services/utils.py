@@ -42,7 +42,7 @@ def form_context_data_for_group_search_view(request: WSGIRequest, paginate_by: i
         page=page,
     )
     return {
-        'groups': groups,
+        'groups': page_obj.object_list,
         'previous_page': get_previous_url(request),
         'page_obj': page_obj,
     }
