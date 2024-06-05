@@ -5,9 +5,9 @@
     width: 550px;
 }
 
-.previous_page_block {
+.previous_page_block__posts {
     position: relative;
-    right: 200px;
+    left: 55px;
     top: 15px;
     margin-bottom: -24px;
     width: 150px;
@@ -21,14 +21,20 @@
     height: 50px;
 }
 
-.button_search {
+.input_search__posts {
+    height: 50px;
+    width: 800px;
+    margin-left: 250px;
+}
+
+.button_search__posts {
     height: 50px;
     width: 50px;
     background-image: url('../images/search.png');
     background-repeat: no-repeat;
     background-position: 50% 50%;
     position: relative;
-    left: 290px;
+    left: 1050px;
     bottom: 55px;
     cursor: pointer;
     margin-bottom: -35px;

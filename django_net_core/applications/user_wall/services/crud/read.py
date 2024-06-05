@@ -1,6 +1,6 @@
 import logging
 
-from django.db.models import QuerySet, Count
+from django.db.models import QuerySet, Count, Q
 from django.core.exceptions import ObjectDoesNotExist
 
 from applications.user_wall import models
@@ -93,3 +93,29 @@ def get_user_post_by_pk(post_pk: int) -> models.UserPost | bool:
         post = False
 
     return post
+
+
+def get_all_posts_from_all_users() -> QuerySet[models.UserPost] | list:
+    """Return all posts from all users."""
+    try:
+        posts = models.UserPost.objects.all().order_by('pk')
+    except Exception as exc:
+        LOGGER.error(exc)
+        posts = []
+
+    return posts
+
+
+def select_posts_from_all_users_by_user_input(user_input: str) -> QuerySet[models.UserPost] | list:
+    """Return all posts from all users selected by title, content or slug."""
+    try:
+        posts = models.UserPost.objects.filter(
+            Q(title__icontains=user_input) |
+            Q(desciption__icontains=user_input) |
+            Q(slug__icontains=user_input)
+        ).order_by('pk')
+    except Exception as exc:
+        LOGGER.error(exc)
+        posts = []
+
+    return posts

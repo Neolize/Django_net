@@ -184,7 +184,7 @@ def get_all_groups() -> QuerySet[models.Group] | list:
 
 
 def fetch_groups_by_titles(user_input: str) -> QuerySet[models.Group] | list:
-    """Return groups selected by titles, description or slug
+    """Return groups selected by title, description or slug
     with 'group_members', 'group_posts' and amount of comment for each group."""
     try:
         groups = (
@@ -227,3 +227,29 @@ def fetch_groups_from_user_obj_for_groups_view(user_obj: CustomUser) -> QuerySet
         groups = []
 
     return groups
+
+
+def get_all_posts_from_all_groups() -> QuerySet[models.GroupPost] | list:
+    """Return all posts from all groups."""
+    try:
+        posts = models.GroupPost.objects.all().order_by('pk')
+    except Exception as exc:
+        LOGGER.error(exc)
+        posts = []
+
+    return posts
+
+
+def select_posts_from_all_groups_by_user_input(user_input: str) -> QuerySet[models.GroupPost] | list:
+    """Return all posts from all groups selected by title, content or slug."""
+    try:
+        posts = models.GroupPost.objects.filter(
+            Q(title__icontains=user_input) |
+            Q(description__icontains=user_input) |
+            Q(slug__icontains=user_input)
+        ).order_by('pk')
+    except Exception as exc:
+        LOGGER.error(exc)
+        posts = []
+
+    return posts
