@@ -86,7 +86,7 @@
         </div>
 
         <div class="row">
-            <div class="col-sm-{% if is_owner and unpublished_posts_number %}8{% else %}7{% endif %}">
+            <div class="col-sm-{% if is_owner and unpublished_posts_number %}9{% else %}8{% endif %}">
                 <div class="card card-edit">
                     <div class="card-body">
 
@@ -133,6 +133,21 @@
                                 </a>
                             {% else %}
                                 <span {% if is_owner and unpublished_posts_number %}class="adjusted_items"{% endif %}>{{ following }} following</span>
+                            {% endif %}
+                        </div>
+
+                        <div class="user-head-information">
+                            {% if groups.count != 0 %}
+                                <a class="user-head-information__clickable {% if is_owner and unpublished_posts_number %}adjusted_items{% endif %}"
+                                   href="{% url 'user_groups' pk=user_obj.pk %}">
+                                    {% if groups.count == 1 %}
+                                        {{ groups.count }} group
+                                    {% else %}
+                                        {{ groups.count }} groups
+                                    {% endif %}
+                                </a>
+                            {% else %}
+                                <span {% if is_owner and unpublished_posts_number %}class="adjusted_items"{% endif %}>{{ groups.count }} groups</span>
                             {% endif %}
                         </div>
 

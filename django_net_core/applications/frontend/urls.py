@@ -32,6 +32,7 @@ urlpatterns = [
 
     path('user/<int:pk>/followers/', views.UserFollowersView.as_view(), name='user_followers'),
     path('user/<int:pk>/following/', views.UserFollowingView.as_view(), name='user_following'),
+    path('user/<int:pk>/groups/', views.UserGroupsView.as_view(), name='user_groups'),
     path('user/chat/<int:pk>/', views.UserChatView.as_view(), name='user_chat'),
     path('user/chat_list/', views.UserChatListView.as_view(), name='user_chat_list'),
 

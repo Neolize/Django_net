@@ -163,34 +163,67 @@ def get_group_post_by_pk(post_pk: int) -> models.GroupPost | bool:
     return post
 
 
-def get_all_groups() -> QuerySet[models.Group]:
+def get_all_groups() -> QuerySet[models.Group] | list:
     """Return all groups with 'group_members', 'group_posts' and amount of comment for each group."""
-    return (
-        models.Group.objects.all().order_by('pk').
-        prefetch_related(
-            'group_members',
-            'group_posts',
-        ).
-        annotate(
-            comments=Count('group_posts__comments')
+    try:
+        groups = (
+            models.Group.objects.all().order_by('pk').
+            prefetch_related(
+                'group_members',
+                'group_posts',
+            ).
+            annotate(
+                comments=Count('group_posts__comments')
+            )
         )
-    )
+    except Exception as exc:
+        LOGGER.error(exc)
+        groups = []
+
+    return groups
 
 
-def fetch_groups_by_titles(user_input: str) -> QuerySet[models.Group]:
+def fetch_groups_by_titles(user_input: str) -> QuerySet[models.Group] | list:
     """Return groups selected by titles, description or slug
     with 'group_members', 'group_posts' and amount of comment for each group."""
-    return (
-        models.Group.objects.filter(
-            Q(title__icontains=user_input) |
-            Q(description__icontains=user_input) |
-            Q(slug__icontains=user_input)
-        ).order_by('pk').
-        prefetch_related(
-            'group_members',
-            'group_posts',
-        ).
-        annotate(
-            comments=Count('group_posts__comments')
+    try:
+        groups = (
+            models.Group.objects.filter(
+                Q(title__icontains=user_input) |
+                Q(description__icontains=user_input) |
+                Q(slug__icontains=user_input)
+            ).order_by('pk').
+            prefetch_related(
+                'group_members',
+                'group_posts',
+            ).
+            annotate(
+                comments=Count('group_posts__comments')
+            )
         )
-    )
+    except Exception as exc:
+        LOGGER.error(exc)
+        groups = []
+
+    return groups
+
+
+def fetch_groups_from_user_obj_for_groups_view(user_obj: CustomUser):
+    """Return all user's groups with 'group_members', 'group_posts' and amount of comment for each group."""
+    try:
+        groups = (
+            user_obj.user_groups.all().
+            order_by('pk').
+            prefetch_related(
+                'group_members',
+                'group_posts'
+            ).
+            annotate(
+                comments=Count('group_posts__comments')
+            )
+        )
+    except Exception as exc:
+        LOGGER.error(exc)
+        groups = []
+
+    return groups

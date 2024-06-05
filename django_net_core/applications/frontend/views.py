@@ -53,7 +53,7 @@ class SignupUserView(permissions.UnauthenticatedPermissionsMixin, CreateView):
         new_user = up_create.create_new_user(
             username=form.cleaned_data['username'],
             email=form.cleaned_data['email'],
-            password=form.cleaned_data['password1'],
+            password=form.cleaned_data['password1']
         )
         if new_user:
             login(self.request, user=new_user)
@@ -99,7 +99,7 @@ class UserProfileView(View):
             user_obj=user_obj,
             request=request,
             paginate_by=self.paginate_by,
-            posts_to_show=request.GET.get('posts', ''),
+            posts_to_show=request.GET.get('posts', '')
         )
         context['form'] = form or self.form_class()
         return render(request, self.template_name, context=context)
@@ -120,13 +120,13 @@ def handle_user_comment(request: WSGIRequest, pk: int, user_obj: up_models.Custo
         if is_edited:
             if uw_update.update_user_comment(
                     form=form,
-                    request=request,
+                    request=request
             ):
                 return redirect_to_the_current_post_page(request, user_obj)
 
         elif uw_create.create_comment_for_user_post(
                 form=form,
-                request=request,
+                request=request
         ):
             return redirect_to_the_current_post_page(request, user_obj)
 
@@ -161,7 +161,7 @@ class EditUserProfileView(LoginRequiredMixin, up_permissions.UserPermissionMixin
 
         up_form_utils.fill_edit_user_profile_form(
             form=form,
-            user_data=up_read.get_user_data_for_edit_profile_view(user_pk=pk),
+            user_data=up_read.get_user_data_for_edit_profile_view(user_pk=pk)
         )
         return render(
             request,
@@ -185,7 +185,7 @@ class EditUserProfileView(LoginRequiredMixin, up_permissions.UserPermissionMixin
     def get_context_data(form, pk) -> dict:
         return {
             'form': form,
-            'user_obj': up_read.get_user_for_profile(user_pk=pk),
+            'user_obj': up_read.get_user_for_profile(user_pk=pk)
         }
 
 
@@ -227,7 +227,7 @@ class CreateUserPostView(LoginRequiredMixin, View):
     def get_context_data(self, pk: int) -> dict:
         return {
             'form': self.form_class(),
-            'user_obj': up_read.get_user_for_profile(user_pk=pk),
+            'user_obj': up_read.get_user_for_profile(user_pk=pk)
         }
 
 
@@ -264,7 +264,7 @@ class EditUserPostView(LoginRequiredMixin, View):
                 author_id=user_post.author_id,
                 model=uw_models.UserPost,
                 post=user_post,
-                posts_to_show=posts_to_show,
+                posts_to_show=posts_to_show
             )
             if posts_to_show:
                 # if a parameter 'posts' was given, it'll be added to a new URL
@@ -279,7 +279,7 @@ class EditUserPostView(LoginRequiredMixin, View):
         return {
             'form': self.form_class(),
             'user_obj': up_read.get_user_for_profile(user_pk=pk),
-            'post_slug': post_slug,
+            'post_slug': post_slug
         }
 
     @staticmethod
@@ -297,7 +297,7 @@ def delete_user_post(request: WSGIRequest, user_post: uw_models.UserPost):
         author_id=user_post.author_id,
         model=uw_models.UserPost,
         post=user_post,
-        posts_to_show=posts_to_show,
+        posts_to_show=posts_to_show
     )
     aa_delete.delete_post(user_post)
     if posts_to_show:
@@ -333,7 +333,7 @@ class UserFollowersView(View):
             'is_followed': up_common_utils.is_followed(
                 current_user=user_obj,
                 visitor=request.user
-            ),
+            )
         }
         return render(request, self.template_name, context=context)
 
@@ -351,8 +351,27 @@ class UserFollowingView(View):
             'followings': up_read.fetch_all_user_followings(user_obj),
             'is_followed': up_common_utils.is_followed(
                 current_user=user_obj,
-                visitor=request.user,
-            ),
+                visitor=request.user
+            )
+        }
+        return render(request, self.template_name, context=context)
+
+
+class UserGroupsView(View):
+    template_name = 'user_profiles/list/user_groups.html'
+
+    def get(self, request: WSGIRequest, pk: int):
+        user_obj = up_read.fetch_user_for_followers_page(user_pk=pk)
+        if not user_obj:
+            raise Http404
+
+        context = {
+            'user_obj': user_obj,
+            'groups': g_read.fetch_groups_from_user_obj_for_groups_view(user_obj),
+            'is_followed': up_common_utils.is_followed(
+                current_user=user_obj,
+                visitor=request.user
+            )
         }
         return render(request, self.template_name, context=context)
 
@@ -364,7 +383,7 @@ class PeopleSearchView(View):
     def get(self, request: WSGIRequest):
         context = form_context_data_for_people_search_view(
             request=request,
-            paginate_by=self.paginate_by,
+            paginate_by=self.paginate_by
         )
         return render(request, self.template_name, context=context)
 
@@ -397,7 +416,7 @@ class GroupCreationView(LoginRequiredMixin, up_permissions.UserPermissionMixin, 
             new_group = g_create.create_new_group_from_form_data(
                 data=form.cleaned_data,
                 data_files=request.FILES.dict(),
-                user_pk=request.user.pk,
+                user_pk=request.user.pk
             )
             if new_group:
                 return redirect(to='group', group_slug=new_group.slug)
@@ -412,7 +431,7 @@ class GroupCreationView(LoginRequiredMixin, up_permissions.UserPermissionMixin, 
     def get_context_data(form, pk) -> dict:
         return {
             'form': form,
-            'user_obj': up_read.get_user_for_profile(user_pk=pk),
+            'user_obj': up_read.get_user_for_profile(user_pk=pk)
         }
 
 
@@ -430,7 +449,7 @@ class GroupView(View):
             group=group,
             request=request,
             paginate_by=self.paginate_by,
-            posts_to_show=request.GET.get('posts', ''),
+            posts_to_show=request.GET.get('posts', '')
         )
         context['form'] = form or self.form_class()
         return render(request, self.template_name, context=context)
@@ -448,13 +467,13 @@ def handle_group_comment(request: WSGIRequest, group_slug: str, group: g_models.
         if request.POST.get('edit', False):
             if g_update.update_group_comment(
                     form=form,
-                    request=request,
+                    request=request
             ):
                 return g_utils.redirect_to_the_current_group_post_page(request, group)
 
         elif g_create.create_comment_for_group_post(
                 form=form,
-                request=request,
+                request=request
         ):
             return g_utils.redirect_to_the_current_group_post_page(request, group)
 
@@ -524,7 +543,7 @@ class CreateGroupPostView(LoginRequiredMixin, View):
 
         context = {
             'group': group,
-            'form': self.form_class(),
+            'form': self.form_class()
         }
         return render(request, self.template_name, context=context)
 
@@ -544,7 +563,7 @@ class CreateGroupPostView(LoginRequiredMixin, View):
 
         context = {
             'group': group,
-            'form': form,
+            'form': form
         }
         return render(request, self.template_name, context=context)
 
@@ -565,7 +584,7 @@ class EditGroupPostView(LoginRequiredMixin, View):
         context = {
             'form': self.form_class(),
             'group': g_read.get_group_by_slug(group_post.group.slug),
-            'group_post_slug': group_post_slug,
+            'group_post_slug': group_post_slug
         }
         aa_utils.fill_edit_post_form(form=context['form'], post=group_post)
         return render(request, self.template_name, context=context)
@@ -588,7 +607,7 @@ class EditGroupPostView(LoginRequiredMixin, View):
                 author_id=group_post.author_id,
                 model=g_models.GroupPost,
                 post=group_post,
-                posts_to_show=posts_to_show,
+                posts_to_show=posts_to_show
             )
             if posts_to_show:
                 # if a parameter 'posts' was given, it'll be added to a new URL
@@ -598,7 +617,7 @@ class EditGroupPostView(LoginRequiredMixin, View):
         context = {
             'form': form,
             'group': g_read.get_group_by_slug(group_post.group.slug),
-            'group_post_slug': group_post_slug,
+            'group_post_slug': group_post_slug
         }
         return render(request, self.template_name, context=context)
 
@@ -613,7 +632,7 @@ def delete_group_post(request: WSGIRequest, group_post: g_models.GroupPost):
         author_id=group_post.author_id,
         model=g_models.GroupPost,
         post=group_post,
-        posts_to_show=posts_to_show,
+        posts_to_show=posts_to_show
     )
     aa_delete.delete_post(group_post)
     if posts_to_show:
@@ -648,7 +667,7 @@ class GroupFollowersView(View):
             'followers': g_read.fetch_all_group_followers(group),
             'is_subscribed_to_group': g_utils.is_user_subscribed_to_group(
                 group=group,
-                visitor=request.user,
+                visitor=request.user
             )
         }
         return render(request, self.template_name, context=context)
@@ -661,7 +680,7 @@ class GroupSearchView(View):
     def get(self, request: WSGIRequest):
         context = form_context_data_for_group_search_view(
             request=request,
-            paginate_by=self.paginate_by,
+            paginate_by=self.paginate_by
         )
         return render(request, self.template_name, context=context)
 

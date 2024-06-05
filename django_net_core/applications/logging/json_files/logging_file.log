@@ -118,3 +118,11 @@
   "funcName": "get_group_post_by_pk",
   "lineno": 160
 }
+{
+  "message": "Cannot resolve keyword 'groups_posts' into field. Choices are: creation_date, creator, creator_id, description, group_members, group_posts, id, logo, slug, title",
+  "levelname": "ERROR",
+  "asctime": "2024-06-05 11:11:16,648",
+  "pathname": "/home/neolize/Neolize/Python/Django projects/Django Net/django_net_core/applications/groups/services/crud/read.py",
+  "funcName": "fetch_groups_from_user_obj_for_groups_view",
+  "lineno": 226
+}
