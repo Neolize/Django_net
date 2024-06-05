@@ -244,11 +244,21 @@ def get_following_number_from_user_obj(user_obj: models.CustomUser) -> int:
     return following
 
 
-def get_all_groups_from_user_obj(user_obj: models.CustomUser) -> QuerySet[Group] | list:
+def get_all_groups_user_own_from_user_obj(user_obj: models.CustomUser) -> QuerySet[Group] | None:
     try:
         groups = user_obj.user_groups.all()
     except Exception as exc:
         LOGGER.error(exc)
-        groups = []
+        groups = None
+
+    return groups
+
+
+def get_group_count_user_subscribed_to(user_obj: models.CustomUser) -> int:
+    try:
+        groups = user_obj.user_member.all().count()
+    except Exception as exc:
+        LOGGER.error(exc)
+        groups = 0
 
     return groups

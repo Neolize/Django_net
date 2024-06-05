@@ -126,3 +126,11 @@
   "funcName": "fetch_groups_from_user_obj_for_groups_view",
   "lineno": 226
 }
+{
+  "message": "Cannot resolve keyword 'group_posts' into field. Choices are: group, group_id, id, member, member_id",
+  "levelname": "ERROR",
+  "asctime": "2024-06-05 11:42:34,374",
+  "pathname": "/home/neolize/Neolize/Python/Django projects/Django Net/django_net_core/applications/groups/services/crud/read.py",
+  "funcName": "fetch_groups_from_user_obj_for_groups_view",
+  "lineno": 226
+}

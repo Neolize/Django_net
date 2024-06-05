@@ -136,18 +136,18 @@
                             {% endif %}
                         </div>
 
-                        <div class="user-head-information">
-                            {% if groups.count != 0 %}
+                         <div class="user-head-information">
+                            {% if subscribed_groups != 0 %}
                                 <a class="user-head-information__clickable {% if is_owner and unpublished_posts_number %}adjusted_items{% endif %}"
                                    href="{% url 'user_groups' pk=user_obj.pk %}">
-                                    {% if groups.count == 1 %}
-                                        {{ groups.count }} group
+                                    {% if subscribed_groups == 1 %}
+                                        {{ subscribed_groups }} group
                                     {% else %}
-                                        {{ groups.count }} groups
+                                        {{ subscribed_groups }} groups
                                     {% endif %}
                                 </a>
                             {% else %}
-                                <span {% if is_owner and unpublished_posts_number %}class="adjusted_items"{% endif %}>{{ groups.count }} groups</span>
+                                <span {% if is_owner and unpublished_posts_number %}class="adjusted_items"{% endif %}>{{ subscribed_groups }} groups</span>
                             {% endif %}
                         </div>
 
@@ -161,7 +161,7 @@
                 <div class="col-sm-{% if is_owner and unpublished_posts_number %}8{% else %}7{% endif %}">
                     <div class="card card-edit">
                         <div class="card-body">
-                            <h5 class="d-flex align-items-center mb-4">Groups</h5>
+                            <h5 class="d-flex align-items-center mb-4">Your groups</h5>
                             <ul style="list-style-type: none;">
                                 {% for group in groups %}
                                     <li>
@@ -250,7 +250,6 @@
                               </div>
                               <div class="timeline-likes">
                                  <div class="stats-right">
-                                     <span class="stats-text">259 Shares</span>
                                      {% if post.comments_number == 1 %}
                                         <span class="stats-text">{{ post.comments_number }} Comment</span>
                                      {% else %}

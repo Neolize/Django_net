@@ -208,18 +208,18 @@ def fetch_groups_by_titles(user_input: str) -> QuerySet[models.Group] | list:
     return groups
 
 
-def fetch_groups_from_user_obj_for_groups_view(user_obj: CustomUser):
+def fetch_groups_from_user_obj_for_groups_view(user_obj: CustomUser) -> QuerySet[models.GroupMember] | list:
     """Return all user's groups with 'group_members', 'group_posts' and amount of comment for each group."""
     try:
         groups = (
-            user_obj.user_groups.all().
+            user_obj.user_member.all().
             order_by('pk').
             prefetch_related(
-                'group_members',
-                'group_posts'
+                'group__group_members',
+                'group__group_posts'
             ).
             annotate(
-                comments=Count('group_posts__comments')
+                comments=Count('group__group_posts__comments'),
             )
         )
     except Exception as exc:
