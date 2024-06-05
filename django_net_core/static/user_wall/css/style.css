@@ -509,6 +509,10 @@ select.form-control:not([size]):not([multiple]) {
     margin-top: -25px;
 }
 
+.childcomment_content {
+    width: 385px;
+}
+
 .deleted_comment__content {
     font-size: 12px;
     margin-bottom: 35px;

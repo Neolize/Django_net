@@ -378,13 +378,13 @@
                                                            {% if child.is_edited %}
                                                                <span class="edited_comment">(edited)</span>
                                                                <span class="comment_creation_date__edited">{{ child.creation_date|date:"j F o H:i" }}</span>
-                                                               <p class="usercomment_content usercomment_content_edited" data-child-comment="{{ comment.pk }}"
+                                                               <p class="usercomment_content usercomment_content_edited childcomment_content" data-child-comment="{{ comment.pk }}"
                                                                   data-parent-comment-url="{{ child.author.get_absolute_url }}" data-parent-comment-pk="{{ comment.pk }}">
                                                                    {{ child.content }}
                                                               </p>
                                                            {% else %}
                                                                <span class="comment_creation_date">{{ child.creation_date|date:"j F o H:i" }}</span>
-                                                               <p class="usercomment_content" data-child-comment="{{ comment.pk }}" data-parent-comment-url="{{ child.author.get_absolute_url }}"
+                                                               <p class="usercomment_content childcomment_content" data-child-comment="{{ comment.pk }}" data-parent-comment-url="{{ child.author.get_absolute_url }}"
                                                                   data-parent-comment-pk="{{ comment.pk }}">
                                                                    {{ child.content }}
                                                                </p>
@@ -406,7 +406,7 @@
                                                            {% endif %}
                                                        {% else %}
                                                            <span class="userimage"><img src="{% static 'user_profiles/images/anonymous.png' %}" alt="avatar"></span>
-                                                           <p class="deleted_comment__content">{{ child.content }}</p>
+                                                           <p class="deleted_comment__content childcomment_content">{{ child.content }}</p>
                                                        {% endif %}
                                                    </div>
                                                </li>
