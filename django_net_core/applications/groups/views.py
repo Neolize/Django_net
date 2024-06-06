@@ -27,3 +27,15 @@ class PublicGroupListAPIView(APIView):
         groups = read.get_all_groups()
         serializer = self.serializer(groups, many=True)
         return Response(serializer.data)
+
+
+class PublicGroupPostDetailAPIView(APIView):
+    serializer = serializers.PublicGroupPostDetailSerializer
+
+    def get(self, request: WSGIRequest, group_post_slug: str):
+        post = read.fetch_group_post(group_post_slug)
+        if not post:
+            raise Http404
+
+        serializer = self.serializer(post)
+        return Response(serializer.data)

@@ -216,7 +216,7 @@
                                               </div>
                                               <div class="timeline-footer">
                                                  <a href="javascript:;" class="m-r-15 text-inverse-lighter"><i class="fa fa-thumbs-up fa-fw fa-lg m-r-3"></i> Like</a>
-                                                 <a href="javascript:;" class="m-r-15 text-inverse-lighter"><i class="fa fa-share fa-fw fa-lg m-r-3"></i> Share</a>
+                                                 <a href="{% url 'group_post_public_api' group_post_slug=post.slug %}" class="m-r-15 text-inverse-lighter"><i class="fa fa-share fa-fw fa-lg m-r-3"></i> API</a>
                                                  {% if is_group_owner %}
                                                     <a href="{% url 'delete_group_post' group_post_slug=post.slug %}" data-posts-delete
                                                        class="m-r-15 text-inverse-danger link-delete_post"

@@ -24,3 +24,22 @@ class PublicGroupListSerializer(serializers.ModelSerializer):
             'title',
             'slug'
         )
+
+
+class PublicGroupPostDetailSerializer(serializers.ModelSerializer):
+    """Public serializer for a group post."""
+    author_id = serializers.SlugRelatedField(source='author', slug_field='id', read_only=True)
+    author_name = serializers.SlugRelatedField(source='author', slug_field='username', read_only=True)
+    group_id = serializers.SlugRelatedField(source='group', slug_field='id', read_only=True)
+    group_title = serializers.SlugRelatedField(source='group', slug_field='title', read_only=True)
+    tags = serializers.SlugRelatedField(slug_field='title', read_only=True, many=True)
+
+    class Meta:
+        model = models.GroupPost
+        exclude = (
+            'content',
+            'user_list',
+            'is_published',
+            'author',
+            'group'
+        )
