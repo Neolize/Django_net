@@ -1,6 +1,7 @@
 import logging
 
 from django.db.models import QuerySet, F, Q
+from django.core.exceptions import ObjectDoesNotExist
 
 from applications.user_profiles import models
 from applications.groups.models import Group
@@ -252,3 +253,13 @@ def get_group_count_user_subscribed_to(user_obj: models.CustomUser) -> int:
         groups = 0
 
     return groups
+
+
+def get_user_by_pk(pk: int) -> models.CustomUser | None:
+    try:
+        user = models.CustomUser.objects.get(pk=pk)
+    except ObjectDoesNotExist as exc:
+        LOGGER.error(exc)
+        user = None
+
+    return user

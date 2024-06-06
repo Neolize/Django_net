@@ -182,3 +182,19 @@
   "funcName": "select_posts_from_all_groups_by_user_input",
   "lineno": 293
 }
+{
+  "message": "CustomUser matching query does not exist.",
+  "levelname": "ERROR",
+  "asctime": "2024-06-06 14:00:27,145",
+  "pathname": "/home/neolize/Neolize/Python/Django projects/Django Net/django_net_core/applications/user_profiles/services/crud/read.py",
+  "funcName": "get_user_by_pk",
+  "lineno": 262
+}
+{
+  "message": "Group with slug - list does not exist. Group matching query does not exist.",
+  "levelname": "WARNING",
+  "asctime": "2024-06-06 14:30:53,911",
+  "pathname": "/home/neolize/Neolize/Python/Django projects/Django Net/django_net_core/applications/groups/services/crud/read.py",
+  "funcName": "get_group_by_slug",
+  "lineno": 17
+}

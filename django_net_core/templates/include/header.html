@@ -28,8 +28,10 @@
           </a>
             <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
             <li><a class="dropdown-item" href="{% url 'user_public_api' pk=user.pk %}">User</a></li>
-            <li><a class="dropdown-item" href="#">Group</a></li>
-            <li><a class="dropdown-item" href="#">Post</a></li>
+            <li><a class="dropdown-item" href="{% url 'user_list_public_api' %}">User list</a></li>
+            <li><a class="dropdown-item" href="{% url 'group_list_public_api' %}">Group list</a></li>
+            <li><a class="dropdown-item" href="#">Users' post list</a></li>
+            <li><a class="dropdown-item" href="#">Groups post list</a></li>
           </ul>
         </li>
       </ul>
