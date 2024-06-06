@@ -23,26 +23,115 @@ def get_related_posts(
         return _fetch_chosen_posts(posts_to_show, user)
 
     if owner:
-        return user.user_posts.all().order_by('-publication_date'). \
-            prefetch_related('tags').annotate(comments_number=Count('comments'))
+        return (
+            user.user_posts.all().
+            order_by('-publication_date').
+            prefetch_related(
+                'tags',
+                Prefetch(
+                    'comments',
+                    models.UserComment.objects.filter(
+                        parent_id__isnull=True, is_published=True
+                    ).select_related('author').
+                    prefetch_related(
+                        Prefetch(
+                            'children',
+                            models.UserComment.objects.filter(is_published=True).select_related('author'),
+                            'children_comments'
+                        )
+                    ),
+                    'post_comments'
+                ),
+            ).
+            annotate(comments_number=Count('comments')))
 
-    return user.user_posts.filter(is_published=True).order_by('-publication_date').\
-        prefetch_related('tags').annotate(comments_number=Count('comments'))
+    return (
+        user.user_posts.filter(is_published=True).
+        order_by('-publication_date').
+        prefetch_related(
+            'tags',
+            Prefetch(
+                'comments',
+                models.UserComment.objects.filter(
+                    parent_id__isnull=True, is_published=True
+                ).select_related('author').
+                prefetch_related(
+                    Prefetch(
+                        'children',
+                        models.UserComment.objects.filter(is_published=True).select_related('author'),
+                        'children_comments'
+                    )
+                ),
+                'post_comments'
+            ),
+        ).annotate(comments_number=Count('comments')))
 
 
 def _fetch_chosen_posts(posts_to_show: str, user: CustomUser) -> QuerySet[models.UserPost]:
     """Return published or unpublished posts depending on 'posts_to_show' parameter."""
     if posts_to_show.lower() == 'published':
-        return user.user_posts.filter(is_published=True).order_by('-publication_date'). \
-            prefetch_related('tags').annotate(comments_number=Count('comments'))
+        return (
+            user.user_posts.filter(is_published=True).
+            order_by('-publication_date').
+            prefetch_related(
+                'tags',
+                Prefetch(
+                    'comments',
+                    models.UserComment.objects.filter(
+                        parent_id__isnull=True, is_published=True
+                    ).select_related('author').
+                    prefetch_related(
+                        Prefetch(
+                            'children',
+                            models.UserComment.objects.filter(is_published=True).select_related('author'),
+                            'children_comments'
+                        )
+                    ),
+                    'post_comments'
+                ),
+            ).annotate(comments_number=Count('comments')))
 
     elif posts_to_show.lower() == 'unpublished':
-        return user.user_posts.filter(is_published=False).order_by('-publication_date'). \
-            prefetch_related('tags').annotate(comments_number=Count('comments'))
+        return (
+            user.user_posts.filter(is_published=False).
+            order_by('-publication_date').
+            prefetch_related(
+                'tags',
+                Prefetch(
+                    'comments',
+                    models.UserComment.objects.filter(
+                        parent_id__isnull=True, is_published=True
+                    ).select_related('author').prefetch_related(
+                        Prefetch(
+                            'children',
+                            models.UserComment.objects.filter(is_published=True).select_related('author'),
+                            'children_comments'
+                        )
+                    ),
+                    'post_comments'
+                ),
+            ).annotate(comments_number=Count('comments')))
 
     else:
-        return user.user_posts.all().order_by('-publication_date'). \
-            prefetch_related('tags').annotate(comments_number=Count('comments'))
+        return (
+            user.user_posts.all().
+            order_by('-publication_date').
+            prefetch_related(
+                'tags',
+                Prefetch(
+                    'comments',
+                    models.UserComment.objects.filter(
+                        parent_id__isnull=True, is_published=True
+                    ).select_related('author').prefetch_related(
+                        Prefetch(
+                            'children',
+                            models.UserComment.objects.filter(is_published=True).select_related('author'),
+                            'children_comments'
+                        )
+                    ),
+                    'post_comments'
+                ),
+            ).annotate(comments_number=Count('comments')))
 
 
 def get_user_post(slug: str) -> models.UserPost | bool:
@@ -108,7 +197,8 @@ def get_all_posts_from_all_users() -> QuerySet[models.UserPost] | list:
                     'comments',
                     models.UserComment.objects.filter(
                         parent_id__isnull=True, is_published=True
-                    ).select_related('author').prefetch_related(
+                    ).select_related('author').
+                    prefetch_related(
                         Prefetch(
                             'children',
                             models.UserComment.objects.filter(is_published=True).select_related('author'),
@@ -143,7 +233,8 @@ def select_posts_from_all_users_by_user_input(user_input: str) -> QuerySet[model
                     'comments',
                     models.UserComment.objects.filter(
                         parent_id__isnull=True, is_published=True
-                    ).select_related('author').prefetch_related(
+                    ).select_related('author').
+                    prefetch_related(
                         Prefetch(
                             'children',
                             models.UserComment.objects.filter(is_published=True).select_related('author'),

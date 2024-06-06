@@ -242,7 +242,8 @@ def get_all_posts_from_all_groups() -> QuerySet[models.GroupPost] | list:
                     'comments',
                     models.GroupComment.objects.filter(
                         parent_id__isnull=True, is_published=True
-                    ).select_related('author').prefetch_related(
+                    ).select_related('author').
+                    prefetch_related(
                         Prefetch(
                             'children',
                             models.GroupComment.objects.filter(is_published=True).select_related('author'),
@@ -277,7 +278,8 @@ def select_posts_from_all_groups_by_user_input(user_input: str) -> QuerySet[mode
                     'comments',
                     models.GroupComment.objects.filter(
                         parent_id__isnull=True, is_published=True
-                    ).select_related('author').prefetch_related(
+                    ).select_related('author').
+                    prefetch_related(
                         Prefetch(
                             'children',
                             models.GroupComment.objects.filter(is_published=True).select_related('author'),
