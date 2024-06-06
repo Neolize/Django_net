@@ -707,11 +707,13 @@ class UserChatListView(LoginRequiredMixin, View):
 
 class PostsSearchView(View):
     template_name = 'search/posts_search.html'
-    paginate_by = 5
+    paginate_by = 15
+    form_class = uw_forms.UserCommentForm
 
     def get(self, request: WSGIRequest):
         context = f_utils.form_context_data_for_posts_search_view(
             request=request,
             paginate_by=self.paginate_by
         )
+        context['form'] = self.form_class
         return render(request, self.template_name, context=context)

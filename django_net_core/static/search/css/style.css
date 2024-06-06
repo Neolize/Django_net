@@ -58,3 +58,9 @@
 .user-card {
     width: 350px;
 }
+
+.posts_search__pagination {
+    margin-left: 220px;
+    padding-left: 150px;
+    width: 840px;
+}

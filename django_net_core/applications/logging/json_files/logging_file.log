@@ -134,3 +134,43 @@
   "funcName": "fetch_groups_from_user_obj_for_groups_view",
   "lineno": 226
 }
+{
+  "message": "User's post with slug - jujutsu-kaisen-ranks-1-in-us-monthly-bookscan-april-list does not exist. list index out of range",
+  "levelname": "WARNING",
+  "asctime": "2024-06-06 10:51:14,224",
+  "pathname": "/home/neolize/Neolize/Python/Django projects/Django Net/django_net_core/applications/user_wall/services/crud/read.py",
+  "funcName": "get_user_post",
+  "lineno": 52
+}
+{
+  "message": "Unsupported lookup 'isnul' for TreeForeignKey or join on the field not permitted, perhaps you meant isnull?",
+  "levelname": "ERROR",
+  "asctime": "2024-06-06 11:46:58,568",
+  "pathname": "/home/neolize/Neolize/Python/Django projects/Django Net/django_net_core/applications/groups/services/crud/read.py",
+  "funcName": "get_all_posts_from_all_groups",
+  "lineno": 262
+}
+{
+  "message": "Unsupported lookup 'isnul' for TreeForeignKey or join on the field not permitted, perhaps you meant isnull?",
+  "levelname": "ERROR",
+  "asctime": "2024-06-06 11:47:23,739",
+  "pathname": "/home/neolize/Neolize/Python/Django projects/Django Net/django_net_core/applications/groups/services/crud/read.py",
+  "funcName": "get_all_posts_from_all_groups",
+  "lineno": 262
+}
+{
+  "message": "Unsupported lookup 'isnul' for TreeForeignKey or join on the field not permitted, perhaps you meant isnull?",
+  "levelname": "ERROR",
+  "asctime": "2024-06-06 11:47:24,458",
+  "pathname": "/home/neolize/Neolize/Python/Django projects/Django Net/django_net_core/applications/groups/services/crud/read.py",
+  "funcName": "get_all_posts_from_all_groups",
+  "lineno": 262
+}
+{
+  "message": "Unsupported lookup 'isnul' for TreeForeignKey or join on the field not permitted, perhaps you meant isnull?",
+  "levelname": "ERROR",
+  "asctime": "2024-06-06 11:47:35,700",
+  "pathname": "/home/neolize/Neolize/Python/Django projects/Django Net/django_net_core/applications/groups/services/crud/read.py",
+  "funcName": "get_all_posts_from_all_groups",
+  "lineno": 262
+}

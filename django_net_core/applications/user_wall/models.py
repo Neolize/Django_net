@@ -32,11 +32,15 @@ class UserPost(abstract_models.AbstractPost):
         return f'{self.title} - {self.author}'
 
     def get_comments(self):
-        return self.comments.filter(parent_id__isnull=True, is_published=True).select_related('author').\
-            prefetch_related(models.Prefetch(
-                'children',
-                UserComment.objects.filter(is_published=True).select_related('author'),
-                'children_comments',
+        return (
+            self.comments.filter(parent_id__isnull=True, is_published=True).
+            select_related('author').
+            prefetch_related(
+                models.Prefetch(
+                    'children',
+                    UserComment.objects.filter(is_published=True).select_related('author'),
+                    'children_comments',
+                )
             )
         )
 

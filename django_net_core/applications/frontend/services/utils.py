@@ -1,3 +1,5 @@
+from datetime import datetime, timedelta
+
 from django.core.handlers.wsgi import WSGIRequest
 
 from applications.abstract_activities.services.utils import get_previous_url
@@ -60,15 +62,17 @@ def form_context_data_for_posts_search_view(request: WSGIRequest, paginate_by: i
         group_posts = g_read.select_posts_from_all_groups_by_user_input(user_input)
         user_posts = uw_read.select_posts_from_all_users_by_user_input(user_input)
 
-    # posts = (item for item in (list(group_posts) + list(user_posts)))
     posts = list(group_posts) + list(user_posts)
     page_obj = get_page_object(
         object_list=posts,
         paginate_by=paginate_by,
         page=page
     )
+    today = datetime.today()
     return {
         'posts': page_obj.object_list,
         'previous_page': get_previous_url(request),
-        'page_obj': page_obj
+        'page_obj': page_obj,
+        'today_date': today.date(),
+        'yesterday_date': (today - timedelta(days=1)).date(),
     }

@@ -38,8 +38,14 @@
                                <li>
                                   <!-- begin timeline-time -->
                                   <div class="timeline-time">
-                                     <span class="date">24 February 2014</span>
-                                     <span class="time">08:17</span>
+                                      {% if today_date == post.publication_date.date %}
+                                          <span class="date">today</span>
+                                      {% elif yesterday_date == post.publication_date.date %}
+                                          <span class="date">yesterday</span>
+                                      {% else %}
+                                          <span class="date">{{ post.publication_date|date:"j F o" }}</span>
+                                      {% endif %}
+                                   <span class="time">{{ post.publication_date|date:"H:i" }}</span>
                                   </div>
                                   <!-- end timeline-time -->
                                   <!-- begin timeline-icon -->
@@ -112,12 +118,20 @@
                                      <div class="timeline-footer">
                                          <a href="javascript:;" class="m-r-15 text-inverse-lighter"><i class="fa fa-thumbs-up fa-fw fa-lg m-r-3"></i> Like</a>
                                          <a href="javascript:;" class="m-r-15 text-inverse-lighter"><i class="fa fa-share fa-fw fa-lg m-r-3"></i> Share</a>
-                                         {% if is_owner %}
+
+                                         {% if post.group.pk and post.author.pk == user.pk %}
+                                             <a href="{% url 'delete_group_post' group_post_slug=post.slug %}" data-posts-delete
+                                                 class="m-r-15 text-inverse-danger link-delete_post"
+                                                 onclick="deletePost(event)">Delete post
+                                             </a>
+                                             <a href="{% url 'edit_group_post' group_post_slug=post.slug %}" data-posts-edit
+                                                 class="m-r-15 text-inverse-lighter link-edit_post">Edit post</a>
+                                         {% elif post.author.pk == user.pk %}
                                              <a href="{% url 'delete_user_post' user_post_slug=post.slug %}" data-posts-delete
-                                                   class="m-r-15 text-inverse-danger link-delete_post"
-                                                   onclick="deletePost(event)">Delete post
-                                                </a>
-                                                <a href="{% url 'edit_user_post' slug=post.slug %}" data-posts-edit class="m-r-15 text-inverse-lighter link-edit_post">Edit post</a>
+                                                 class="m-r-15 text-inverse-danger link-delete_post"
+                                                 onclick="deletePost(event)">Delete post
+                                             </a>
+                                             <a href="{% url 'edit_user_post' slug=post.slug %}" data-posts-edit class="m-r-15 text-inverse-lighter link-edit_post">Edit post</a>
                                          {% endif %}
                                      </div>
                                      <div class="timeline-comment-box">
@@ -153,7 +167,7 @@
                                          <div class="commentline"></div>
 
                                          <ul style="list-style-type: none">
-                                             {% for comment in post.get_comments %}
+                                             {% for comment in post.post_comments %}
                                                  <li class="usercomment_block">
                                                      <div class="timeline-header usercomment-header">
                                                          {% if comment.author %}
@@ -180,7 +194,7 @@
                                                              {% endif %}
 
                                                              {% if user.is_authenticated %}
-                                                                 {% if comment.author_id != request.user.pk %}
+                                                                 {% if comment.author_id != user.pk %}
                                                                      <a href="#" class="comment_reply"
                                                                          onclick="addChildReview(event, '{{ comment.author.get_full_name|addslashes }}', '{{ comment.pk }}')">Reply
                                                                      </a>
@@ -265,10 +279,19 @@
                 </div>
                 <!-- end profile-content -->
              </div>
-             {% if page_obj.has_other_pages %}
-                {% include 'include/pagination.html' %}
-             {% endif %}
+             <div class="posts_search__pagination">
+                 {% if page_obj.has_other_pages %}
+                    {% include 'include/pagination.html' %}
+                 {% endif %}
+             </div>
           </div>
        </div>
     </div>
 {% endblock content %}
+
+{% block script %}
+    <script src="{% static 'user_profiles/js/profile.js' %}"></script>
+    <script src="{% static 'user_profiles/js/delete_account.js' %}"></script>
+    <script src="{% static 'utils/js/url_params.js' %}"></script>
+    <script src="{% static 'user_wall/js/user_wall.js' %}"></script>
+{% endblock script %}

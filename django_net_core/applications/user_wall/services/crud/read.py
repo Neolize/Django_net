@@ -1,6 +1,6 @@
 import logging
 
-from django.db.models import QuerySet, Count, Q
+from django.db.models import QuerySet, Count, Q, Prefetch
 from django.core.exceptions import ObjectDoesNotExist
 
 from applications.user_wall import models
@@ -98,7 +98,28 @@ def get_user_post_by_pk(post_pk: int) -> models.UserPost | bool:
 def get_all_posts_from_all_users() -> QuerySet[models.UserPost] | list:
     """Return all posts from all users."""
     try:
-        posts = models.UserPost.objects.all().order_by('pk')
+        posts = (
+            models.UserPost.objects.all().
+            order_by('-publication_date').
+            select_related('author').
+            prefetch_related(
+                'tags',
+                Prefetch(
+                    'comments',
+                    models.UserComment.objects.filter(
+                        parent_id__isnull=True, is_published=True
+                    ).select_related('author').prefetch_related(
+                        Prefetch(
+                            'children',
+                            models.UserComment.objects.filter(is_published=True).select_related('author'),
+                            'children_comments'
+                        )
+                    ),
+                    'post_comments'
+                ),
+            ).
+            annotate(comments_number=Count('comments'))
+        )
     except Exception as exc:
         LOGGER.error(exc)
         posts = []
@@ -109,11 +130,31 @@ def get_all_posts_from_all_users() -> QuerySet[models.UserPost] | list:
 def select_posts_from_all_users_by_user_input(user_input: str) -> QuerySet[models.UserPost] | list:
     """Return all posts from all users selected by title, content or slug."""
     try:
-        posts = models.UserPost.objects.filter(
-            Q(title__icontains=user_input) |
-            Q(desciption__icontains=user_input) |
-            Q(slug__icontains=user_input)
-        ).order_by('pk')
+        posts = (
+            models.UserPost.objects.filter(
+                Q(title__icontains=user_input) |
+                Q(desciption__icontains=user_input) |
+                Q(slug__icontains=user_input)
+            ).order_by('-publication_date').
+            select_related('author').
+            prefetch_related(
+                'tags',
+                Prefetch(
+                    'comments',
+                    models.UserComment.objects.filter(
+                        parent_id__isnull=True, is_published=True
+                    ).select_related('author').prefetch_related(
+                        Prefetch(
+                            'children',
+                            models.UserComment.objects.filter(is_published=True).select_related('author'),
+                            'children_comments'
+                        )
+                    ),
+                    'post_comments'
+                ),
+            ).
+            annotate(comments_number=Count('comments'))
+        )
     except Exception as exc:
         LOGGER.error(exc)
         posts = []

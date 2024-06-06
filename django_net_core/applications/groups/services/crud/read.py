@@ -1,6 +1,6 @@
 import logging
 
-from django.db.models import QuerySet, Count, Q
+from django.db.models import QuerySet, Count, Q, Prefetch
 from django.core.exceptions import ObjectDoesNotExist
 
 from applications.groups import models
@@ -232,7 +232,28 @@ def fetch_groups_from_user_obj_for_groups_view(user_obj: CustomUser) -> QuerySet
 def get_all_posts_from_all_groups() -> QuerySet[models.GroupPost] | list:
     """Return all posts from all groups."""
     try:
-        posts = models.GroupPost.objects.all().order_by('pk')
+        posts = (
+            models.GroupPost.objects.all().
+            order_by('-publication_date').
+            select_related('author', 'group').
+            prefetch_related(
+                'tags',
+                Prefetch(
+                    'comments',
+                    models.GroupComment.objects.filter(
+                        parent_id__isnull=True, is_published=True
+                    ).select_related('author').prefetch_related(
+                        Prefetch(
+                            'children',
+                            models.GroupComment.objects.filter(is_published=True).select_related('author'),
+                            'children_comments'
+                        )
+                    ),
+                    'post_comments'
+                ),
+            ).
+            annotate(comments_number=Count('comments'))
+        )
     except Exception as exc:
         LOGGER.error(exc)
         posts = []
@@ -243,11 +264,31 @@ def get_all_posts_from_all_groups() -> QuerySet[models.GroupPost] | list:
 def select_posts_from_all_groups_by_user_input(user_input: str) -> QuerySet[models.GroupPost] | list:
     """Return all posts from all groups selected by title, content or slug."""
     try:
-        posts = models.GroupPost.objects.filter(
-            Q(title__icontains=user_input) |
-            Q(description__icontains=user_input) |
-            Q(slug__icontains=user_input)
-        ).order_by('pk')
+        posts = (
+            models.GroupPost.objects.filter(
+                Q(title__icontains=user_input) |
+                Q(description__icontains=user_input) |
+                Q(slug__icontains=user_input)
+            ).order_by('-publication_date').
+            select_related('author', 'group').
+            prefetch_related(
+                'tags',
+                Prefetch(
+                    'comments',
+                    models.GroupComment.objects.filter(
+                        parent_id__isnull=True, is_published=True
+                    ).select_related('author').prefetch_related(
+                        Prefetch(
+                            'children',
+                            models.GroupComment.objects.filter(is_published=True).select_related('author'),
+                            'children_comments'
+                        )
+                    ),
+                    'post_comments'
+                ),
+            ).
+            annotate(comments_number=Count('comments'))
+        )
     except Exception as exc:
         LOGGER.error(exc)
         posts = []

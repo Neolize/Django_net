@@ -9,7 +9,7 @@ from applications.user_wall.models import Tag
 
 
 class Group(models.Model):
-    """User's group"""
+    """User's group."""
     title = models.CharField(max_length=100, db_index=True)
     description = models.TextField(max_length=1000, blank=True)
     logo = models.ImageField(upload_to='group/logo/%Y/%m/%d/', blank=True, null=True)
@@ -36,7 +36,7 @@ class Group(models.Model):
 
 
 class GroupMember(models.Model):
-    """Group member model"""
+    """Group member model."""
     member = models.ForeignKey(
         settings.AUTH_USER_MODEL, on_delete=models.SET_NULL, null=True, related_name='user_member'
     )
@@ -50,7 +50,7 @@ class GroupMember(models.Model):
 
 
 class GroupPost(abstract_models.AbstractPost):
-    """Group's Post model"""
+    """Group's Post model."""
     author = models.ForeignKey(
         settings.AUTH_USER_MODEL, on_delete=models.SET_NULL, null=True, related_name='group_posts'
     )
@@ -66,7 +66,8 @@ class GroupPost(abstract_models.AbstractPost):
     def get_comments(self):
         return (
             self.comments.filter(parent_id__isnull=True, is_published=True).
-            select_related('author').prefetch_related(
+            select_related('author').
+            prefetch_related(
                 models.Prefetch(
                     'children',
                     GroupComment.objects.filter(is_published=True).select_related('author'),
@@ -77,7 +78,7 @@ class GroupPost(abstract_models.AbstractPost):
 
 
 class GroupComment(abstract_models.AbstractComment, MPTTModel):
-    """Group's Comment model"""
+    """Group's Comment model."""
     author = models.ForeignKey(
         settings.AUTH_USER_MODEL, on_delete=models.SET_NULL, null=True, related_name='group_comments'
     )
@@ -85,7 +86,7 @@ class GroupComment(abstract_models.AbstractComment, MPTTModel):
     parent = TreeForeignKey('self', on_delete=models.SET_NULL, blank=True, null=True, related_name='children')
 
     class MPTTMeta:
-        """Sorting by nesting"""
+        """Sorting by nesting."""
         order_insertion_by = ('creation_date', )
 
     class Meta:
