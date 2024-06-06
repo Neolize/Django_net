@@ -23,6 +23,7 @@
                 <ol class="breadcrumb">
                     {% block breadcrumbs %}
                         <li class="breadcrumb-item"><a href="{% url 'home' %}">Home</a></li>
+                        <li class="breadcrumb-item"><a href="{% url 'group_public_api' group_slug=group.slug %}">Group API</a></li>
                         {% if request.user.is_authenticated %}
                             <li class="breadcrumb-item"><a href="{{ request.user.get_absolute_url }}">User Profile</a></li>
                         {% endif %}
