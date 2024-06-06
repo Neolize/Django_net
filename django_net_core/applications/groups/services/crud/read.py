@@ -42,13 +42,47 @@ def get_related_group_posts(
 
     if owner:
         return (
-            group.group_posts.all().order_by('-publication_date').
-            select_related('author').prefetch_related('tags').
+            group.group_posts.all().
+            order_by('-publication_date').
+            select_related('author').
+            prefetch_related(
+                'tags',
+                Prefetch(
+                    'comments',
+                    models.GroupComment.objects.filter(
+                        parent_id__isnull=True, is_published=True
+                    ).select_related('author').prefetch_related(
+                        Prefetch(
+                            'children',
+                            models.GroupComment.objects.filter(is_published=True).select_related('author'),
+                            'children_comments'
+                        )
+                    ),
+                    'post_comments'
+                ),
+            ).
             annotate(comments_number=Count('comments'))
         )
     return (
-        group.group_posts.filter(is_published=True).order_by('-publication_date').
-        select_related('author').prefetch_related('tags').
+        group.group_posts.filter(is_published=True).
+        order_by('-publication_date').
+        select_related('author').
+        prefetch_related(
+            'tags',
+            Prefetch(
+                'comments',
+                models.GroupComment.objects.filter(
+                    parent_id__isnull=True, is_published=True
+                ).select_related('author').prefetch_related(
+                    Prefetch(
+                        'children',
+                        models.GroupComment.objects.filter(is_published=True).select_related('author'),
+                        'children_comments'
+                    )
+                ),
+                'post_comments'
+            ),
+        ).
         annotate(comments_number=Count('comments'))
     )
 
@@ -57,20 +91,71 @@ def _fetch_chosen_group_posts(posts_to_show: str, group: models.Group) -> QueryS
     """Return published or unpublished group posts depending on 'posts_to_show' parameter."""
     if posts_to_show.lower() == 'published':
         return (
-            group.group_posts.filter(is_published=True).order_by('-publication_date').
-            select_related('author').prefetch_related('tags').
+            group.group_posts.filter(is_published=True).
+            order_by('-publication_date').
+            select_related('author').
+            prefetch_related(
+                'tags',
+                Prefetch(
+                    'comments',
+                    models.GroupComment.objects.filter(
+                        parent_id__isnull=True, is_published=True
+                    ).select_related('author').prefetch_related(
+                        Prefetch(
+                            'children',
+                            models.GroupComment.objects.filter(is_published=True).select_related('author'),
+                            'children_comments'
+                        )
+                    ),
+                    'post_comments'
+                ),
+            ).
             annotate(comments_number=Count('comments'))
         )
     elif posts_to_show.lower() == 'unpublished':
         return (
-            group.group_posts.filter(is_published=False).order_by('-publication_date').
-            select_related('author').prefetch_related('tags').
+            group.group_posts.filter(is_published=False)
+            .order_by('-publication_date').
+            select_related('author').
+            prefetch_related(
+                'tags',
+                Prefetch(
+                    'comments',
+                    models.GroupComment.objects.filter(
+                        parent_id__isnull=True, is_published=True
+                    ).select_related('author').prefetch_related(
+                        Prefetch(
+                            'children',
+                            models.GroupComment.objects.filter(is_published=True).select_related('author'),
+                            'children_comments'
+                        )
+                    ),
+                    'post_comments'
+                ),
+            ).
             annotate(comments_number=Count('comments'))
         )
     else:
         return (
-            group.group_posts.all().order_by('-publication_date').
-            select_related('author').prefetch_related('tags').
+            group.group_posts.all().
+            order_by('-publication_date').
+            select_related('author').
+            prefetch_related(
+                'tags',
+                Prefetch(
+                    'comments',
+                    models.GroupComment.objects.filter(
+                        parent_id__isnull=True, is_published=True
+                    ).select_related('author').prefetch_related(
+                        Prefetch(
+                            'children',
+                            models.GroupComment.objects.filter(is_published=True).select_related('author'),
+                            'children_comments'
+                        )
+                    ),
+                    'post_comments'
+                ),
+            ).
             annotate(comments_number=Count('comments'))
         )
 
