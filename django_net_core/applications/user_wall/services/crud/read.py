@@ -133,7 +133,7 @@ def select_posts_from_all_users_by_user_input(user_input: str) -> QuerySet[model
         posts = (
             models.UserPost.objects.filter(
                 Q(title__icontains=user_input) |
-                Q(desciption__icontains=user_input) |
+                Q(content__icontains=user_input) |
                 Q(slug__icontains=user_input)
             ).order_by('-publication_date').
             select_related('author').

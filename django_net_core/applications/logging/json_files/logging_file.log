@@ -174,3 +174,11 @@
   "funcName": "get_all_posts_from_all_groups",
   "lineno": 262
 }
+{
+  "message": "Cannot resolve keyword 'description' into field. Choices are: author, author_id, comments, content, group, group_id, id, is_published, last_edit, publication_date, slug, tags, title, user_list, view_counts",
+  "levelname": "ERROR",
+  "asctime": "2024-06-06 12:04:56,472",
+  "pathname": "/home/neolize/Neolize/Python/Django projects/Django Net/django_net_core/applications/groups/services/crud/read.py",
+  "funcName": "select_posts_from_all_groups_by_user_input",
+  "lineno": 293
+}
