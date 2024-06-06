@@ -4,16 +4,13 @@ from applications.user_profiles import models
 
 
 class PublicCustomUserSerializer(serializers.ModelSerializer):
+    """User's data for public API."""
     class Meta:
         model = models.CustomUser
-        exclude = (
-            'password',
-            'is_superuser',
+        fields = (
+            'username',
             'email',
-            'is_staff',
-            'is_active',
-            'groups',
-            'user_permissions'
+            'date_joined'
         )
 
 

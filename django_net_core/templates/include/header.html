@@ -22,6 +22,16 @@
             <li><a class="dropdown-item" href="{% url 'posts_search' %}">Posts</a></li>
           </ul>
         </li>
+        <li class="nav-item dropdown">
+          <a class="nav-link dropdown-toggle header-list__link" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+            API
+          </a>
+            <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
+            <li><a class="dropdown-item" href="{% url 'user_public_api' pk=user.pk %}">User</a></li>
+            <li><a class="dropdown-item" href="#">Group</a></li>
+            <li><a class="dropdown-item" href="#">Post</a></li>
+          </ul>
+        </li>
       </ul>
 
       {% if user.is_authenticated %}

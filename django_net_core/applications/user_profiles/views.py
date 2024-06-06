@@ -8,7 +8,7 @@ from applications.user_profiles.services.crud import read
 class PublicCustomUserAPIViewSet(ModelViewSet):
     serializer_class = serializers.PublicCustomUserSerializer
     queryset = read.get_all_users()
-    permission_classes = (permissions.IsAuthenticated, )
+    # permission_classes = (permissions.IsAuthenticated, )
 
 
 class PrivateCustomUserAPIViewSet(ModelViewSet):
