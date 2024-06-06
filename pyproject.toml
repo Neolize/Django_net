@@ -17,6 +17,11 @@ djangorestframework-simplejwt = "^5.2.2"
 django-mptt = "^0.14.0"
 django-debug-toolbar = "^4.1.0"
 python-json-logger = "^2.0.7"
+pytest-django = "^4.8.0"
+
+[tool.pytest.ini_options]
+DJANGO_SETTINGS_MODULE = "django_net_core.settings"
+python_files = ["test_*.py"]
 
 
 [build-system]
