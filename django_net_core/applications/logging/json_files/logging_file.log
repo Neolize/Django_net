@@ -198,3 +198,35 @@
   "funcName": "get_group_by_slug",
   "lineno": 17
 }
+{
+  "message": "Group with slug - games1 does not exist. Group matching query does not exist.",
+  "levelname": "WARNING",
+  "asctime": "2024-06-07 17:20:59,726",
+  "pathname": "/home/neolize/Neolize/Python/Django projects/Django Net/django_net_core/applications/groups/services/crud/read.py",
+  "funcName": "get_group_by_slug",
+  "lineno": 17
+}
+{
+  "message": "Group with slug - games does not exist. Group matching query does not exist.",
+  "levelname": "WARNING",
+  "asctime": "2024-06-07 17:21:28,697",
+  "pathname": "/home/neolize/Neolize/Python/Django projects/Django Net/django_net_core/applications/groups/services/crud/read.py",
+  "funcName": "get_group_by_slug",
+  "lineno": 17
+}
+{
+  "message": "Group with slug - test-group1 does not exist. Group matching query does not exist.",
+  "levelname": "WARNING",
+  "asctime": "2024-06-07 17:35:48,339",
+  "pathname": "/home/neolize/Neolize/Python/Django projects/Django Net/django_net_core/applications/groups/services/crud/read.py",
+  "funcName": "get_group_by_slug",
+  "lineno": 17
+}
+{
+  "message": "Group with slug - test-group does not exist. Group matching query does not exist.",
+  "levelname": "WARNING",
+  "asctime": "2024-06-07 17:36:24,313",
+  "pathname": "/home/neolize/Neolize/Python/Django projects/Django Net/django_net_core/applications/groups/services/crud/read.py",
+  "funcName": "get_group_by_slug",
+  "lineno": 17
+}

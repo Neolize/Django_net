@@ -1,6 +1,7 @@
 from rest_framework import serializers
 
 from applications.groups import models
+from applications.user_wall.services.crud.crud_utils import return_unique_slug
 
 
 class PublicGroupDetailSerializer(serializers.ModelSerializer):
@@ -24,13 +25,6 @@ class PublicGroupListSerializer(serializers.ModelSerializer):
             'title',
             'slug'
         )
-
-
-# class FilterReviewListSerializer(serializers.ListSerializer):
-#     """Filtering only parent comments"""
-#     def to_representation(self, data):
-#         new_data = [data_item for data_item in data if data_item.parent is None]
-#         return super().to_representation(data=new_data)
 
 
 class CommentRecursiveSerializer(serializers.Serializer):
@@ -92,3 +86,38 @@ class PublicGroupPostDetailSerializer(serializers.ModelSerializer):
             'author_name',
             'comments'
         )
+
+
+class GroupSerializer(serializers.Serializer):
+    title = serializers.CharField(max_length=100)
+    description = serializers.CharField(max_length=1000, allow_blank=True)
+    logo = serializers.ImageField(allow_null=True, allow_empty_file=True)
+    creator_id = serializers.IntegerField()
+    slug = serializers.SlugField(read_only=True)
+
+    def create(self, validated_data):
+        slug = return_unique_slug(
+            str_for_slug=validated_data.get('title'),
+            model=models.Group
+        )
+        validated_data['slug'] = slug
+        return models.Group.objects.create(**validated_data)
+
+    def update(self, instance, validated_data):
+        if validated_data.get('title') != instance.title:
+            instance.title = validated_data.get('title')
+            slug = return_unique_slug(
+                str_for_slug=instance.title,
+                model=models.Group
+            )
+            instance.slug = slug
+
+        instance.description = validated_data.get('description', instance.description)
+        instance.logo = validated_data.get('logo', instance.logo)
+        instance.creator_id = validated_data.get('creator_id', instance.creator_id)
+
+        instance.save()
+        return instance
+
+    def delete(self, instance):
+        return instance.delete()

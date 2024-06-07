@@ -4,7 +4,10 @@ from datetime import date
 from django.core.handlers.wsgi import WSGIRequest
 from django.core.files.uploadedfile import InMemoryUploadedFile
 
-from applications.groups import models, forms
+from rest_framework.request import Request
+from rest_framework.serializers import SerializerMetaclass
+
+from applications.groups import models, forms, serializers as g_serializers
 from applications.user_profiles.models import CustomUser
 from applications.user_wall.services.crud import crud_utils
 from applications.user_wall.services.crud.create import return_tag_objects_from_list, add_tags_to_post
@@ -132,3 +135,13 @@ def create_comment_for_group_post(
         form.add_error(None, 'An error occurred during a comment creation. Try one more time.')
 
     return is_created
+
+
+def create_new_group_from_api_request(
+        request: Request,
+        serializer: SerializerMetaclass
+) -> g_serializers.GroupSerializer:
+    serializer = serializer(data=request.data)
+    serializer.is_valid(raise_exception=True)
+    serializer.save()
+    return serializer

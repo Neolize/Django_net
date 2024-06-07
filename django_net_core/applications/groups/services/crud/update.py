@@ -2,11 +2,13 @@ import logging
 import pytz
 from datetime import datetime
 
+from rest_framework.request import Request
+from rest_framework.serializers import SerializerMetaclass
 from django.core.handlers.wsgi import WSGIRequest
 
 from django_net_core.settings import TIME_ZONE
 from applications.abstract_activities.services.crud import update as aa_update
-from applications.groups import models, forms
+from applications.groups import models, forms, serializers as g_serializers
 from applications.groups.services.crud.read import get_group_comment_by_pk
 from applications.user_wall.services.crud import crud_utils
 from applications.user_wall.services.crud import create as uw_create
@@ -98,3 +100,14 @@ def update_group_comment(
         form.add_error(None, 'An error occurred during a comment editing. Try one more time.')
 
     return is_updated
+
+
+def update_group_from_api_request(
+        request: Request,
+        serializer: SerializerMetaclass,
+        instance: models.Group
+) -> g_serializers.GroupSerializer:
+    serializer = serializer(data=request.data, instance=instance)
+    serializer.is_valid(raise_exception=True)
+    serializer.save()
+    return serializer

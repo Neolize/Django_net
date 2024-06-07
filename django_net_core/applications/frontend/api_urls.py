@@ -20,4 +20,6 @@ urlpatterns = [
         g_views.PublicGroupPostCommentListAPIView.as_view(),
         name='group_post_comment_public_api'
     ),
+    path('alter_group/', g_views.AlterGroupAPIView.as_view()),
+    path('alter_group/<str:group_slug>/', g_views.AlterGroupAPIView.as_view()),
 ]

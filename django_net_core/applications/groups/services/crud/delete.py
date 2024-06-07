@@ -1,6 +1,8 @@
 import logging
 
-from applications.groups import models
+from rest_framework.serializers import SerializerMetaclass
+
+from applications.groups import models, serializers as g_serializers
 from applications.user_profiles.models import CustomUser
 
 
@@ -28,3 +30,12 @@ def delete_group_instance(group: models.Group) -> bool:
         deleted = False
 
     return deleted
+
+
+def delete_group_from_api_request(
+        serializer: SerializerMetaclass,
+        instance: models.Group
+) -> g_serializers.GroupSerializer:
+    serializer = serializer(instance=instance)
+    serializer.delete(instance=instance)
+    return serializer
