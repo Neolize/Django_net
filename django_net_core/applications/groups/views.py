@@ -33,9 +33,18 @@ class PublicGroupPostDetailAPIView(APIView):
     serializer = serializers.PublicGroupPostDetailSerializer
 
     def get(self, request: WSGIRequest, group_post_slug: str):
-        post = read.fetch_group_post(group_post_slug)
+        post = read.fetch_group_post_with_comments(group_post_slug)
         if not post:
             raise Http404
 
         serializer = self.serializer(post)
+        return Response(serializer.data)
+
+
+class PublicGroupPostCommentListAPIView(APIView):
+    serializer = serializers.PublicGroupPostCommentListSerializer
+
+    def get(self, request: WSGIRequest, group_post_slug: str):
+        comments = read.get_all_comments_for_group_post_by_slug(group_post_slug)
+        serializer = self.serializer(comments, many=True)
         return Response(serializer.data)

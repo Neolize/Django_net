@@ -15,6 +15,13 @@ class PublicUserDetailSerializer(serializers.ModelSerializer):
             'gender'
         )
 
+    def to_representation(self, instance):
+        representation = super().to_representation(instance)
+        if instance.is_superuser:
+            representation['superuser'] = True
+
+        return representation
+
 
 class PublicUserListSerializer(serializers.ModelSerializer):
     """List of users serializer for public API."""
@@ -24,3 +31,10 @@ class PublicUserListSerializer(serializers.ModelSerializer):
             'username',
             'email'
         )
+
+    def to_representation(self, instance):
+        representation = super().to_representation(instance)
+        if instance.is_superuser:
+            representation['superuser'] = True
+
+        return representation

@@ -381,3 +381,45 @@ def select_posts_from_all_groups_by_user_input(user_input: str) -> QuerySet[mode
         posts = []
 
     return posts
+
+
+def fetch_group_post_with_comments(group_post_slug: str) -> models.GroupPost | bool:
+    """Return group post with all additional information about comments for this post."""
+    try:
+        group_post = models.GroupPost.objects.filter(
+            slug=group_post_slug
+        ).prefetch_related(
+            'comments__author',
+            'comments__parent',
+            'comments__children',
+            'comments__children__author',
+            'comments__children__parent',
+            'comments__children__children'
+        )
+        group_post = group_post[0]
+    except IndexError as exc:
+        LOGGER.error(f'Group post with slug - {group_post_slug} does not exist. {exc}')
+        group_post = False
+
+    return group_post
+
+
+def get_all_comments_for_group_post_by_slug(group_post_slug: str) -> QuerySet[models.GroupComment] | list:
+    """Return all comments for a group post with additional information about author, post and children comments."""
+    try:
+        comments = models.GroupComment.objects.filter(
+            post__slug=group_post_slug
+        ).select_related(
+            'author',
+            'post',
+            'parent'
+        ).prefetch_related(
+            'children',
+            'children__children',
+            'children__author'
+        )
+    except Exception as exc:
+        LOGGER.error(exc)
+        comments = []
+
+    return comments

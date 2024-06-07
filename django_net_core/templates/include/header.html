@@ -27,7 +27,9 @@
             API
           </a>
             <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
-            <li><a class="dropdown-item" href="{% url 'user_public_api' pk=user.pk %}">User</a></li>
+            {% if user.is_authenticated %}
+                <li><a class="dropdown-item" href="{% url 'user_public_api' pk=user.pk %}">User</a></li>
+            {% endif %}
             <li><a class="dropdown-item" href="{% url 'user_list_public_api' %}">User list</a></li>
             <li><a class="dropdown-item" href="{% url 'group_list_public_api' %}">Group list</a></li>
             <li><a class="dropdown-item" href="#">Users' post list</a></li>
