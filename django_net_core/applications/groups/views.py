@@ -1,4 +1,5 @@
 from rest_framework import generics
+from rest_framework import status
 from rest_framework.response import Response
 from rest_framework.request import Request
 from rest_framework.views import APIView
@@ -38,7 +39,9 @@ class CreateGroupAPIView(APIView):
             request=request,
             serializer=self.serializer
         )
-        return Response({'success': 'new group was created.'})
+        if not serializer:
+            return Response({'error': 'You cannot own more than 5 groups.'})
+        return Response(serializer.data, status=status.HTTP_201_CREATED)
 
 
 class GroupPostDetailAPIView(APIView):

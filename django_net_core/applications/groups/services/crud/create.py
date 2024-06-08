@@ -8,6 +8,7 @@ from rest_framework.request import Request
 from rest_framework.serializers import SerializerMetaclass, ModelSerializer
 
 from applications.groups import models, forms
+from applications.groups.services.crud.read import is_user_allowed_to_create_group
 from applications.user_profiles.models import CustomUser
 from applications.user_wall.services.crud import crud_utils
 from applications.user_wall.services.crud.create import return_tag_objects_from_list, add_tags_to_post
@@ -140,10 +141,12 @@ def create_comment_for_group_post(
 def create_new_group_from_api_request(
         request: Request,
         serializer: SerializerMetaclass
-) -> ModelSerializer:
-    request.data['creator_id'] = request.user.pk
-    serializer = serializer(data=request.data)
+) -> ModelSerializer | bool:
+    if not is_user_allowed_to_create_group(request.user):
+        return False
 
+    request.data['creator'] = request.user.pk
+    serializer = serializer(data=request.data)
     serializer.is_valid(raise_exception=True)
     serializer.save()
     return serializer

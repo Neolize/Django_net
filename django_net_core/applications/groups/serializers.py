@@ -29,7 +29,8 @@ class CreationGroupSerializer(serializers.ModelSerializer):
         fields = (
             'title',
             'description',
-            'logo'
+            'logo',
+            'creator'
         )
 
     def create(self, validated_data):
@@ -37,9 +38,8 @@ class CreationGroupSerializer(serializers.ModelSerializer):
             str_for_slug=validated_data.get('title'),
             model=models.Group
         )
-        validated_data[slug] = slug
-        return validated_data
-        # return models.Group.objects.create(**validated_data)
+        validated_data['slug'] = slug
+        return models.Group.objects.create(**validated_data)
 
 
 class GroupListSerializer(serializers.ModelSerializer):
