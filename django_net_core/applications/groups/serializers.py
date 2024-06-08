@@ -11,9 +11,14 @@ class PublicGroupDetailSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = models.Group
-        exclude = (
-            'logo',
-            'creator'
+        fields = (
+            'id',
+            'title',
+            'description',
+            'creation_date',
+            'slug',
+            'creator_id',
+            'creator_name'
         )
 
 

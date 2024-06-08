@@ -40,3 +40,23 @@ class UserPersonalDataAdmin(admin.ModelAdmin):
 class HobbyAdmin(admin.ModelAdmin):
     list_display = ('id', 'title')
     list_display_links = ('id', 'title')
+
+
+@admin.register(models.Follower)
+class FollowerAdmin(admin.ModelAdmin):
+    list_display = ('id', 'user', 'follower')
+    list_display_links = ('id', 'user')
+
+
+@admin.register(models.Contact)
+class ContactAdmin(admin.ModelAdmin):
+    list_display = (
+        'id',
+        'user',
+        'website',
+        'github',
+        'twitter',
+        'instagram',
+        'facebook'
+    )
+    list_display_links = ('id', 'user')

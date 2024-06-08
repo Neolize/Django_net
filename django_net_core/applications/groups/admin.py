@@ -21,3 +21,9 @@ class GroupPostAdmin(admin.ModelAdmin):
 class GroupCommentAdmin(admin.ModelAdmin):
     list_display = ('id', 'creation_date', 'author')
     list_display_links = ('id', )
+
+
+@admin.register(models.GroupMember)
+class GroupMember(admin.ModelAdmin):
+    list_display = ('id', 'member', 'group')
+    list_display_links = ('id', 'member')
