@@ -1,15 +1,18 @@
+from rest_framework import generics
 from rest_framework.response import Response
 from rest_framework.request import Request
 from rest_framework.views import APIView
+from rest_framework.permissions import IsAuthenticated
 
 from django.http import Http404
 
+from applications.frontend.services import pagination
 from applications.groups import serializers
 from applications.groups.services.crud import read, create, update, delete
 
 
-class PublicGroupDetailAPIView(APIView):
-    serializer = serializers.PublicGroupDetailSerializer
+class GroupDetailAPIView(APIView):
+    serializer = serializers.GroupDetailSerializer
 
     def get(self, request: Request, group_slug: str):
         group = read.get_group_by_slug(group_slug)
@@ -20,17 +23,26 @@ class PublicGroupDetailAPIView(APIView):
         return Response(serializer.data)
 
 
-class PublicGroupListAPIView(APIView):
-    serializer = serializers.PublicGroupListSerializer
-
-    def get(self, request: Request):
-        groups = read.get_all_groups()
-        serializer = self.serializer(groups, many=True)
-        return Response(serializer.data)
+class GroupListAPIView(generics.ListAPIView):
+    queryset = read.get_all_groups()
+    serializer_class = serializers.GroupListSerializer
+    pagination_class = pagination.GroupAPIListPagination
 
 
-class PublicGroupPostDetailAPIView(APIView):
-    serializer = serializers.PublicGroupPostDetailSerializer
+class CreateGroupAPIView(APIView):
+    serializer = serializers.CreationGroupSerializer
+    permission_classes = (IsAuthenticated, )
+
+    def post(self, request: Request):
+        serializer = create.create_new_group_from_api_request(
+            request=request,
+            serializer=self.serializer
+        )
+        return Response({'success': 'new group was created.'})
+
+
+class GroupPostDetailAPIView(APIView):
+    serializer = serializers.GroupPostDetailSerializer
 
     def get(self, request: Request, group_post_slug: str):
         post = read.fetch_group_post_with_comments(group_post_slug)
@@ -41,13 +53,12 @@ class PublicGroupPostDetailAPIView(APIView):
         return Response(serializer.data)
 
 
-class PublicGroupPostCommentListAPIView(APIView):
-    serializer = serializers.PublicGroupPostCommentListSerializer
+class GroupPostCommentListAPIView(generics.ListAPIView):
+    serializer_class = serializers.GroupPostCommentListSerializer
+    pagination_class = pagination.GroupPostCommentListPagination
 
-    def get(self, request: Request, group_post_slug: str):
-        comments = read.get_all_comments_for_group_post_by_slug(group_post_slug)
-        serializer = self.serializer(comments, many=True)
-        return Response(serializer.data)
+    def get_queryset(self):
+        return read.get_all_comments_for_group_post_by_slug(self.kwargs.get('group_post_slug', ''))
 
 
 class AlterGroupAPIView(APIView):

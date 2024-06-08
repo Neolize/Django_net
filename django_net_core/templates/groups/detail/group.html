@@ -23,7 +23,7 @@
                 <ol class="breadcrumb">
                     {% block breadcrumbs %}
                         <li class="breadcrumb-item"><a href="{% url 'home' %}">Home</a></li>
-                        <li class="breadcrumb-item"><a href="{% url 'group_public_api' group_slug=group.slug %}">Group API</a></li>
+                        <li class="breadcrumb-item"><a href="{% url 'group_detail_api' group_slug=group.slug %}">Group API</a></li>
                         {% if request.user.is_authenticated %}
                             <li class="breadcrumb-item"><a href="{{ request.user.get_absolute_url }}">User Profile</a></li>
                         {% endif %}
@@ -215,9 +215,9 @@
                                                  </div>
                                               </div>
                                               <div class="timeline-footer">
-                                                 <a href="javascript:;" class="m-r-15 text-inverse-lighter"><i class="fa fa-thumbs-up fa-fw fa-lg m-r-3"></i> Like</a>
-                                                 <a href="{% url 'group_post_public_api' group_post_slug=post.slug %}" class="m-r-15 text-inverse-lighter"><i class="fa fa-share fa-fw fa-lg m-r-3"></i>post API</a>
-                                                 <a href="{% url 'group_post_comment_public_api' group_post_slug=post.slug %}" class="m-r-15 text-inverse-lighter"><i class="fa fa-share fa-fw fa-lg m-r-3"></i>comments API</a>
+<!--                                                 <a href="javascript:;" class="m-r-15 text-inverse-lighter"><i class="fa fa-thumbs-up fa-fw fa-lg m-r-3"></i> Like</a>-->
+                                                 <a href="{% url 'group_post_api' group_post_slug=post.slug %}" class="m-r-15 text-inverse-lighter"><i class="fa fa-share fa-fw fa-lg m-r-3"></i>post API</a>
+                                                 <a href="{% url 'group_post_comment_api' group_post_slug=post.slug %}" class="m-r-15 text-inverse-lighter"><i class="fa fa-share fa-fw fa-lg m-r-3"></i>comments API</a>
                                                  {% if is_group_owner %}
                                                     <a href="{% url 'delete_group_post' group_post_slug=post.slug %}" data-posts-delete
                                                        class="m-r-15 text-inverse-danger link-delete_post"

@@ -4,7 +4,7 @@ from applications.groups import models
 from applications.user_wall.services.crud.crud_utils import return_unique_slug
 
 
-class PublicGroupDetailSerializer(serializers.ModelSerializer):
+class GroupDetailSerializer(serializers.ModelSerializer):
     """Serializer for group public API."""
     creator_id = serializers.SlugRelatedField(source='creator', slug_field='id', read_only=True)
     creator_name = serializers.SlugRelatedField(source='creator', slug_field='username', read_only=True)
@@ -22,11 +22,32 @@ class PublicGroupDetailSerializer(serializers.ModelSerializer):
         )
 
 
-class PublicGroupListSerializer(serializers.ModelSerializer):
+class CreationGroupSerializer(serializers.ModelSerializer):
+    """Serializer for group creation."""
+    class Meta:
+        model = models.Group
+        fields = (
+            'title',
+            'description',
+            'logo'
+        )
+
+    def create(self, validated_data):
+        slug = return_unique_slug(
+            str_for_slug=validated_data.get('title'),
+            model=models.Group
+        )
+        validated_data[slug] = slug
+        return validated_data
+        # return models.Group.objects.create(**validated_data)
+
+
+class GroupListSerializer(serializers.ModelSerializer):
     """Public serializer for a list of groups."""
     class Meta:
         model = models.Group
         fields = (
+            'id',
             'title',
             'slug'
         )
@@ -42,11 +63,11 @@ class CommentRecursiveSerializer(serializers.Serializer):
 class FilterCommentListSerializer(serializers.ListSerializer):
     """Filter comments and leave on those which have parent_id as None."""
     def to_representation(self, instance):
-        data = [comment for comment in instance.all() if comment.parent is None]
+        data = [comment for comment in instance if comment.parent is None]
         return super().to_representation(data=data)
 
 
-class PublicGroupPostCommentListSerializer(serializers.ModelSerializer):
+class GroupPostCommentListSerializer(serializers.ModelSerializer):
     """Public serializer for a list of group comments."""
     author_id = serializers.SlugRelatedField(source='author', slug_field='id', read_only=True)
     author_name = serializers.SlugRelatedField(source='author', slug_field='username', read_only=True)
@@ -66,14 +87,14 @@ class PublicGroupPostCommentListSerializer(serializers.ModelSerializer):
         )
 
 
-class PublicGroupPostDetailSerializer(serializers.ModelSerializer):
+class GroupPostDetailSerializer(serializers.ModelSerializer):
     """Public serializer for a group post."""
     author_id = serializers.SlugRelatedField(source='author', slug_field='id', read_only=True)
     author_name = serializers.SlugRelatedField(source='author', slug_field='username', read_only=True)
     group_id = serializers.SlugRelatedField(source='group', slug_field='id', read_only=True)
     group_title = serializers.SlugRelatedField(source='group', slug_field='title', read_only=True)
     tags = serializers.SlugRelatedField(slug_field='title', read_only=True, many=True)
-    comments = PublicGroupPostCommentListSerializer(many=True)
+    comments = GroupPostCommentListSerializer(many=True)
 
     class Meta:
         model = models.GroupPost
