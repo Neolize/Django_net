@@ -435,3 +435,14 @@ def get_all_comments_for_group_post_by_slug(group_post_slug: str) -> QuerySet[mo
         comments = []
 
     return comments
+
+
+def get_all_group_members() -> QuerySet[models.GroupMember]:
+    """Return all group members with additional information about member and group."""
+    return (
+        models.GroupMember.objects.all().
+        order_by('pk').select_related(
+            'member',
+            'group'
+        )
+    )

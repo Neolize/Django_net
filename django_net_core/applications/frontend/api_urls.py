@@ -19,9 +19,10 @@ urlpatterns = [
         name='group_post_api'
     ),
     path('group-post-list/', g_views.GroupPostListAPIView.as_view()),
+    path('group-member-list/', g_views.GroupMemberListAPIView.as_view()),
     path(
         'group-post-comments/<str:group_post_slug>/',
         g_views.GroupPostCommentListAPIView.as_view(),
         name='group_post_comment_api'
-    )
+    ),
 ]

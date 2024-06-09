@@ -157,3 +157,20 @@ class GroupPostDetailSerializer(serializers.ModelSerializer):
             'author_name',
             'comments'
         )
+
+
+class GroupMemberSerializer(serializers.ModelSerializer):
+    """Serializer for GroupMember model."""
+    member_id = serializers.SlugRelatedField(source='member', slug_field='id', read_only=True)
+    member_name = serializers.SlugRelatedField(source='member', slug_field='username', read_only=True)
+    group_slug = serializers.SlugRelatedField(source='group', slug_field='slug', read_only=True)
+    group_title = serializers.SlugRelatedField(source='group', slug_field='title', read_only=True)
+
+    class Meta:
+        model = models.GroupMember
+        fields = (
+            'member_id',
+            'member_name',
+            'group_slug',
+            'group_title'
+        )

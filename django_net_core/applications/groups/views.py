@@ -106,3 +106,11 @@ class DeleteGroupAPIView(APIView):
             instance=group,
         )
         return Response(serializer.data, status=status.HTTP_202_ACCEPTED)
+
+
+class GroupMemberListAPIView(generics.ListAPIView):
+    serializer_class = serializers.GroupMemberSerializer
+    pagination_class = pagination.GroupMemberAPIListPagination
+
+    def get_queryset(self):
+        return read.get_all_group_members()
