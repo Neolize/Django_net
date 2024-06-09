@@ -22,7 +22,7 @@ class GroupDetailSerializer(serializers.ModelSerializer):
         )
 
 
-class CreationGroupSerializer(serializers.ModelSerializer):
+class GroupCreationSerializer(serializers.ModelSerializer):
     """Serializer for group creation."""
     class Meta:
         model = models.Group
@@ -40,6 +40,49 @@ class CreationGroupSerializer(serializers.ModelSerializer):
         )
         validated_data['slug'] = slug
         return models.Group.objects.create(**validated_data)
+
+
+class GroupEditingSerializer(serializers.ModelSerializer):
+    """Serializer for group editing."""
+    title = serializers.CharField(max_length=100, required=False)
+
+    class Meta:
+        model = models.Group
+        fields = (
+            'title',
+            'description',
+            'logo'
+        )
+
+    def update(self, instance, validated_data):
+        title = validated_data.get('title')
+        if title and title != instance.title:
+            # if new title was given, slug would be changed
+            slug = return_unique_slug(
+                str_for_slug=title,
+                model=models.Group
+            )
+            instance.title = title
+            instance.slug = slug
+
+        instance.description = validated_data.get('description', instance.description)
+        instance.logo = validated_data.get('logo', instance.logo)
+        instance.save()
+        return instance
+
+
+class GroupDeletionSerializer(serializers.ModelSerializer):
+    """Serializer for group deletion."""
+    class Meta:
+        model = models.Group
+        fields = (
+            'title',
+            'description',
+            'logo'
+        )
+
+    def delete(self, instance):
+        return instance.delete()
 
 
 class GroupListSerializer(serializers.ModelSerializer):
@@ -112,38 +155,3 @@ class GroupPostDetailSerializer(serializers.ModelSerializer):
             'author_name',
             'comments'
         )
-
-
-class GroupSerializer(serializers.Serializer):
-    title = serializers.CharField(max_length=100)
-    description = serializers.CharField(max_length=1000, allow_blank=True)
-    logo = serializers.ImageField(allow_null=True, allow_empty_file=True)
-    creator_id = serializers.IntegerField()
-    slug = serializers.SlugField(read_only=True)
-
-    def create(self, validated_data):
-        slug = return_unique_slug(
-            str_for_slug=validated_data.get('title'),
-            model=models.Group
-        )
-        validated_data['slug'] = slug
-        return models.Group.objects.create(**validated_data)
-
-    def update(self, instance, validated_data):
-        if validated_data.get('title') != instance.title:
-            instance.title = validated_data.get('title')
-            slug = return_unique_slug(
-                str_for_slug=instance.title,
-                model=models.Group
-            )
-            instance.slug = slug
-
-        instance.description = validated_data.get('description', instance.description)
-        instance.logo = validated_data.get('logo', instance.logo)
-        instance.creator_id = validated_data.get('creator_id', instance.creator_id)
-
-        instance.save()
-        return instance
-
-    def delete(self, instance):
-        return instance.delete()

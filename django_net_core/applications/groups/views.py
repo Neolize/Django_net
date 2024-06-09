@@ -8,6 +8,7 @@ from rest_framework.permissions import IsAuthenticated
 from django.http import Http404
 
 from applications.frontend.services import pagination
+from applications.frontend.permissions import IsGroupCreator
 from applications.groups import serializers
 from applications.groups.services.crud import read, create, update, delete
 
@@ -31,7 +32,7 @@ class GroupListAPIView(generics.ListAPIView):
 
 
 class CreateGroupAPIView(APIView):
-    serializer = serializers.CreationGroupSerializer
+    serializer = serializers.GroupCreationSerializer
     permission_classes = (IsAuthenticated, )
 
     def post(self, request: Request):
@@ -40,7 +41,7 @@ class CreateGroupAPIView(APIView):
             serializer=self.serializer
         )
         if not serializer:
-            return Response({'error': 'You cannot own more than 5 groups.'})
+            return Response({'error': 'You cannot own more than 5 groups.'}, status=status.HTTP_400_BAD_REQUEST)
         return Response(serializer.data, status=status.HTTP_201_CREATED)
 
 
@@ -64,15 +65,9 @@ class GroupPostCommentListAPIView(generics.ListAPIView):
         return read.get_all_comments_for_group_post_by_slug(self.kwargs.get('group_post_slug', ''))
 
 
-class AlterGroupAPIView(APIView):
-    serializer = serializers.GroupSerializer
-
-    def post(self, request: Request):
-        serializer = create.create_new_group_from_api_request(
-            request=request,
-            serializer=self.serializer
-        )
-        return Response({'new group': serializer.data})
+class UpdateGroupAPIView(APIView):
+    serializer = serializers.GroupEditingSerializer
+    permission_classes = (IsAuthenticated, IsGroupCreator)
 
     def put(self, request: Request, group_slug: str):
         group = read.get_group_by_slug(group_slug)
@@ -84,7 +79,14 @@ class AlterGroupAPIView(APIView):
             serializer=self.serializer,
             instance=group
         )
-        return Response({'updated group': serializer.data})
+        if not serializer:
+            return Response({'error': 'The fields weren\'t given.'}, status=status.HTTP_400_BAD_REQUEST)
+        return Response(serializer.data, status=status.HTTP_202_ACCEPTED)
+
+
+class DeleteGroupAPIView(APIView):
+    serializer = serializers.GroupDeletionSerializer
+    permission_classes = (IsAuthenticated, IsGroupCreator)
 
     def delete(self, request: Request, group_slug: str):
         group = read.get_group_by_slug(group_slug)
@@ -93,7 +95,6 @@ class AlterGroupAPIView(APIView):
 
         serializer = delete.delete_group_from_api_request(
             serializer=self.serializer,
-            instance=group
+            instance=group,
         )
-        return Response({'deleted group': serializer.data})
-
+        return Response(serializer.data, status=status.HTTP_202_ACCEPTED)

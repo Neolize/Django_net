@@ -106,7 +106,9 @@ def update_group_from_api_request(
         request: Request,
         serializer: SerializerMetaclass,
         instance: models.Group
-) -> g_serializers.GroupSerializer:
+) -> g_serializers.GroupEditingSerializer | bool:
+    if not request.data:
+        return False
     serializer = serializer(data=request.data, instance=instance)
     serializer.is_valid(raise_exception=True)
     serializer.save()

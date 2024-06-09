@@ -35,7 +35,7 @@ def delete_group_instance(group: models.Group) -> bool:
 def delete_group_from_api_request(
         serializer: SerializerMetaclass,
         instance: models.Group
-) -> g_serializers.GroupSerializer:
+) -> g_serializers.GroupDeletionSerializer:
     serializer = serializer(instance=instance)
     serializer.delete(instance=instance)
     return serializer

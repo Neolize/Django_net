@@ -9,7 +9,9 @@ urlpatterns = [
     path('user-list/', up_views.PublicUserListAPIView.as_view(), name='user_list_public_api'),
 
     path('group/<str:group_slug>/', g_views.GroupDetailAPIView.as_view(), name='group_detail_api'),
-    path('group-creation/', g_views.CreateGroupAPIView.as_view(), name='group_creation_api'),
+    path('group-creation/', g_views.CreateGroupAPIView.as_view()),
+    path('group-editing/<str:group_slug>/', g_views.UpdateGroupAPIView.as_view()),
+    path('group-deletion/<str:group_slug>/', g_views.DeleteGroupAPIView.as_view()),
     path('group-list/', g_views.GroupListAPIView.as_view(), name='group_list_api'),
     path(
         'group-post/<str:group_post_slug>/',
@@ -20,7 +22,5 @@ urlpatterns = [
         'group-post-comments/<str:group_post_slug>/',
         g_views.GroupPostCommentListAPIView.as_view(),
         name='group_post_comment_api'
-    ),
-    path('group-alteration/', g_views.AlterGroupAPIView.as_view()),
-    path('group-alteration/<str:group_slug>/', g_views.AlterGroupAPIView.as_view()),
+    )
 ]
