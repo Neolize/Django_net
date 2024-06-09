@@ -20,7 +20,13 @@ class GroupAPIListPagination(PageNumberPagination):
     max_page_size = 100
 
 
-class GroupPostCommentListPagination(PageNumberPagination):
+class GroupPostCommentAPIListPagination(PageNumberPagination):
     page_size = 5
     page_size_query_param = 'page_size'
     max_page_size = 50
+
+
+class GroupPostAPIListPagination(PageNumberPagination):
+    page_size = 10
+    page_size_query_param = 'page_size'
+    max_page_size = 100

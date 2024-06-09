@@ -404,6 +404,18 @@ def fetch_group_post_with_comments(group_post_slug: str) -> models.GroupPost | b
     return group_post
 
 
+def fetch_all_group_posts_with_comments() -> QuerySet[models.GroupPost]:
+    """Return all group posts with all additional information about comments for this post."""
+    return models.GroupPost.objects.all().prefetch_related(
+        'comments__author',
+        'comments__parent',
+        'comments__children',
+        'comments__children__author',
+        'comments__children__parent',
+        'comments__children__children'
+    ).order_by('-publication_date')
+
+
 def get_all_comments_for_group_post_by_slug(group_post_slug: str) -> QuerySet[models.GroupComment] | list:
     """Return all comments for a group post with additional information about author, post and children comments."""
     try:

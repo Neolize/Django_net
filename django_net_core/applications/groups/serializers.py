@@ -106,6 +106,8 @@ class CommentRecursiveSerializer(serializers.Serializer):
 class FilterCommentListSerializer(serializers.ListSerializer):
     """Filter comments and leave on those which have parent_id as None."""
     def to_representation(self, instance):
+        if not isinstance(instance, list):
+            instance = instance.all()
         data = [comment for comment in instance if comment.parent is None]
         return super().to_representation(data=data)
 

@@ -57,9 +57,17 @@ class GroupPostDetailAPIView(APIView):
         return Response(serializer.data)
 
 
+class GroupPostListAPIView(generics.ListAPIView):
+    serializer_class = serializers.GroupPostDetailSerializer
+    pagination_class = pagination.GroupPostCommentAPIListPagination
+
+    def get_queryset(self):
+        return read.fetch_all_group_posts_with_comments()
+
+
 class GroupPostCommentListAPIView(generics.ListAPIView):
     serializer_class = serializers.GroupPostCommentListSerializer
-    pagination_class = pagination.GroupPostCommentListPagination
+    pagination_class = pagination.GroupPostAPIListPagination
 
     def get_queryset(self):
         return read.get_all_comments_for_group_post_by_slug(self.kwargs.get('group_post_slug', ''))
