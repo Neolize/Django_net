@@ -1,6 +1,6 @@
 import logging
 
-from django.db.models import QuerySet, Count, Q, Prefetch
+from django.db.models import QuerySet, Count, Q, Prefetch, Case, When, BooleanField
 from django.core.exceptions import ObjectDoesNotExist
 
 from applications.groups import models
@@ -450,3 +450,23 @@ def get_all_group_members() -> QuerySet[models.GroupMember]:
 
 def return_all_post_tags_as_list(instance: models.GroupPost) -> list:
     return list(instance.tags.values_list('slug', flat=True))
+
+
+def get_all_groups_for_api_request(creator_id: int) -> QuerySet[models.Group] | list:
+    """Return all groups with 'group_members', 'group_posts' and amount of comment for each group."""
+    try:
+        groups = (
+            models.Group.objects.all().order_by('pk').
+            annotate(
+                is_creator=Case(
+                    When(creator__id=creator_id, then=True),
+                    default=False,
+                    output_field=BooleanField()
+                )
+            )
+        )
+    except Exception as exc:
+        LOGGER.error(exc)
+        groups = []
+
+    return groups

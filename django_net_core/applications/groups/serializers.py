@@ -88,12 +88,15 @@ class GroupDeletionSerializer(serializers.ModelSerializer):
 
 class GroupListSerializer(serializers.ModelSerializer):
     """Public serializer for a list of groups."""
+    is_creator = serializers.BooleanField()
+
     class Meta:
         model = models.Group
         fields = (
             'id',
             'title',
-            'slug'
+            'slug',
+            'is_creator'
         )
 
 

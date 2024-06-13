@@ -27,9 +27,11 @@ class GroupDetailAPIView(APIView):
 
 
 class GroupListAPIView(generics.ListAPIView):
-    queryset = read.get_all_groups()
     serializer_class = serializers.GroupListSerializer
     pagination_class = pagination.GroupAPIListPagination
+
+    def get_queryset(self):
+        return read.get_all_groups_for_api_request(creator_id=self.request.user.pk)
 
 
 class CreateGroupAPIView(APIView):
