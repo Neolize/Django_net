@@ -18,6 +18,7 @@ urlpatterns = [
         g_views.GroupPostDetailAPIView.as_view(),
         name='group_post_api'
     ),
+    path('group-post-creation/', g_views.GroupPostCreationAPIView.as_view()),
     path('group-post-list/', g_views.GroupPostListAPIView.as_view()),
     path('group-member-list/', g_views.GroupMemberListAPIView.as_view()),
     path(

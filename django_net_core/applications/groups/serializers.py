@@ -1,7 +1,8 @@
 from rest_framework import serializers
 
 from applications.groups import models
-from applications.user_wall.services.crud.crud_utils import return_unique_slug
+from applications.user_wall.services.crud.crud_utils import return_unique_slug, form_tag_list
+from applications.user_wall.services.crud.create import return_tag_objects_from_list, add_tags_to_post
 
 
 class GroupDetailSerializer(serializers.ModelSerializer):
@@ -157,6 +158,38 @@ class GroupPostDetailSerializer(serializers.ModelSerializer):
             'author_name',
             'comments'
         )
+
+
+class GroupPostCreationSerializer(serializers.ModelSerializer):
+    """Serializer for group post creation."""
+    group_slug = serializers.SlugRelatedField(source='group', slug_field='slug', read_only=True)
+    tags = serializers.CharField()
+    is_published = serializers.BooleanField(required=False)
+
+    class Meta:
+        model = models.GroupPost
+        fields = (
+            'title',
+            'content',
+            'tags',
+            'is_published',
+            'group_slug',
+            'author',
+            'group'
+        )
+
+    def create(self, validated_data):
+        slug = return_unique_slug(
+            str_for_slug=validated_data.get('title'),
+            model=models.GroupPost
+        )
+        tags = return_tag_objects_from_list(
+            form_tag_list(validated_data.pop('tags', ''))
+        )
+        validated_data['slug'] = slug
+        new_post = models.GroupPost.objects.create(**validated_data)
+        add_tags_to_post(tags=tags, post=new_post)
+        return new_post
 
 
 class GroupMemberSerializer(serializers.ModelSerializer):

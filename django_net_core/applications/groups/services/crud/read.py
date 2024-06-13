@@ -446,3 +446,7 @@ def get_all_group_members() -> QuerySet[models.GroupMember]:
             'group'
         )
     )
+
+
+def return_all_post_tags_as_list(instance: models.GroupPost) -> list:
+    return list(instance.tags.values_list('slug', flat=True))

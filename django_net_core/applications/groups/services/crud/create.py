@@ -150,3 +150,18 @@ def create_new_group_from_api_request(
     serializer.is_valid(raise_exception=True)
     serializer.save()
     return serializer
+
+
+def create_group_post_from_api_request(
+        request: Request,
+        serializer: SerializerMetaclass,
+        group_id: int
+) -> ModelSerializer | bool:
+
+    request.data['author'] = request.user.pk
+    request.data['group'] = group_id
+
+    serializer = serializer(data=request.data)
+    serializer.is_valid(raise_exception=True)
+    serializer.save()
+    return serializer

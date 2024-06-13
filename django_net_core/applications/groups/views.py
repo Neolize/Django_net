@@ -10,6 +10,7 @@ from django.http import Http404
 from applications.frontend.services import pagination
 from applications.frontend.permissions import IsGroupCreator
 from applications.groups import serializers
+from applications.groups.permissions import is_user_group_author
 from applications.groups.services.crud import read, create, update, delete
 
 
@@ -55,6 +56,28 @@ class GroupPostDetailAPIView(APIView):
 
         serializer = self.serializer(post)
         return Response(serializer.data)
+
+
+class GroupPostCreationAPIView(APIView):
+    serializer = serializers.GroupPostCreationSerializer
+    permission_classes = (IsAuthenticated, )
+
+    def post(self, request: Request):
+        group = read.get_group_by_slug(request.data.pop('group_slug'))
+        if not group:
+            raise Http404
+
+        if not is_user_group_author(visitor=request.user, group=group):
+            return Response({'error': 'You are not the owner of this group.'}, status=status.HTTP_403_FORBIDDEN)
+
+        serializer = create.create_group_post_from_api_request(
+            request=request,
+            serializer=self.serializer,
+            group_id=group.pk
+        )
+        serializer_data = serializer.data
+        serializer_data['tags'] = read.return_all_post_tags_as_list(instance=serializer.instance)
+        return Response(serializer_data, status=status.HTTP_201_CREATED)
 
 
 class GroupPostListAPIView(generics.ListAPIView):
