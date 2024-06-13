@@ -8,6 +8,7 @@ from django.conf.urls.static import static
 from rest_framework_simplejwt.views import TokenObtainPairView, TokenRefreshView, TokenVerifyView
 
 from django_net_core import settings
+from django_net_core.yasg import urlpatterns as yasg_urlpatterns
 
 
 urlpatterns = [
@@ -25,6 +26,7 @@ urlpatterns = [
     path('', include('applications.frontend.urls')),
 ]
 
+urlpatterns += yasg_urlpatterns
 
 if settings.DEBUG:
     urlpatterns += [path('__debug__/', include('debug_toolbar.urls'))]

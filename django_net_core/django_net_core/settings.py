@@ -57,6 +57,7 @@ INSTALLED_APPS = [
     'rest_framework.authtoken',
     'djoser',
     'debug_toolbar',
+    'drf_yasg',
 
     'applications.user_profiles.apps.UserProfilesConfig',
     'applications.groups.apps.GroupsConfig',
