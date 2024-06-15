@@ -19,6 +19,7 @@ django-debug-toolbar = "^4.1.0"
 python-json-logger = "^2.0.7"
 pytest-django = "^4.8.0"
 drf-yasg = "^1.21.7"
+django-filter = "^24.2"
 
 [tool.pytest.ini_options]
 DJANGO_SETTINGS_MODULE = "django_net_core.settings"

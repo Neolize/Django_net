@@ -6,11 +6,13 @@ from rest_framework.views import APIView
 from rest_framework.permissions import IsAuthenticated
 
 from django.http import Http404
+from django_filters.rest_framework import DjangoFilterBackend
 
 from applications.frontend.services import pagination
 from applications.frontend.permissions import IsGroupCreator
 from applications.groups import serializers
 from applications.groups.permissions import is_user_group_author
+from applications.groups.services.filters import GroupFilter
 from applications.groups.services.crud import read, create, update, delete
 
 
@@ -29,6 +31,8 @@ class GroupDetailAPIView(APIView):
 class GroupListAPIView(generics.ListAPIView):
     serializer_class = serializers.GroupListSerializer
     pagination_class = pagination.GroupAPIListPagination
+    filter_backends = (DjangoFilterBackend, )
+    filterset_class = GroupFilter
 
     def get_queryset(self):
         return read.get_all_groups_for_api_request(creator_id=self.request.user.pk)
