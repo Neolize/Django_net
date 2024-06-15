@@ -4,6 +4,7 @@ from rest_framework.response import Response
 from rest_framework.request import Request
 from rest_framework.views import APIView
 from rest_framework.permissions import IsAuthenticated
+from rest_framework.filters import OrderingFilter
 
 from django.http import Http404
 from django_filters.rest_framework import DjangoFilterBackend
@@ -31,7 +32,8 @@ class GroupDetailAPIView(APIView):
 class GroupListAPIView(generics.ListAPIView):
     serializer_class = serializers.GroupListSerializer
     pagination_class = pagination.GroupAPIListPagination
-    filter_backends = (DjangoFilterBackend, )
+    filter_backends = (DjangoFilterBackend, OrderingFilter)
+    ordering_fields = ('id', 'title')
     filterset_class = GroupFilter
 
     def get_queryset(self):
